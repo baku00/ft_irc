@@ -1,8 +1,10 @@
 NAME = irc
 
 SERVER = srcs/Server/Server.cpp
+CLIENT = srcs/Client/Client.cpp
+PARSER = srcs/Parser/Parser.cpp
 
-FILES = srcs/main.cpp $(SERVER)
+FILES = srcs/main.cpp $(SERVER) $(CLIENT) $(PARSER)
 
 OBJS = $(FILES:.cpp=.o)
 
