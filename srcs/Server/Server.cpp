@@ -148,13 +148,14 @@ void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 		// 	// Ici, vous devrez gérer la lecture des données du client
 		// 	this->parseInput(client.fd, buffer);
 		// }
-		this->parseInput(client.fd, buffer);
+		//this->parseInput(client.fd, buffer);
+		std::cout << "Message from " << client.fd << " in buffer " << buffer << std::endl;
 	}
 }
 
 void	Server::sendWelcomeMessage(int clientSocket)
 {
-	std::string welcomeMessage = "Welcome to the IRC server! You are now connected.\r\n";
+	std::string welcomeMessage = ":server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>\r\n";
 	
 	// Envoi du message au client
 	ssize_t bytesSent = send(clientSocket, welcomeMessage.c_str(), welcomeMessage.length(), 0);

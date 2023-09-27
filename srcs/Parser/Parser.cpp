@@ -24,7 +24,7 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 	std::vector<std::string>	parameters;
 	std::string					parameter;
 	std::string					command;
-	size_t						start;
+	//size_t						start;
 
 	input = Parser::trim(input);
 	command = Parser::getCommand(input);
@@ -33,7 +33,7 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 	input = input.substr(command.length());
 
 	while (input.find(" ") != std::string::npos) {
-		start = input.find_first_not_of(" ");
+		//start = input.find_first_not_of(" ");
 		parameter = input.substr(command.length(), input.find(" "));
 		parameters.push_back(parameter);
 		input = input.substr(input.find(" ") + 1);
