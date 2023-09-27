@@ -14,6 +14,7 @@ class Server
 		int							_clientSocket;
 		std::vector<struct pollfd>	_pollfds;
 		std::map<int, Client>		_clients;
+		std::string					_server_name;
 
 		Server();
 

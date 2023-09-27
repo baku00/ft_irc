@@ -11,6 +11,7 @@ Server::Server(int port, std::string password)
 	this->_port = port;
 	this->_password = password;
 	this->_pollfds = std::vector<struct pollfd>(1);
+	this->_server_name = "42IRC";
 }
 
 Server::Server(const Server &copy)
