@@ -15,7 +15,7 @@ std::string					Parser::getCommand(std::string input) {
 	size_t space_pos = input.find(" ");
 	if (space_pos == std::string::npos)
 		return input;
-	return input.substr(0, space_pos);
+	return Parser::trim(input.substr(0, space_pos));
 }
 
 std::vector<std::string>	Parser::getParameters(std::string input) {
@@ -26,14 +26,14 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 	{
 		if ((space_pos = input.find(" ")) == std::string::npos)
 		{
-			args.push_back(input);
+			args.push_back(Parser::trim(input));
 			break ;
 		}
 		else
 		{
 			std::string arg = input.substr(0, space_pos);
 			if (arg.length())
-				args.push_back(arg);
+				args.push_back(Parser::trim(arg));
 		}
 		input = input.substr(space_pos + 1, input.length() - space_pos - 1);
 	}
