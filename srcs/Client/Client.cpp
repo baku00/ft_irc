@@ -35,6 +35,16 @@ bool	Client::isAuthenticated() {
 Client::~Client() {
 }
 
+void	Client::sendMessage(int socket, std::string message)
+{
+	ssize_t bytesSent = send(socket, message.c_str(), message.length(), 0);
+	if (bytesSent == -1) {
+		std::cerr << "Erreur lors de l'envoi de la réponse au client." << std::endl;
+	} else {
+		std::cout << "Réponse envoyé au client." << std::endl;
+	}
+}
+
 Client &Client::operator=(const Client &copy) {
 	if (this != &copy) {
 		this->_nickname = copy._nickname;

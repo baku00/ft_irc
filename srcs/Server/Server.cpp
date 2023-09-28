@@ -2,7 +2,7 @@
 
 Server::Server()
 {
-	std::cout << "Server constructor called" << std::endl;
+	std::cout << "Default Server constructor called" << std::endl;
 }
 
 Server::Server(int port, std::string password)
@@ -12,6 +12,7 @@ Server::Server(int port, std::string password)
 	this->_password = password;
 	this->_pollfds = std::vector<struct pollfd>(1);
 	this->_server_name = "42IRC";
+	this->_parser = new Parser();
 }
 
 Server::Server(const Server &copy)
@@ -38,7 +39,6 @@ void	Server::start()
 
 void	Server::createSocket()
 {
-	// Création du socket du serveur
 	this->_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_serverSocket == -1) {
 		this->stop("Erreur lors de la création du socket.", EXIT_FAILURE);
@@ -49,7 +49,6 @@ sockaddr_in	Server::fixSettings()
 {
 	struct sockaddr_in serverAddr;
 
-	// Configuration des paramètres du serveur
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_addr.s_addr = INADDR_ANY;
 	serverAddr.sin_port = htons(this->_port);
@@ -59,7 +58,6 @@ sockaddr_in	Server::fixSettings()
 
 void	Server::linkSocketToPort(sockaddr_in serverAddr)
 {
-	// Liaison du socket au port
 	if (bind(this->_serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
 		this->stop("Erreur lors de la liaison du socket au port.", EXIT_FAILURE);
 	}
@@ -67,7 +65,6 @@ void	Server::linkSocketToPort(sockaddr_in serverAddr)
 
 void	Server::startListening()
 {
-	// Attente de connexions entrantes
 	if (listen(this->_serverSocket, 5) == -1) {
 		this->stop("Erreur lors de l'attente de connexions entrantes.", EXIT_FAILURE);
 	}
@@ -104,7 +101,7 @@ void	Server::waitForIncomingConnection()
 {
 	std::cout << "Attente de connexions entrantes..." << std::endl;
 
-	int numReady = poll(this->_pollfds.data(), this->_pollfds.size(), -1); // -1 signifie une attente indéfinie
+	int numReady = poll(this->_pollfds.data(), this->_pollfds.size(), -1);
 
 	if (numReady == -1) {
 		this->stop("Erreur lors de l'appel à poll().", EXIT_FAILURE);
@@ -113,19 +110,17 @@ void	Server::waitForIncomingConnection()
 
 void	Server::acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen)
 {
-	// Nouvelle connexion entrante sur le socket du serveur
 	_clientSocket = accept(this->_serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
 	if (_clientSocket == -1) {
 		std::cerr << "Erreur lors de l'acceptation de la connexion." << std::endl;
 	} else {
-		// Ajouter le nouveau client au tableau _pollfds
 		struct pollfd newClient;
 		newClient.fd = _clientSocket;
 		newClient.events = POLLIN;
 		_pollfds.push_back(newClient);
 		_clients.insert(std::pair<int, Client>(newClient.fd, Client()));
 		std::cout << "Nouveau client ajouté" << std::endl;
-		sendWelcomeMessage(_clientSocket);
+		Client::sendMessage(_clientSocket, ":server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>\r\n");
 	}
 }
 
@@ -133,37 +128,12 @@ void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 {
 	char buffer[1024] = {0};
 	ssize_t bytesRead = read(client.fd, buffer, sizeof(buffer));
+	buffer[bytesRead] = '\0';
+
 	if (bytesRead <= 0) {
 		this->disconnectClient(it);
 	} else {
-		// if (!Auth::isAuthorized(this->_clients[client.fd], buffer))
-		// {
-		// 	Auth::sendError(client.fd, buffer);
-		// }
-		// if (Auth::isAuthenticated(client.fd) == false)
-		// {
-		// 	Auth::login(client.fd, buffer);
-		// }
-		// else
-		// {
-		// 	// Ici, vous devrez gérer la lecture des données du client
-		// 	this->parseInput(client.fd, buffer);
-		// }
 		this->parseInput(client.fd, buffer);
-	}
-}
-
-void	Server::sendWelcomeMessage(int clientSocket)
-{
-	std::string welcomeMessage = ":server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>\r\n";
-	
-	// Envoi du message au client
-	ssize_t bytesSent = send(clientSocket, welcomeMessage.c_str(), welcomeMessage.length(), 0);
-	
-	if (bytesSent == -1) {
-		std::cerr << "Erreur lors de l'envoi du message de bienvenue au client." << std::endl;
-	} else {
-		std::cout << "Message de bienvenue envoyé au client." << std::endl;
 	}
 }
 
@@ -177,21 +147,30 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 void	Server::parseInput(int fd, std::string input)
 {
 	(void) fd;
-	std::cout << "Received" << std::endl;
-	std::cout << "(" << input << ")" << std::endl;
-	std::cout << "Command: " << Parser::getCommand(input) << std::endl;
-	std::cout << "Parameters: " << std::endl;
-	std::vector<std::string> parameters = Parser::getParameters(input);
-	for (size_t i = 0; i < parameters.size(); i++)
+	std::string command = this->_parser->getCommand(input);
+	std::vector<std::string> parameters = this->_parser->getParameters(input);
+
+	if (!Auth::isAuthorized(this->_clients[fd], command))
+			Client::sendMessage(fd, "You must be logged in to use this server\r\n");
+	if (Auth::authenticate(this->_clients[fd], parameters[1]))
 	{
-		std::cout << "\t" << i << "." << parameters[i] << std::endl;
+		Client::sendMessage(_clientSocket, "Success\r\n");
 	}
-	std::cout << std::endl;
+	else{
+		Client::sendMessage(_clientSocket, "Failed\r\n");
+	}
+	// this->_parser->execute(command, parameters);
+}
+
+std::string Server::getPassword()
+{
+	return this->_password;
 }
 
 void	Server::stop(std::string message, int exitCode)
 {
 	close(this->_serverSocket);
+	ServerInstance::destroyInstance();
 	std::cout << "Server stopped" << std::endl;
 	if (exitCode)
 	{

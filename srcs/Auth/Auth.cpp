@@ -5,9 +5,10 @@ bool	Auth::isAuthorized(Client client, std::string command) {
 		return true;
 	if (command == "PASS")
 		return true;
-	if (command == "NICK" || command == "USER")
-		return true;
-	if (client.isAuthenticated())
-		return true;
 	return false;
+}
+
+bool	Auth::authenticate(Client client, std::string password) {
+	client.login(password == ServerInstance::getInstance()->getPassword());
+	return client.isAuthenticated();
 }

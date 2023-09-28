@@ -4,17 +4,21 @@
 # include <main.hpp>
 # include "../Client/Client.hpp"
 # include "../Parser/Parser.hpp"
+# include "../Auth/Auth.hpp"
+
+class Parser;
 
 class Server
 {
 	private:
-		int							_port;
-		std::string					_password;
-		int							_serverSocket;
-		int							_clientSocket;
-		std::vector<struct pollfd>	_pollfds;
-		std::map<int, Client>		_clients;
-		std::string					_server_name;
+		int									_port;
+		std::string							_password;
+		int									_serverSocket;
+		int									_clientSocket;
+		std::vector<struct pollfd>			_pollfds;
+		std::map<int, Client>				_clients;
+		std::string							_server_name;
+		Parser								*_parser;
 
 		Server();
 
@@ -42,8 +46,9 @@ class Server
 		Server(const Server &copy);
 		Server &operator=(const Server &copy);
 
+		std::string	getPassword();
+
 		void	start();
-		void	sendWelcomeMessage(int clientSocket);
 };
 
 #endif

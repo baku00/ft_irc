@@ -16,4 +16,6 @@
 # include <map>
 # include <exception>
 
+# include "Server/Instance/ServerInstance.hpp"
+
 #endif

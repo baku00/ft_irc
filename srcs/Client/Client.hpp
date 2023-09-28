@@ -22,6 +22,8 @@ class Client {
 		std::string	getNickname();
 		std::string	getUsername();
 		bool		isAuthenticated();
+
+		static void	sendMessage(int socket, std::string message);
 };
 
 #endif

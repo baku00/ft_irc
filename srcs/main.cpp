@@ -8,8 +8,8 @@ int main(int argc, char **argv) {
 		return (1);
 	}
 
-	Server server(std::atoi(argv[1]), argv[2]);
-	server.start();
+	Server *server = ServerInstance::createInstance(std::atoi(argv[1]), argv[2]);
+	server->start();
 
 	return 0;
 }
