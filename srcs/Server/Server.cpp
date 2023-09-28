@@ -149,8 +149,7 @@ void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 		// 	// Ici, vous devrez gérer la lecture des données du client
 		// 	this->parseInput(client.fd, buffer);
 		// }
-		//this->parseInput(client.fd, buffer);
-		std::cout << "Message from " << client.fd << " in buffer " << buffer << std::endl;
+		this->parseInput(client.fd, buffer);
 	}
 }
 
@@ -188,7 +187,6 @@ void	Server::parseInput(int fd, std::string input)
 		std::cout << "\t" << i << "." << parameters[i] << std::endl;
 	}
 	std::cout << std::endl;
-	// std::cout << "Is Authenticated: " << this->_clients[fd].isAuthenticated() << std::endl;
 }
 
 void	Server::stop(std::string message, int exitCode)

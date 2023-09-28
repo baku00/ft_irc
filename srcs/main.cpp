@@ -1,12 +1,4 @@
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
-#include <vector>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <poll.h>
+#include <main.hpp>
 #include "Server/Server.hpp"
 
 int main(int argc, char **argv) {
