@@ -1,6 +1,7 @@
 #include "Parser.hpp"
 
 Parser::Parser() {
+	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
 }
 
 Parser::~Parser() {
@@ -44,4 +45,12 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 		input = input.substr(space_pos + 1, input.length() - space_pos - 1);
 	}
 	return args;
+}
+
+void						Parser::execute(Client client, std::string command, std::vector<std::string> args) {
+	std::map<std::string, ACommand *>::iterator it = this->_commands.find(command);
+	if (it != this->_commands.end())
+		it->second->execute(client, args);
+	else
+		std::cout << "Command not found" << std::endl;
 }

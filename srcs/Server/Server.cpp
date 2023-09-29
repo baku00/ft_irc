@@ -118,7 +118,7 @@ void	Server::acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen
 		newClient.fd = _clientSocket;
 		newClient.events = POLLIN;
 		_pollfds.push_back(newClient);
-		_clients.insert(std::pair<int, Client>(newClient.fd, Client()));
+		_clients.insert(std::pair<int, Client>(newClient.fd, Client(newClient.fd)));
 		std::cout << "Nouveau client ajouté" << std::endl;
 		Client::sendMessage(_clientSocket, ":server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>\r\n");
 	}
@@ -146,29 +146,25 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 
 void	Server::parseInput(int fd, std::string input)
 {
-	(void) fd;
-	std::string command = this->_parser->getCommand(input);
-	std::vector<std::string> parameters = this->_parser->getParameters(input);
+	Client &client = this->_clients[fd];
 
-	std::cout << "Authenticated " << this->_clients[fd].isAuthenticated() << std::endl;
-	if (!Auth::isAuthorized(this->_clients[fd], command))
-	{
-		std::cout << "Error" << std::endl;
+	client.setCommand(this->_parser->getCommand(input));
+	client.setArgs(this->_parser->getParameters(input));
+
+	if (!Auth::isAuthorized(client, client.getCommand()))
 		Client::sendMessage(fd, "You must be logged in to use this server\r\n");
-	}
-	if (parameters.size() >= 2 && Auth::authenticate(&this->_clients[fd], parameters[1]))
-	{
-		Client::sendMessage(_clientSocket, "Success\r\n");
-	}
-	else{
-		Client::sendMessage(_clientSocket, "Failed\r\n");
-	}
-	// this->_parser->execute(command, parameters);
+	else
+		this->_parser->execute(client, client.getCommand(), client.getArgs());
 }
 
 std::string Server::getPassword()
 {
 	return this->_password;
+}
+
+Client	*Server::getClient(int fd)
+{
+	return &this->_clients[fd];
 }
 
 void	Server::stop(std::string message, int exitCode)

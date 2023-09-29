@@ -8,7 +8,7 @@ AUTH = srcs/Auth/Auth.cpp
 A_COMMAND = srcs/Commands/ACommand.cpp
 PASS = srcs/Commands/Pass/Pass.cpp
 
-FILES = srcs/main.cpp $(SERVER) $(CLIENT) $(PARSER) $(AUTH)	$(A_COMMAND) $(INSTANCE)# $(PASS)
+FILES = srcs/main.cpp $(SERVER) $(CLIENT) $(PARSER) $(AUTH)	$(A_COMMAND) $(INSTANCE) $(PASS)
 
 OBJS = $(FILES:.cpp=.o)
 

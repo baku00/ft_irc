@@ -44,8 +44,8 @@ class Server
 		Server(int port, std::string password);
 		~Server();
 		Server(const Server &copy);
-		Server &operator=(const Server &copy);
-
+		Server		&operator=(const Server &copy);
+		Client		*getClient(int fd);
 		std::string	getPassword();
 
 		void	start();
