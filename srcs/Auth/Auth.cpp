@@ -8,7 +8,7 @@ bool	Auth::isAuthorized(Client client, std::string command) {
 	return false;
 }
 
-bool	Auth::authenticate(Client client, std::string password) {
-	client.login(password == ServerInstance::getInstance()->getPassword());
-	return client.isAuthenticated();
+bool	Auth::authenticate(Client *client, std::string password) {
+	client->login(password == ServerInstance::getInstance()->getPassword());
+	return client->isAuthenticated();
 }

@@ -150,9 +150,13 @@ void	Server::parseInput(int fd, std::string input)
 	std::string command = this->_parser->getCommand(input);
 	std::vector<std::string> parameters = this->_parser->getParameters(input);
 
+	std::cout << "Authenticated " << this->_clients[fd].isAuthenticated() << std::endl;
 	if (!Auth::isAuthorized(this->_clients[fd], command))
-			Client::sendMessage(fd, "You must be logged in to use this server\r\n");
-	if (Auth::authenticate(this->_clients[fd], parameters[1]))
+	{
+		std::cout << "Error" << std::endl;
+		Client::sendMessage(fd, "You must be logged in to use this server\r\n");
+	}
+	if (parameters.size() >= 2 && Auth::authenticate(&this->_clients[fd], parameters[1]))
 	{
 		Client::sendMessage(_clientSocket, "Success\r\n");
 	}

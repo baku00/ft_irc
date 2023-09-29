@@ -9,7 +9,7 @@ class Client;
 class Auth {
 	public:
 		static bool	isAuthorized(Client client, std::string command);
-		static bool authenticate(Client client, std::string password);
+		static bool authenticate(Client *client, std::string password);
 };
 
 #endif

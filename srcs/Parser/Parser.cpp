@@ -1,5 +1,11 @@
 #include "Parser.hpp"
 
+Parser::Parser() {
+}
+
+Parser::~Parser() {
+}
+
 std::string					Parser::trim(std::string input)
 {
 	size_t first = input.find_first_not_of(" \t\n\r");
