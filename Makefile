@@ -7,8 +7,10 @@ PARSER = srcs/Parser/Parser.cpp
 AUTH = srcs/Auth/Auth.cpp
 A_COMMAND = srcs/Commands/ACommand.cpp
 PASS = srcs/Commands/Pass/Pass.cpp
+MSG = srcs/Commands/Msg/Msg.cpp
+NICK = srcs/Commands/Nick/Nick.cpp
 
-FILES = srcs/main.cpp $(SERVER) $(CLIENT) $(PARSER) $(AUTH)	$(A_COMMAND) $(INSTANCE) $(PASS)
+FILES = srcs/main.cpp $(SERVER) $(CLIENT) $(PARSER) $(AUTH)	$(A_COMMAND) $(INSTANCE) $(PASS) $(MSG) $(NICK)
 
 OBJS = $(FILES:.cpp=.o)
 

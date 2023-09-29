@@ -2,6 +2,8 @@
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("MSG", new Msg()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("NICK", new Nick()));
 }
 
 Parser::~Parser() {

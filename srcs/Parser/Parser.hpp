@@ -2,12 +2,16 @@
 # define PARSER_HPP
 
 # include <main.hpp>
-# include "../Commands/Pass/Pass.hpp"
 # include "../Commands/ACommand.hpp"
+# include "../Commands/Pass/Pass.hpp"
+# include "../Commands/Msg/Msg.hpp"
+# include "../Commands/Nick/Nick.hpp"
 # include "../Client/Client.hpp"
 
 class ACommand;
 class Pass;
+class Msg;
+class Nick;
 class Client;
 
 class Parser {

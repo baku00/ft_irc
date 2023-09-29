@@ -167,6 +167,16 @@ Client	*Server::getClient(int fd)
 	return &this->_clients[fd];
 }
 
+Client	*Server::getClientByUsername(std::string username)
+{
+	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		if (it->second.getUsername() == username)
+			return &it->second;
+	}
+	return NULL;
+}
+
 void	Server::stop(std::string message, int exitCode)
 {
 	close(this->_serverSocket);
