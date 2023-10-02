@@ -7,7 +7,7 @@
 
 class Nick : public ACommand {
 	private:
-		std::string		getUsername(std::vector<std::string> args) const;
+		std::string		getNickname(std::vector<std::string> args) const;
 
 	public:
 		Nick();

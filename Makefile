@@ -9,8 +9,14 @@ A_COMMAND = srcs/Commands/ACommand.cpp
 PASS = srcs/Commands/Pass/Pass.cpp
 MSG = srcs/Commands/Msg/Msg.cpp
 NICK = srcs/Commands/Nick/Nick.cpp
+USER = srcs/Commands/User/User.cpp
+ME = srcs/Commands/Me/Me.cpp
 
-FILES = srcs/main.cpp $(SERVER) $(CLIENT) $(PARSER) $(AUTH)	$(A_COMMAND) $(INSTANCE) $(PASS) $(MSG) $(NICK)
+FILES = srcs/main.cpp \
+		$(SERVER) $(CLIENT) $(PARSER) \
+		$(AUTH)	$(A_COMMAND) $(INSTANCE) \
+		$(PASS) $(MSG) $(NICK) \
+		$(USER) $(ME)
 
 OBJS = $(FILES:.cpp=.o)
 

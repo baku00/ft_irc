@@ -20,3 +20,11 @@ bool	ACommand::isValidArgsNumber(int args) const
 		return true;
 	return false;
 }
+
+std::string	ACommand::getCommandName() const {
+	return this->_commandName;
+}
+
+void	ACommand::errorNumberArguments(Client client) const {
+	Client::sendMessage(client.getFd(), "461 " + this->_commandName + " :Invalid number of parameters");
+}

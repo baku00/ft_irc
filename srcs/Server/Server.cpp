@@ -118,7 +118,7 @@ void	Server::acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen
 		newClient.fd = _clientSocket;
 		newClient.events = POLLIN;
 		_pollfds.push_back(newClient);
-		_clients.insert(std::pair<int, Client>(newClient.fd, Client(newClient.fd)));
+		_clients.insert(std::pair<int, Client>(newClient.fd, Client(newClient.fd, true)));
 		std::cout << "Nouveau client ajouté" << std::endl;
 		Client::sendMessage(_clientSocket, ":server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>\r\n");
 	}
@@ -141,6 +141,7 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 {
 	close(it->fd);
 	_pollfds.erase(it);
+	_clients.erase(it->fd);
 	std::cout << "Client déconnecté" << std::endl;
 }
 
@@ -152,7 +153,7 @@ void	Server::parseInput(int fd, std::string input)
 	client.setArgs(this->_parser->getParameters(input));
 
 	if (!Auth::isAuthorized(client, client.getCommand()))
-		Client::sendMessage(fd, "You must be logged in to use this server\r\n");
+		Client::sendMessage(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
 	else
 		this->_parser->execute(client, client.getCommand(), client.getArgs());
 }
@@ -167,11 +168,11 @@ Client	*Server::getClient(int fd)
 	return &this->_clients[fd];
 }
 
-Client	*Server::getClientByUsername(std::string username)
+Client	*Server::getClientByNickname(std::string nickname)
 {
 	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
 	{
-		if (it->second.getUsername() == username)
+		if (it->second.getNickname() == nickname)
 			return &it->second;
 	}
 	return NULL;

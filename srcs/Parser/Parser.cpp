@@ -1,13 +1,19 @@
 #include "Parser.hpp"
+#include "../Commands/Pass/Pass.hpp"
+#include "../Commands/Msg/Msg.hpp"
+#include "../Commands/Nick/Nick.hpp"
+#include "../Commands/User/User.hpp"
+#include "../Commands/Me/Me.hpp"
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("MSG", new Msg()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("NICK", new Nick()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("USER", new User()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("ME", new Me()));
 }
 
-Parser::~Parser() {
-}
+Parser::~Parser() {}
 
 std::string					Parser::trim(std::string input)
 {
@@ -23,7 +29,7 @@ std::string					Parser::trim(std::string input)
 std::string					Parser::getCommand(std::string input) {
 	size_t space_pos = input.find(" ");
 	if (space_pos == std::string::npos)
-		return input;
+		return Parser::trim(input);
 	return Parser::trim(input.substr(0, space_pos));
 }
 
@@ -54,5 +60,8 @@ void						Parser::execute(Client client, std::string command, std::vector<std::s
 	if (it != this->_commands.end())
 		it->second->execute(client, args);
 	else
-		std::cout << "Command not found" << std::endl;
+	{
+		std::cerr << "Command not found" << std::endl;
+		Client::sendMessage(client.getFd(), "421 '" + command + "' :Unknown command");
+	}
 }

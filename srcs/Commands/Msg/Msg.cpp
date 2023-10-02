@@ -3,6 +3,7 @@
 Msg::Msg() {
 	this->_minArgsRequired = 2;
 	this->_maxArgsRequired = -1;
+	this->_commandName = "MSG";
 }
 
 Msg::~Msg() {}
@@ -23,18 +24,21 @@ std::string	Msg::getMessage(std::vector<std::string> args) const {
 }
 
 void	Msg::sendMessage(Client client, std::string username, std::string message) const {
-	Client* user = ServerInstance::getInstance()->getClientByUsername(username);
+	Client* user = ServerInstance::getInstance()->getClientByNickname(username);
 	if (user == NULL)
-		return Client::sendMessage(client.getFd(), "462 MSG :User not found");
-	Client::sendMessage(user->getFd(), "MSG " + client.getUsername() + " " + message);
+		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :User not found");
+	Client::sendMessage(user->getFd(), this->_commandName + " " + client.getUsername() + " " + message);
 }
 
 void	Msg::execute(Client client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
-		return Client::sendMessage(client.getFd(), "461 MSG :Not enough parameters");
+		return this->errorNumberArguments(client);
+
 	std::string username = this->getUsername(args);
 	std::string message = this->getMessage(args);
+
 	if (username == client.getUsername())
-		return Client::sendMessage(client.getFd(), "462 MSG :You can't send a message to yourself");
+		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :You can't send a message to yourself");
+
 	this->sendMessage(client, username, message);
 }
