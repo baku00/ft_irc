@@ -4,6 +4,7 @@
 # include <main.hpp>
 # include "../ACommand.hpp"
 # include "../../Client/Client.hpp"
+# include "../Nick/Nick.hpp"
 
 class Msg : public ACommand {
 	private:

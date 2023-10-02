@@ -178,6 +178,26 @@ Client	*Server::getClientByNickname(std::string nickname)
 	return NULL;
 }
 
+Client	*Server::getClientByServername(std::string servername)
+{
+	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		if (it->second.getServername() == servername)
+			return &it->second;
+	}
+	return NULL;
+}
+
+Client	*Server::getClientByHostname(std::string hostname)
+{
+	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		if (it->second.getHostname() == hostname)
+			return &it->second;
+	}
+	return NULL;
+}
+
 void	Server::stop(std::string message, int exitCode)
 {
 	close(this->_serverSocket);

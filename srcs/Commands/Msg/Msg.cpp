@@ -9,7 +9,10 @@ Msg::Msg() {
 Msg::~Msg() {}
 
 std::string	Msg::getUsername(std::vector<std::string> args) const {
-	return args[1];
+	std::string username = args[1];
+	if (Nick::isValidNickname(username))
+		return username;
+	return username;
 }
 
 std::string	Msg::getMessage(std::vector<std::string> args) const {
@@ -27,7 +30,7 @@ void	Msg::sendMessage(Client client, std::string username, std::string message) 
 	Client* user = ServerInstance::getInstance()->getClientByNickname(username);
 	if (user == NULL)
 		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :User not found");
-	Client::sendMessage(user->getFd(), this->_commandName + " " + client.getUsername() + " " + message);
+	Client::sendMessage(user->getFd(), this->_commandName + " " + client.getNickname() + " " + message);
 }
 
 void	Msg::execute(Client client, std::vector<std::string> args) const {

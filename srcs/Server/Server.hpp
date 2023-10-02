@@ -45,9 +45,13 @@ class Server
 		~Server();
 		Server(const Server &copy);
 		Server		&operator=(const Server &copy);
+
+		std::string	getPassword();
+
 		Client		*getClient(int fd);
 		Client		*getClientByNickname(std::string nickname);
-		std::string	getPassword();
+		Client		*getClientByServername(std::string servername);
+		Client		*getClientByHostname(std::string hostname);
 
 		void	start();
 };

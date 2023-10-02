@@ -20,8 +20,9 @@ class Client {
 	private:
 		std::string					_nickname;
 		std::string					_username;
-		std::string					_firstname;
-		std::string					_lastname;
+		std::string					_hostname;
+		std::string					_serverName;
+		std::string					_realName;
 		std::string					_command;
 		std::vector<std::string>	_args;
 		bool						_isAuthenticated;
@@ -43,8 +44,9 @@ class Client {
 
 		std::string					getNickname();
 		std::string					getUsername();
-		std::string					getFirstname();
-		std::string					getLastname();
+		std::string					getHostname();
+		std::string					getServername();
+		std::string					getRealname();
 		std::string					getCommand();
 		std::vector<std::string>	getArgs();
 		int							getFd();
@@ -54,11 +56,14 @@ class Client {
 		void						setArgs(std::vector<std::string> args);
 		void						setNickname(std::string nickname);
 		void						setUsername(std::string username);
-		void						setUserInfo(std::string username, std::string firstname, std::string lastname);
-		void						setFirstname(std::string firstname);
-		void						setLastname(std::string lastname);
+		void						setUserInfo(std::string username, std::string hostname, std::string servername, std::string realname);
+		void						setHostname(std::string hostname);
+		void						setServername(std::string servername);
+		void						setRealname(std::string realname);
 		bool						isAuthenticated();
 		bool						isValidate();
+
+		
 
 		static void					sendMessage(int socket, std::string message);
 };

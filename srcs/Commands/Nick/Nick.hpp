@@ -13,6 +13,8 @@ class Nick : public ACommand {
 		Nick();
 		virtual ~Nick();
 		virtual void		execute(Client client, std::vector<std::string> args) const;
+
+		static bool			isValidNickname(std::string nickname);
 };
 
 #endif

@@ -1,4 +1,4 @@
-NAME = irc
+NAME = ircserv
 
 SERVER = srcs/Server/Server.cpp
 INSTANCE = srcs/Server/Instance/ServerInstance.cpp

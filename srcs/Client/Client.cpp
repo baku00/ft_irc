@@ -28,10 +28,11 @@ void	Client::setNickname(std::string nickname) {
 	this->validate();
 }
 
-void	Client::setUserInfo(std::string username, std::string firstname, std::string lastname) {
+void	Client::setUserInfo(std::string username, std::string hostname, std::string servername, std::string realname) {
 	this->setUsername(username);
-	this->setFirstname(firstname);
-	this->setLastname(lastname);
+	this->setHostname(hostname);
+	this->setServername(servername);
+	this->setRealname(realname);
 
 	this->validate();
 }
@@ -43,12 +44,16 @@ void	Client::setUsername(std::string username) {
 		this->setNickname(username);
 }
 
-void	Client::setFirstname(std::string firstname) {
-	this->_firstname = firstname;
+void	Client::setHostname(std::string hostname) {
+	this->_hostname = hostname;
 }
 
-void	Client::setLastname(std::string lastname) {
-	this->_lastname = lastname;
+void	Client::setServername(std::string serverName) {
+	this->_serverName = serverName;
+}
+
+void	Client::setRealname(std::string realName) {
+	this->_realName = realName;
 }
 
 void	Client::login(bool is_logged_in) {
@@ -80,12 +85,16 @@ std::string	Client::getUsername() {
 	return this->_username;
 }
 
-std::string	Client::getFirstname() {
-	return this->_firstname;
+std::string	Client::getHostname() {
+	return this->_hostname;
 }
 
-std::string	Client::getLastname() {
-	return this->_lastname;
+std::string	Client::getServername() {
+	return this->_serverName;
+}
+
+std::string	Client::getRealname() {
+	return this->_realName;
 }
 
 std::string	Client::getInfo() {
@@ -93,8 +102,9 @@ std::string	Client::getInfo() {
 
 	info += "Nickname: " + this->getNickname() + "\r\n";
 	info += "Username: " + this->getUsername() + "\r\n";
-	info += "Firstname: " + this->getFirstname() + "\r\n";
-	info += "Lastname: " + this->getLastname() + "\r\n";
+	info += "Hostname: " + this->getHostname() + "\r\n";
+	info += "Servername: " + this->getServername() + "\r\n";
+	info += "Realname: " + this->getRealname() + "\r\n";
 
 	if (this->isAuthenticated())
 		info += "Is authenticated: Oui\r\n";
@@ -156,11 +166,13 @@ void	Client::sendMessage(int socket, std::string message)
 
 Client &Client::operator=(const Client &copy) {
 	if (this != &copy) {
-		this->_nickname = copy._nickname;
-		this->_username = copy._username;
-		this->_isAuthenticated = copy._isAuthenticated;
-		this->_fd = copy._fd;
-		this->_isValidate = copy._isValidate;
+		this->_nickname			= copy._nickname;
+		this->_username			= copy._username;
+		this->_hostname			= copy._hostname;
+		this->_serverName		= copy._serverName;
+		this->_isAuthenticated	= copy._isAuthenticated;
+		this->_fd				= copy._fd;
+		this->_isValidate		= copy._isValidate;
 	}
 	return *this;
 }
