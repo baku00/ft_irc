@@ -137,6 +137,18 @@ void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 	}
 }
 
+void	Server::disconnectClientFromFD(int fd)
+{
+	std::vector<pollfd>::iterator it = this->_pollfds.begin();
+	for (; it != this->_pollfds.end(); it++)
+	{
+		if (it->fd == fd)
+			break;
+	}
+	if (it != this->_pollfds.end())
+		this->disconnectClient(it);
+}
+
 void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 {
 	close(it->fd);
@@ -149,13 +161,13 @@ void	Server::parseInput(int fd, std::string input)
 {
 	Client &client = this->_clients[fd];
 
-	client.setCommand(this->_parser->getCommand(input));
-	client.setArgs(this->_parser->getParameters(input));
+	std::string command				= this->_parser->getCommand(input);
+	std::vector<std::string> args	= this->_parser->getParameters(input);
 
-	if (!Auth::isAuthorized(client, client.getCommand()))
+	if (!Auth::isAuthorized(client, command))
 		Client::sendMessage(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
 	else
-		this->_parser->execute(client, client.getCommand(), client.getArgs());
+		this->_parser->execute(client, command, args);
 }
 
 std::string Server::getPassword()
@@ -206,7 +218,7 @@ void	Server::stop(std::string message, int exitCode)
 	if (exitCode)
 	{
 		std::cerr << message << std::endl;
-		exit(EXIT_FAILURE);
+		exit(exitCode);
 	}
 }
 
@@ -217,10 +229,7 @@ Server::~Server()
 
 Server	&Server::operator=(const Server &copy)
 {
+	(void) copy;
 	std::cout << "Server assignation operator called" << std::endl;
-	if (this != &copy)
-	{
-		// Do stuff
-	}
 	return (*this);
 }

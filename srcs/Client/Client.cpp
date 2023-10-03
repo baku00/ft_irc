@@ -20,9 +20,6 @@ Client::Client(const Client &copy) {
 }
 
 void	Client::setNickname(std::string nickname) {
-	if (!this->isValidNickname(nickname))
-		return Client::sendMessage(this->getFd(), "432 " + this->getCommand() + " :Invalid nickname");
-
 	this->_nickname = nickname;
 
 	this->validate();
@@ -53,28 +50,13 @@ void	Client::setServername(std::string serverName) {
 }
 
 void	Client::setRealname(std::string realName) {
+	std::cout << "Real name: " << realName << std::endl;
 	this->_realName = realName;
 }
 
 void	Client::login(bool is_logged_in) {
 	if (!this->isAuthenticated())
 		this->_isAuthenticated = is_logged_in;
-}
-
-void	Client::setCommand(std::string command) {
-	this->_command = command;
-}
-
-void	Client::setArgs(std::vector<std::string> args) {
-	this->_args = args;
-}
-
-std::string	Client::getCommand() {
-	return this->_command;
-}
-
-std::vector<std::string>	Client::getArgs() {
-	return this->_args;
 }
 
 std::string	Client::getNickname() {
@@ -94,6 +76,7 @@ std::string	Client::getServername() {
 }
 
 std::string	Client::getRealname() {
+	std::cout << "_realName: " << this->_realName << std::endl;
 	return this->_realName;
 }
 
@@ -103,8 +86,8 @@ std::string	Client::getInfo() {
 	info += "Nickname: " + this->getNickname() + "\r\n";
 	info += "Username: " + this->getUsername() + "\r\n";
 	info += "Hostname: " + this->getHostname() + "\r\n";
-	info += "Servername: " + this->getServername() + "\r\n";
 	info += "Realname: " + this->getRealname() + "\r\n";
+	info += "Servername: " + this->getServername() + "\r\n";
 
 	if (this->isAuthenticated())
 		info += "Is authenticated: Oui\r\n";
@@ -129,18 +112,6 @@ bool	Client::isAuthenticated() {
 
 bool	Client::isValidate() {
 	return this->_isValidate;
-}
-
-bool	Client::isValidNickname(std::string nickname) {
-	if (!nickname.length())
-		return false;
-	if (nickname[0] == '#')
-		return false;
-	if (nickname.find(" ") != std::string::npos)
-		return false;
-	if (nickname.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos)
-		return false;
-	return true;
 }
 
 void	Client::validate() {

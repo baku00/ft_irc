@@ -38,7 +38,6 @@ class Server
 		void		parseInput(int fd, std::string input);
 		void		readClientInput(std::vector<pollfd>::iterator it, pollfd client);
 		void		disconnectClient(std::vector<pollfd>::iterator it);
-		void		stop(std::string message, int exitCode);
 
 	public:
 		Server(int port, std::string password);
@@ -53,7 +52,10 @@ class Server
 		Client		*getClientByServername(std::string servername);
 		Client		*getClientByHostname(std::string hostname);
 
+		void		disconnectClientFromFD(int fd);
+
 		void	start();
+		void		stop(std::string message, int exitCode);
 };
 
 #endif

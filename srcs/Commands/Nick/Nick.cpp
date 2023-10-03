@@ -24,7 +24,7 @@ void	Nick::execute(Client client, std::vector<std::string> args) const {
 	ServerInstance::getInstance()->getClient(client.getFd())->setNickname(nickname);
 }
 
-bool	Client::isValidNickname(std::string nickname) {
+bool	Nick::isValidNickname(std::string nickname) {
 	if (!nickname.length())
 		return false;
 	if (nickname.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos)

@@ -4,6 +4,7 @@
 #include "../Commands/Nick/Nick.hpp"
 #include "../Commands/User/User.hpp"
 #include "../Commands/Me/Me.hpp"
+#include "../Commands/Quit/Quit.hpp"
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
@@ -11,6 +12,7 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("NICK", new Nick()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("USER", new User()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("ME", new Me()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("QUIT", new Quit()));
 }
 
 Parser::~Parser() {}
@@ -68,6 +70,7 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 
 void						Parser::execute(Client client, std::string command, std::vector<std::string> args) {
 	std::map<std::string, ACommand *>::iterator it = this->_commands.find(command);
+
 	if (it != this->_commands.end())
 		it->second->execute(client, args);
 	else

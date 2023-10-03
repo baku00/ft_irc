@@ -23,14 +23,11 @@ class Client {
 		std::string					_hostname;
 		std::string					_serverName;
 		std::string					_realName;
-		std::string					_command;
-		std::vector<std::string>	_args;
 		bool						_isAuthenticated;
 		bool						_isValidate;
 		int							_fd;
 
 		void						validate();
-		bool						isValidNickname(std::string nickname);
 
 	public:
 		Client(int fd, bool by_fd);
@@ -47,13 +44,9 @@ class Client {
 		std::string					getHostname();
 		std::string					getServername();
 		std::string					getRealname();
-		std::string					getCommand();
-		std::vector<std::string>	getArgs();
 		int							getFd();
 		std::string					getInfo();
 
-		void						setCommand(std::string command);
-		void						setArgs(std::vector<std::string> args);
 		void						setNickname(std::string nickname);
 		void						setUsername(std::string username);
 		void						setUserInfo(std::string username, std::string hostname, std::string servername, std::string realname);

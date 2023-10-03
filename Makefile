@@ -11,12 +11,13 @@ MSG = srcs/Commands/Msg/Msg.cpp
 NICK = srcs/Commands/Nick/Nick.cpp
 USER = srcs/Commands/User/User.cpp
 ME = srcs/Commands/Me/Me.cpp
+QUIT = srcs/Commands/Quit/Quit.cpp
 
 FILES = srcs/main.cpp \
 		$(SERVER) $(CLIENT) $(PARSER) \
 		$(AUTH)	$(A_COMMAND) $(INSTANCE) \
 		$(PASS) $(MSG) $(NICK) \
-		$(USER) $(ME)
+		$(USER) $(ME) $(QUIT)
 
 OBJS = $(FILES:.cpp=.o)
 
