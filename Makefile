@@ -12,12 +12,18 @@ NICK = srcs/Commands/Nick/Nick.cpp
 USER = srcs/Commands/User/User.cpp
 ME = srcs/Commands/Me/Me.cpp
 QUIT = srcs/Commands/Quit/Quit.cpp
+CHANNEL = srcs/Channel/Channel.cpp
+MODE = srcs/Channel/Mode/Mode.cpp
+INVITE = srcs/Channel/Mode/Invite/Invite.cpp
+MESSAGE = srcs/Utils/Message/Message.cpp
 
 FILES = srcs/main.cpp \
 		$(SERVER) $(CLIENT) $(PARSER) \
 		$(AUTH)	$(A_COMMAND) $(INSTANCE) \
 		$(PASS) $(MSG) $(NICK) \
-		$(USER) $(ME) $(QUIT)
+		$(USER) $(ME) $(QUIT) \
+		$(CHANNEL) $(MODE) $(INVITE) \
+		$(MESSAGE)
 
 OBJS = $(FILES:.cpp=.o)
 

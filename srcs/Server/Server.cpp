@@ -222,6 +222,19 @@ void	Server::stop(std::string message, int exitCode)
 	}
 }
 
+Channel	*Server::getChannel(std::string name)
+{
+	std::map<std::string, Channel>::iterator it = this->_channels.find(name);
+	if (it != this->_channels.end())
+		return &it->second;
+	return NULL;
+}
+
+void	Server::addChannel(Channel channel)
+{
+	this->_channels.insert(std::pair<std::string, Channel>(channel.getName(), channel));
+}
+
 Server::~Server()
 {
 	std::cout << "Server destructor called" << std::endl;
