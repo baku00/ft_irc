@@ -1,18 +1,22 @@
 #include "Parser.hpp"
 #include "../Commands/Pass/Pass.hpp"
-#include "../Commands/Msg/Msg.hpp"
+#include "../Commands/PrivMsg/PrivMsg.hpp"
 #include "../Commands/Nick/Nick.hpp"
 #include "../Commands/User/User.hpp"
 #include "../Commands/Me/Me.hpp"
 #include "../Commands/Quit/Quit.hpp"
+#include "../Commands/Join/Join.hpp"
+#include "../Commands/Ping/Ping.hpp"
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
-	this->_commands.insert(std::pair<std::string, ACommand *>("MSG", new Msg()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("PRIVMSG", new PrivMsg()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("NICK", new Nick()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("USER", new User()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("ME", new Me()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("QUIT", new Quit()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("JOIN", new Join()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("PING", new Ping()));
 }
 
 Parser::~Parser() {}

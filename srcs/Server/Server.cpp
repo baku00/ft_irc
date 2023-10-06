@@ -129,7 +129,8 @@ void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 	char buffer[1024] = {0};
 	ssize_t bytesRead = read(client.fd, buffer, sizeof(buffer));
 	buffer[bytesRead] = '\0';
-
+	std::cout << "Buffer:" << std::endl;
+	std::cout << buffer << std::endl;
 	if (bytesRead <= 0) {
 		this->disconnectClient(it);
 	} else {
@@ -160,14 +161,20 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 void	Server::parseInput(int fd, std::string input)
 {
 	Client &client = this->_clients[fd];
+	size_t new_line;
+	while ((new_line = input.find("\r\n")) != std::string::npos)
+	{
+		std::string line = input.substr(0, new_line);
+		input = input.substr(new_line + 2);
 
-	std::string command				= this->_parser->getCommand(input);
-	std::vector<std::string> args	= this->_parser->getParameters(input);
+		std::string command				= this->_parser->getCommand(line);
+		std::vector<std::string> args	= this->_parser->getParameters(line);
 
-	if (!Auth::isAuthorized(client, command))
-		Client::sendMessage(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
-	else
-		this->_parser->execute(client, command, args);
+		if (!Auth::isAuthorized(client, command))
+			Client::sendMessage(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
+		else
+			this->_parser->execute(client, command, args);
+	}
 }
 
 std::string Server::getPassword()
@@ -224,15 +231,15 @@ void	Server::stop(std::string message, int exitCode)
 
 Channel	*Server::getChannel(std::string name)
 {
-	std::map<std::string, Channel>::iterator it = this->_channels.find(name);
+	std::map<std::string, Channel *>::iterator it = this->_channels.find(name);
 	if (it != this->_channels.end())
-		return &it->second;
+		return it->second;
 	return NULL;
 }
 
-void	Server::addChannel(Channel channel)
+void	Server::addChannel(Channel *channel)
 {
-	this->_channels.insert(std::pair<std::string, Channel>(channel.getName(), channel));
+	this->_channels.insert(std::pair<std::string, Channel *>(channel->getName(), channel));
 }
 
 Server::~Server()

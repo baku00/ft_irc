@@ -8,6 +8,7 @@
 # include "../Channel/Channel.hpp"
 
 class Parser;
+class Channel;
 
 class Server
 {
@@ -20,7 +21,7 @@ class Server
 		std::map<int, Client>				_clients;
 		std::string							_server_name;
 		Parser								*_parser;
-		std::map<std::string, Channel>		_channels;
+		std::map<std::string, Channel *>	_channels;
 
 		Server();
 
@@ -56,7 +57,8 @@ class Server
 
 		void		disconnectClientFromFD(int fd);
 
-		void		addChannel(Channel channel);
+		Channel		*getChannel(std::string name);
+		void		addChannel(Channel *channel);
 
 		void		start();
 		void		stop(std::string message, int exitCode);

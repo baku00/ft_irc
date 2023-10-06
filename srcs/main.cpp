@@ -9,11 +9,20 @@ int main(int argc, char **argv) {
 		return (1);
 	}
 
-	const int PORT				= DEV_MODE ? 6668 : std::atoi(argv[1]);
+	const int PORT				= DEV_MODE ? 6667 : std::atoi(argv[1]);
 	const std::string PASSWORD	= DEV_MODE ? "password" : argv[2];
 
-	Server *server = ServerInstance::createInstance(PORT, PASSWORD);
-	server->start();
+	Server	*server;
+
+	try
+	{
+		server = ServerInstance::createInstance(PORT, PASSWORD);
+		server->start();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 
 	server->stop("", 0);
 

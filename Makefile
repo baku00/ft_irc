@@ -7,23 +7,23 @@ PARSER = srcs/Parser/Parser.cpp
 AUTH = srcs/Auth/Auth.cpp
 A_COMMAND = srcs/Commands/ACommand.cpp
 PASS = srcs/Commands/Pass/Pass.cpp
-MSG = srcs/Commands/Msg/Msg.cpp
+PRIV_MSG = srcs/Commands/PrivMsg/PrivMsg.cpp
 NICK = srcs/Commands/Nick/Nick.cpp
 USER = srcs/Commands/User/User.cpp
 ME = srcs/Commands/Me/Me.cpp
 QUIT = srcs/Commands/Quit/Quit.cpp
+JOIN = srcs/Commands/Join/Join.cpp
+PING = srcs/Commands/Ping/Ping.cpp
 CHANNEL = srcs/Channel/Channel.cpp
-MODE = srcs/Channel/Mode/Mode.cpp
-INVITE = srcs/Channel/Mode/Invite/Invite.cpp
 MESSAGE = srcs/Utils/Message/Message.cpp
 
 FILES = srcs/main.cpp \
 		$(SERVER) $(CLIENT) $(PARSER) \
 		$(AUTH)	$(A_COMMAND) $(INSTANCE) \
-		$(PASS) $(MSG) $(NICK) \
+		$(PASS) $(PRIV_MSG) $(NICK) \
 		$(USER) $(ME) $(QUIT) \
-		$(CHANNEL) $(MODE) $(INVITE) \
-		$(MESSAGE)
+		$(CHANNEL) $(JOIN) \
+		$(MESSAGE) $(PING)
 
 OBJS = $(FILES:.cpp=.o)
 
