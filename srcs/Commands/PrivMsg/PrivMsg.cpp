@@ -40,22 +40,22 @@ bool	PrivMsg::isToChannel(std::string channel_name) const
 	return (channel_name[0] == '#');
 }
 
-void	PrivMsg::execute(Client client, std::vector<std::string> args) const {
+void	PrivMsg::execute(Client sender, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
-		return this->errorNumberArguments(client);
+		return this->errorNumberArguments(sender);
 
 	std::string username = this->getUsername(args);
 	std::string message = this->getMessage(args);
 
 	std::cout << "Client:" << std::endl;
-	std::cout << &client << std::endl;
+	std::cout << &sender << std::endl;
 
-	if (username == client.getUsername())
-		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :You can't send a message to yourself");
+	if (username == sender.getUsername())
+		return Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :You can't send a message to yourself");
 
 	Client *receiver = ServerInstance::getInstance()->getClientByNickname(username);
 	if (receiver)
-		receiver->sendMessage(&client, message);
+		receiver->sendMessage(&sender, message);
 	else
-		Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :User not found");
+		Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :User not found");
 }

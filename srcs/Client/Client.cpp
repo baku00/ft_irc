@@ -141,17 +141,17 @@ void	Client::sendMessage(int socket, std::string message)
 	}
 }
 
-void	Client::sendMessage(Client *client, std::string message)
+void	Client::sendMessage(Client *sender, std::string message)
 {
 	if (message.find("\r\n") == std::string::npos)
 		message += "\r\n";
 
-	if (client == NULL)
+	if (sender == NULL)
 		return ;
 
 	Client::sendMessage(
 		this->getFd(),
-		client->getFullname() + " PRIVMSG " + this->getNickname() + " :" + message
+		sender->getFullname() + " PRIVMSG " + this->getNickname() + " :" + message
 	);
 }
 

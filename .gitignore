@@ -1,5 +1,7 @@
 .obsidian
 .vscode
-irc
+ircserv
 *.tcpdump
 *.o
+*.log
+command.txt

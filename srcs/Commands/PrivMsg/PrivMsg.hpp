@@ -16,7 +16,7 @@ class PrivMsg : public ACommand {
 	public:
 		PrivMsg();
 		virtual ~PrivMsg();
-		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual void		execute(Client sender, std::vector<std::string> args) const;
 };
 
 #endif

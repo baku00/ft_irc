@@ -50,3 +50,25 @@
 --> FAILED whois
 --> lag pong
 << QUIT :leaving
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< NICK nick2
+<< PING server
+>> PONG
+--> lag pong
+>> :nick1!user@user PRIVMSG nick2 :hello world
+<< PRIVMSG nick3 :good
+>> :nick3!user@user PRIVMSG nick2 :fdsds
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< PRIVMSG nick1 :yooo
+<< QUIT :leaving
