@@ -11,7 +11,7 @@ class PrivMsg : public ACommand {
 		std::string		getUsername(std::vector<std::string> args) const;
 		std::string		getMessage(std::vector<std::string> args) const;
 		void			sendMessage(Client client, std::string username, std::string message) const;
-		bool			isToClient(std::string username) const;
+		bool			isToChannel(std::string channel_name) const;
 
 	public:
 		PrivMsg();

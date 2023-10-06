@@ -1,0 +1,114 @@
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick1
+<< PRIVMSG nick2 :hello world
+>> :nick2!user@user PRIVMSG nick1 :hello world
+<< userhost user localhost localhost user
+<< PRIVMSG nick2 :hello world
+>> :nick2!user@user PRIVMSG nick1 :hello world
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< PING server
+>> PONG
+--> FAILED userhost
+--> lag pong
+<< PRIVMSG dsa :hello
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick1
+<< PRIVMSG dsa :hello
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 462 NICK :Nickname already taken
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< QUIT :leaving
+<< QUIT :leaving
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< NICK nick1
+<< PING server
+>> PONG
+--> lag pong
+<< PRIVMSG dsa :hello
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 462 NICK :Nickname already taken
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick1
+<< PRIVMSG dsa :hello
+>> 462 PRIVMSG :User not found
+<< PRIVMSG dsa :heloo
+>> 462 PRIVMSG :User not found
+<< PRIVMSG nick2 :hello world
+<< PRIVMSG nick2 :how are you
+>> :nick2!user@user PRIVMSG nick1 :find and you
+>> :nick3!user@user PRIVMSG nick1 :nice
+>> :nick3!user@user PRIVMSG nick1 :yoooo
+<< PRIVMSG nick3 :hello
+<< PRIVMSG dsa :my friend
+>> 462 PRIVMSG :User not found
+<< PRIVMSG nick3 :fjdslk
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< QUIT :leaving

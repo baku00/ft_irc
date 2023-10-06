@@ -1,0 +1,32 @@
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick2
+<< JOIN #test
+>> Channel #test :nick2 : New client joined the channel
+>> Channel #test :user : New client joined the channel
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+>> Channel #test :user : dsa
+<< PRIVMSG #test :gfdklgjfdjlgd
+>> Channel #test :nick2 : gfdklgjfdjlgd
+>> Channel #test :user : dsa
+>> Channel #test :user : hgfdjkhgkfddf
+<< PRIVMSG #test :jkglfdjglfdjdf
+>> Channel #test :nick2 : jkglfdjglfdjdf
+<< PING server
+>> PONG
+--> lag pong
+>> Channel #test :user : privmsg nick2 hello
+<< QUIT :leaving

@@ -3,7 +3,7 @@
 PrivMsg::PrivMsg() {
 	this->_minArgsRequired = 2;
 	this->_maxArgsRequired = -1;
-	this->_commandName = "PrivMSG";
+	this->_commandName = "PRIVMSG";
 }
 
 PrivMsg::~PrivMsg() {}
@@ -28,14 +28,16 @@ std::string	PrivMsg::getMessage(std::vector<std::string> args) const {
 
 void	PrivMsg::sendMessage(Client client, std::string username, std::string message) const {
 	Client* user = ServerInstance::getInstance()->getClientByNickname(username);
+	printf("USER: %p\n", user);
 	if (user == NULL)
 		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :User not found");
-	Client::sendMessage(user->getFd(), this->_commandName + " " + client.getNickname() + " " + message);
+	std::cout << user << std::endl;
+	user->sendMessage(&client, message);
 }
 
-bool	PrivMsg::isToClient(std::string username) const
+bool	PrivMsg::isToChannel(std::string channel_name) const
 {
-	return (username[0] != '#');
+	return (channel_name[0] == '#');
 }
 
 void	PrivMsg::execute(Client client, std::vector<std::string> args) const {
@@ -45,14 +47,15 @@ void	PrivMsg::execute(Client client, std::vector<std::string> args) const {
 	std::string username = this->getUsername(args);
 	std::string message = this->getMessage(args);
 
+	std::cout << "Client:" << std::endl;
+	std::cout << &client << std::endl;
+
 	if (username == client.getUsername())
 		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :You can't send a message to yourself");
 
-	if (this->isToClient(username))
-		this->sendMessage(client, username, message);
+	Client *receiver = ServerInstance::getInstance()->getClientByNickname(username);
+	if (receiver)
+		receiver->sendMessage(&client, message);
 	else
-	{
-		Channel *channel = ServerInstance::getInstance()->getChannel(username);
-		channel->sendMessage(Message(client.getFd(), message));
-	}
+		Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :User not found");
 }

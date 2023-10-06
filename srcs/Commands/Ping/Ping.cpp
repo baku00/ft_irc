@@ -1,5 +1,4 @@
 #include "Ping.hpp"
-#include "../../Channel/Channel.hpp"
 
 Ping::Ping() {
 	this->_minArgsRequired = 1;

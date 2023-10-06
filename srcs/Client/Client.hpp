@@ -44,6 +44,7 @@ class Client {
 		std::string					getHostname();
 		std::string					getServername();
 		std::string					getRealname();
+		std::string					getFullname();
 		int							getFd();
 		std::string					getInfo();
 
@@ -55,8 +56,7 @@ class Client {
 		void						setRealname(std::string realname);
 		bool						isAuthenticated();
 		bool						isValidate();
-
-		
+		void						sendMessage(Client *client, std::string message);
 
 		static void					sendMessage(int socket, std::string message);
 };

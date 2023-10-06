@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
 		return (1);
 	}
 
-	const int PORT				= DEV_MODE ? 6667 : std::atoi(argv[1]);
+	const int PORT				= DEV_MODE ? 6668 : std::atoi(argv[1]);
 	const std::string PASSWORD	= DEV_MODE ? "password" : argv[2];
 
 	Server	*server;

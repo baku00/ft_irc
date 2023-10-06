@@ -13,6 +13,7 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PRIVMSG", new PrivMsg()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("NICK", new Nick()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("USER", new User()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("userhost", new User()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("ME", new Me()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("QUIT", new Quit()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("JOIN", new Join()));

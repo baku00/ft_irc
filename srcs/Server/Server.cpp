@@ -170,9 +170,9 @@ void	Server::parseInput(int fd, std::string input)
 		std::string command				= this->_parser->getCommand(line);
 		std::vector<std::string> args	= this->_parser->getParameters(line);
 
-		if (!Auth::isAuthorized(client, command))
-			Client::sendMessage(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
-		else
+		// if (!Auth::isAuthorized(client, command))
+		// 	Client::sendMessage(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
+		// else
 			this->_parser->execute(client, command, args);
 	}
 }
@@ -194,6 +194,7 @@ Client	*Server::getClientByNickname(std::string nickname)
 		if (it->second.getNickname() == nickname)
 			return &it->second;
 	}
+	std::cout << "Nothing client found" << std::endl;
 	return NULL;
 }
 
@@ -229,19 +230,6 @@ void	Server::stop(std::string message, int exitCode)
 	}
 }
 
-Channel	*Server::getChannel(std::string name)
-{
-	std::map<std::string, Channel *>::iterator it = this->_channels.find(name);
-	if (it != this->_channels.end())
-		return it->second;
-	return NULL;
-}
-
-void	Server::addChannel(Channel *channel)
-{
-	this->_channels.insert(std::pair<std::string, Channel *>(channel->getName(), channel));
-}
-
 Server::~Server()
 {
 	std::cout << "Server destructor called" << std::endl;
@@ -252,4 +240,9 @@ Server	&Server::operator=(const Server &copy)
 	(void) copy;
 	std::cout << "Server assignation operator called" << std::endl;
 	return (*this);
+}
+
+const char			*Server::ChannelNotFoundException::what() const throw()
+{
+	return ("Channel not found");
 }

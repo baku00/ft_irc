@@ -1,0 +1,52 @@
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< NICK nick2
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< NICK nick2
+<< PING server
+>> PONG
+--> lag pong
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 462 NICK :Nickname already taken
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick2
+>> :nick1!user@user PRIVMSG nick2 :hello world
+>> :nick1!user@user PRIVMSG nick2 :how are you
+<< PRIVMSG nick1 :find and you
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< QUIT :leaving

@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "../Server/Instance/ServerInstance.hpp"
 
 Client::Client()
 {
@@ -102,6 +103,11 @@ std::string	Client::getInfo() {
 	return info;
 }
 
+std::string Client::getFullname()
+{
+	return ":" + this->getNickname() + "!" + this->getUsername() + "@" + this->getHostname();
+}
+
 int	Client::getFd() {
 	return this->_fd;
 }
@@ -133,6 +139,20 @@ void	Client::sendMessage(int socket, std::string message)
 	} else {
 		std::cout << "Réponse envoyé au client." << std::endl;
 	}
+}
+
+void	Client::sendMessage(Client *client, std::string message)
+{
+	if (message.find("\r\n") == std::string::npos)
+		message += "\r\n";
+
+	if (client == NULL)
+		return ;
+
+	Client::sendMessage(
+		this->getFd(),
+		client->getFullname() + " PRIVMSG " + this->getNickname() + " :" + message
+	);
 }
 
 Client &Client::operator=(const Client &copy) {
