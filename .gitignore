@@ -3,5 +3,7 @@
 ircserv
 *.tcpdump
 *.o
-*.log
+nick1.log
+nick2.log
+nick3.log
 command.txt
