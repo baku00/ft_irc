@@ -14,6 +14,7 @@ ME = srcs/Commands/Me/Me.cpp
 QUIT = srcs/Commands/Quit/Quit.cpp
 JOIN = srcs/Commands/Join/Join.cpp
 PING = srcs/Commands/Ping/Ping.cpp
+CHANNEL = srcs/Channel/Channel.cpp
 MESSAGE = srcs/Utils/Message/Message.cpp
 
 FILES = srcs/main.cpp \
@@ -21,7 +22,7 @@ FILES = srcs/main.cpp \
 		$(AUTH)	$(A_COMMAND) $(INSTANCE) \
 		$(PASS) $(PRIV_MSG) $(NICK) \
 		$(USER) $(ME) $(QUIT) \
-		$(JOIN) \
+		$(JOIN) $(CHANNEL) \
 		$(MESSAGE) $(PING)
 
 OBJS = $(FILES:.cpp=.o)

@@ -26,13 +26,26 @@ std::string	PrivMsg::getMessage(std::vector<std::string> args) const {
 	return message;
 }
 
-void	PrivMsg::sendMessage(Client client, std::string username, std::string message) const {
-	Client* user = ServerInstance::getInstance()->getClientByNickname(username);
-	printf("USER: %p\n", user);
-	if (user == NULL)
-		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :User not found");
-	std::cout << user << std::endl;
-	user->sendMessage(&client, message);
+void	PrivMsg::sendMessageClient(Client sender, std::string username, std::string message) const {
+	Client *receiver = ServerInstance::getInstance()->getClientByNickname(username);
+	if (receiver)
+		receiver->sendMessage(&sender, message);
+	else
+		Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :User not found");
+}
+
+void	PrivMsg::sendMessageChannel(Client sender, std::string name, std::string message) const {
+	(void) sender;
+	(void) name;
+	(void) message;
+	Channel *channel = ServerInstance::getInstance()->getChannel(name);
+	if (channel)
+	{
+		channel->showClients();
+		channel->sendMessage(&sender, message);
+	}
+	else
+		Client::sendMessage(sender.getFd(), "Channel not found");
 }
 
 bool	PrivMsg::isToChannel(std::string channel_name) const
@@ -52,10 +65,9 @@ void	PrivMsg::execute(Client sender, std::vector<std::string> args) const {
 
 	if (username == sender.getUsername())
 		return Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :You can't send a message to yourself");
-
-	Client *receiver = ServerInstance::getInstance()->getClientByNickname(username);
-	if (receiver)
-		receiver->sendMessage(&sender, message);
+	
+	if (this->isToChannel(username))
+		this->sendMessageChannel(sender, username, message);
 	else
-		Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :User not found");
+		this->sendMessageClient(sender, username, message);
 }

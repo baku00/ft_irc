@@ -218,6 +218,21 @@ Client	*Server::getClientByHostname(std::string hostname)
 	return NULL;
 }
 
+void	Server::addChannel(Channel *channel)
+{
+	if (!this->getChannel(channel->getName()))
+		this->_channels.insert(std::pair<std::string, Channel *>(channel->getName(), channel));
+}
+
+Channel	*Server::getChannel(std::string name)
+{
+	std::map<std::string, Channel *>::iterator it = this->_channels.find(name);
+
+	if (it == this->_channels.end())
+		return NULL;
+	return it->second;
+}
+
 void	Server::stop(std::string message, int exitCode)
 {
 	close(this->_serverSocket);
@@ -245,4 +260,9 @@ Server	&Server::operator=(const Server &copy)
 const char			*Server::ChannelNotFoundException::what() const throw()
 {
 	return ("Channel not found");
+}
+
+const char			*Server::ChannelAlreadyExist::what() const throw()
+{
+	return ("Channel already exist");
 }

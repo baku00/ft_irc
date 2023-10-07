@@ -7,14 +7,45 @@
 >> 230 PASS :Password correct
 >> 421 'MODE' :Unknown command
 >> 421 'WHOIS' :Unknown command
-<< NICK nick2
 << PING server
 >> PONG
 --> lag pong
+<< NICK nick2
+<< JOIN #test
+<< PRIVMSG #test :dsa
+<< PRIVMSG #test :good bye
 << PING server
 >> PONG
 --> FAILED whois
 --> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< QUIT :leaving
 << PASS password
 << NICK user
 << USER user user localhost :user
@@ -24,27 +55,12 @@
 >> 230 PASS :Password correct
 >> 421 'MODE' :Unknown command
 >> 421 'WHOIS' :Unknown command
-<< NICK nick2
-<< PING server
->> PONG
---> lag pong
-<< PASS password
-<< NICK user
-<< USER user user localhost :user
->> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
-<< MODE <nick> +i
-<< WHOIS user
->> 230 PASS :Password correct
->> 462 NICK :Nickname already taken
->> 421 'MODE' :Unknown command
->> 421 'WHOIS' :Unknown command
 << PING server
 >> PONG
 --> lag pong
 << NICK nick2
->> :nick1!user@user PRIVMSG nick2 :hello world
->> :nick1!user@user PRIVMSG nick2 :how are you
-<< PRIVMSG nick1 :find and you
+<< JOIN #test
+<< PRIVMSG #test :test
 << PING server
 >> PONG
 --> FAILED whois
@@ -59,16 +75,104 @@
 >> 230 PASS :Password correct
 >> 421 'MODE' :Unknown command
 >> 421 'WHOIS' :Unknown command
-<< NICK nick2
 << PING server
 >> PONG
 --> lag pong
->> :nick1!user@user PRIVMSG nick2 :hello world
-<< PRIVMSG nick3 :good
->> :nick3!user@user PRIVMSG nick2 :fdsds
+<< NICK nick2
+<< JOIN #test
+<< PRIVMSG #test :test
 << PING server
 >> PONG
 --> FAILED whois
 --> lag pong
-<< PRIVMSG nick1 :yooo
+<< QUIT :leaving
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick2
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< NICK nick2
+<< PING server
+>> PONG
+--> lag pong
+<< JOIN #test
+>> :nick1!user@user PRIVMSG #test :dsa
+<< PRIVMSG #test :dsadasfda
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+>> :nick1!user@user PRIVMSG #test :hello 2
+>> :nick3!user@user PRIVMSG #test :3
 << QUIT :leaving
