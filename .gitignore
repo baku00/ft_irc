@@ -3,3 +3,4 @@
 irc
 *.tcpdump
 *.o
+ircserv

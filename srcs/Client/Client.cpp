@@ -115,7 +115,7 @@ bool	Client::isValidate() {
 }
 
 void	Client::validate() {
-	// this->_isValidate = this->getNickname().length() && this->getUsername().length() && this->getFirstname().length() && this->getLastname().length();
+	this->_isValidate = this->getNickname().length() && this->getUsername().length() && this->getRealname().length();
 	this->_isValidate = true;
 }
 
