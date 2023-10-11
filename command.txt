@@ -1,0 +1,21 @@
+/connect -nocap localhost 6668 password
+
+/rawlog open nick1.log
+
+/nick nick1
+
+/connect -nocap localhost 6668 password
+
+/rawlog open nick2.log
+
+/nick nick2
+
+/connect -nocap localhost 6668 password
+
+/rawlog open nick3.log
+
+/nick nick3
+
+/quit
+
+irssi

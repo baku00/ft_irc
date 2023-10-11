@@ -1,0 +1,18 @@
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick2
+<< JOIN #test
+>> :nick1!user@user PRIVMSG #test :hello world
+<< PRIVMSG #test :good bye
+>> :nick3!user@user PRIVMSG #test :nice
+<< QUIT :leaving
