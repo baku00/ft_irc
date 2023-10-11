@@ -73,14 +73,13 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 	return args;
 }
 
-void						Parser::execute(Client client, std::string command, std::vector<std::string> args) {
+void	Parser::execute(Client client, std::string command, std::vector<std::string> args) {
 	std::map<std::string, ACommand *>::iterator it = this->_commands.find(command);
-
 	if (it != this->_commands.end())
 		it->second->execute(client, args);
 	else
 	{
-		std::cerr << "Command not found" << std::endl;
+		std::cerr << "Command not found: " << command << std::endl;
 		Client::sendMessage(client.getFd(), "421 '" + command + "' :Unknown command");
 	}
 }

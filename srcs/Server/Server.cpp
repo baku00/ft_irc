@@ -130,7 +130,7 @@ void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 	ssize_t bytesRead = read(client.fd, buffer, sizeof(buffer));
 	buffer[bytesRead] = '\0';
 	std::cout << "Buffer:" << std::endl;
-	std::cout << buffer << std::endl;
+	std::cout << "(" << buffer << ")" << std::endl;
 	if (bytesRead <= 0) {
 		this->disconnectClient(it);
 	} else {
@@ -161,6 +161,11 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 void	Server::parseInput(int fd, std::string input)
 {
 	Client &client = this->_clients[fd];
+
+	// TODO: buffer
+	// if input doesnt end with \r\n: 
+	// 		put command into client buffer
+
 	size_t new_line;
 	while ((new_line = input.find("\r\n")) != std::string::npos)
 	{
