@@ -159,6 +159,7 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 		channel->second->removeClient(it->fd);
 
 	_pollfds.erase(it);
+	_clients.find(it->fd)->second.disconnect();
 	_clients.erase(it->fd);
 	std::cout << "Client déconnecté" << std::endl;
 }
@@ -232,6 +233,16 @@ void	Server::addChannel(Channel *channel)
 {
 	if (!this->getChannel(channel->getName()))
 		this->_channels.insert(std::pair<std::string, Channel *>(channel->getName(), channel));
+}
+
+void	Server::removeChannel(std::string name)
+{
+	Channel *channel = this->getChannel(name);
+	if (channel)
+	{
+		delete channel;
+		this->_channels.erase(name);
+	}
 }
 
 Channel	*Server::getChannel(std::string name)

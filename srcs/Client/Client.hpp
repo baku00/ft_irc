@@ -23,6 +23,7 @@ class Client {
 		std::string					_hostname;
 		std::string					_serverName;
 		std::string					_realName;
+		std::vector<std::string>	_channels_name;
 		bool						_isAuthenticated;
 		bool						_isValidate;
 		int							_fd;
@@ -47,6 +48,7 @@ class Client {
 		std::string					getFullname();
 		int							getFd();
 		std::string					getInfo();
+		std::vector<std::string>	getChannels();
 
 		void						setNickname(std::string nickname);
 		void						setUsername(std::string username);
@@ -57,6 +59,8 @@ class Client {
 		bool						isAuthenticated();
 		bool						isValidate();
 		void						sendMessage(Client *sender, std::string message);
+		void						addChannel(std::string channel);
+		void						disconnect();
 
 		static void					sendMessage(int socket, std::string message);
 };

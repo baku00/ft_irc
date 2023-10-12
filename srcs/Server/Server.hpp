@@ -54,6 +54,7 @@ class Server
 		void								addChannel(Channel *channel);
 		Channel								*getChannel(std::string name);
 		std::map<std::string, Channel *>	getChannels();
+		void		                        removeChannel(std::string name);
 
 		void								disconnectClientFromFD(int fd);
 

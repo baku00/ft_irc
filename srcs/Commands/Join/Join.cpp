@@ -3,7 +3,7 @@
 Join::Join() {
 	this->_minArgsRequired = 1;
 	this->_maxArgsRequired = 1;
-	this->_commandName = "USER";
+	this->_commandName = "JOIN";
 }
 
 Join::~Join() {}

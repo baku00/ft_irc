@@ -54,11 +54,14 @@ class Channel {
 		void						setName(std::string name);
 
 		void						addClient(int fd);
+		// void						removeClient(int fd);
 		std::vector<int>			getClients();
 		bool						hasClient(int fd);
 		void						showClients();
 		bool						removeClient(int fd);
 		void						kickClient(int fd);
+
+		// static void					removeClient(Channel *channel, int fd);
 
 		void						sendMessage(Client *sender, std::string message);
 

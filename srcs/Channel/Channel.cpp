@@ -26,10 +26,16 @@ std::vector<int>	Channel::getClients()				{	return				this->_clients;		}
 
 void	Channel::addClient(int fd) {
 	if (!this->hasClient(fd))
+	{
 		this->_clients.push_back(fd);
-
+		ServerInstance::getInstance()->getClient(fd)->addChannel(this->getName());
+	}
 	for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
 		Client::sendMessage(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
+}
+
+std::vector<int>	Channel::getClients() {
+	return this->_clients;
 }
 
 bool	Channel::hasClient(int fd) {

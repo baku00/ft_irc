@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "../Server/Instance/ServerInstance.hpp"
+// # include "../Channel/Channel.hpp"
 
 Client::Client()
 {
@@ -103,6 +104,15 @@ std::string	Client::getInfo() {
 	return info;
 }
 
+std::vector<std::string>	Client::getChannels() {
+	return this->_channels_name;
+}
+
+void	Client::addChannel(std::string channel)
+{
+	this->_channels_name.push_back(channel);
+}
+
 std::string Client::getFullname()
 {
 	return ":" + this->getNickname() + "!" + this->getUsername() + "@" + this->getHostname();
@@ -139,6 +149,19 @@ void	Client::sendMessage(int socket, std::string message)
 	} else {
 		std::cout << "Réponse envoyé au client." << std::endl;
 	}
+}
+
+void	Client::disconnect()
+{
+	std::cout << "Déconnexion du client " << this->getNickname() << std::endl;
+	// for (std::vector<std::string> it = this->_channels_name.begin(); it != this->_channels_name.end(); it++)
+	// {
+	// 	Channel *channel = ServerInstance::getInstance()->getChannel(*it);
+	// 	if (channel)
+	// 		channel->removeClient(this->getFd());
+	// 	else
+	// 		this->_channels_name.erase(it);
+	// }
 }
 
 void	Client::sendMessage(Client *sender, std::string message)
