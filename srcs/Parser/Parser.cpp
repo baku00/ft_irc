@@ -7,6 +7,7 @@
 #include "../Commands/Quit/Quit.hpp"
 #include "../Commands/Join/Join.hpp"
 #include "../Commands/Ping/Ping.hpp"
+#include "../Commands/Kick/Kick.hpp"
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
@@ -18,6 +19,7 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("QUIT", new Quit()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("JOIN", new Join()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("PING", new Ping()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("KICK", new Kick()));
 }
 
 Parser::~Parser() {}

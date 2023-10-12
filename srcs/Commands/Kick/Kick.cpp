@@ -1,18 +1,18 @@
-#include "Join.hpp"
+#include "Kick.hpp"
 
-Join::Join() {
+Kick::Kick() {
 	this->_minArgsRequired = 1;
 	this->_maxArgsRequired = 1;
 	this->_commandName = "USER";
 }
 
-Join::~Join() {}
+Kick::~Kick() {}
 
-std::string	Join::getName(std::vector<std::string> args) const {
+std::string	Kick::getName(std::vector<std::string> args) const {
 	return args[1];
 }
 
-void	Join::execute(Client client, std::vector<std::string> args) const {
+void	Kick::execute(Client client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 

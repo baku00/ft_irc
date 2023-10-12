@@ -1,14 +1,17 @@
-#ifndef QUIT_HPP
-# define QUIT_HPP
+#ifndef KICK_HPP
+# define KICK_HPP
 
 # include <main.hpp>
 # include "../ACommand.hpp"
 # include "../../Client/Client.hpp"
 
-class Quit : public ACommand {
+class Kick : public ACommand {
+	private:
+		std::string		getName(std::vector<std::string> args) const;
+
 	public:
-		Quit();
-		virtual ~Quit();
+		Kick();
+		virtual ~Kick();
 		virtual void		execute(Client client, std::vector<std::string> args) const;
 };
 
