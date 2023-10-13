@@ -26,7 +26,7 @@ FILES = srcs/main.cpp $(TESTS) \
 		$(PASS) $(PRIV_MSG) $(NICK) \
 		$(USER) $(ME) $(QUIT) \
 		$(JOIN) $(CHANNEL) $(KICK) \
-		$(MESSAGE) $(PING)
+		$(MESSAGE) $(PING) $(INVITE)
 
 OBJS = $(FILES:.cpp=.o)
 

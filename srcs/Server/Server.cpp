@@ -175,15 +175,17 @@ void	Server::parseInput(int fd, std::string input)
 	while ((new_line = input.find("\r\n")) != std::string::npos)
 	{
 		std::string line = input.substr(0, new_line);
+		std::cout << line << std::endl;
 		input = input.substr(new_line + 2);
 
+		// std::string channel				= this->_parser->getChannel(line);
 		std::string command				= this->_parser->getCommand(line);
 		std::vector<std::string> args	= this->_parser->getParameters(line);
 
 		// if (!Auth::isAuthorized(client, command))
 		// 	Client::sendMessage(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
 		// else
-			this->_parser->execute(client, command, args);
+		this->_parser->execute(client, command, args);
 	}
 }
 

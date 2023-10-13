@@ -8,6 +8,7 @@
 #include "../Commands/Join/Join.hpp"
 #include "../Commands/Ping/Ping.hpp"
 #include "../Commands/Kick/Kick.hpp"
+#include "../Commands/Invite/Invite.hpp"
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
@@ -20,6 +21,7 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("JOIN", new Join()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("PING", new Ping()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("KICK", new Kick()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("INVITE", new Invite()));
 }
 
 Parser::~Parser() {}
@@ -36,6 +38,13 @@ std::string					Parser::trim(std::string input)
 }
 
 std::string					Parser::getCommand(std::string input) {
+	size_t space_pos = input.find(" ");
+	if (space_pos == std::string::npos)
+		return Parser::trim(input);
+	return Parser::trim(input.substr(0, space_pos));
+}
+
+std::string					Parser::getChannel(std::string input) {
 	size_t space_pos = input.find(" ");
 	if (space_pos == std::string::npos)
 		return Parser::trim(input);
