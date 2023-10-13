@@ -1,7 +1,15 @@
 #include <main.hpp>
 #include "Server/Server.hpp"
+#include <tests.hpp>
 
 int main(int argc, char **argv) {
+
+	if (argv[1] == std::string("--test"))
+	{
+		test_mode();
+		return 0;
+	}
+
 	const bool DEV_MODE = true;
 	if (argc != 3 && !DEV_MODE)
 	{

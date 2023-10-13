@@ -17,8 +17,9 @@ PING = srcs/Commands/Ping/Ping.cpp
 KICK = srcs/Commands/Kick/Kick.cpp
 CHANNEL = srcs/Channel/Channel.cpp
 MESSAGE = srcs/Utils/Message/Message.cpp
+TESTS = tests/test_mode.cpp
 
-FILES = srcs/main.cpp \
+FILES = srcs/main.cpp $(TESTS) \
 		$(SERVER) $(CLIENT) $(PARSER) \
 		$(AUTH)	$(A_COMMAND) $(INSTANCE) \
 		$(PASS) $(PRIV_MSG) $(NICK) \
@@ -28,7 +29,7 @@ FILES = srcs/main.cpp \
 
 OBJS = $(FILES:.cpp=.o)
 
-FLAGS = -Wall -Wextra -Werror -std=c++98 -I./srcs
+FLAGS = -Wall -Wextra -Werror -std=c++98 -I./srcs -I./tests
 
 CC = c++
 

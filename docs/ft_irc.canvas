@@ -9,7 +9,7 @@
 		{"type":"text","text":"t: topic","id":"65819d8da1e072a3","x":2500,"y":196,"width":250,"height":60},
 		{"type":"text","text":"k: change password","id":"ba551bbc0695e6b2","x":2500,"y":342,"width":250,"height":60},
 		{"type":"text","text":"o: operators","id":"e4c0f7c2ab55ffed","x":2500,"y":494,"width":250,"height":60},
-		{"type":"text","text":"i: limit users","id":"4f999ce6ea6e5e57","x":2500,"y":694,"width":250,"height":60},
+		{"type":"text","text":"l: limit users","id":"4f999ce6ea6e5e57","x":2500,"y":694,"width":250,"height":60},
 		{"type":"text","text":"# IRC","id":"01e3cbe64434bf24","x":-819,"y":165,"width":139,"height":75},
 		{"type":"text","text":"Potential issues\n","id":"fcad86056d2801c1","x":-1280,"y":173,"width":250,"height":60},
 		{"type":"text","text":"Changing nickname breaks server\n(must be unique)","id":"40090377cd924bfd","x":-1202,"y":-85,"width":202,"height":105},

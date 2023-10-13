@@ -18,16 +18,31 @@
 # include "../Client/Client.hpp"
 # include "../Utils/Message/Message.hpp"
 
+typedef std::bitset<5> t_mode;
+
 class Channel {
 	private:
 		std::string					_name;
 		std::vector<int>			_clients;
 		std::vector<Message *>		_messages;
+		t_mode						_mode;
 
 	public:
 		Channel();
 		~Channel();
 		Channel(const Channel &copy);
+
+		enum Mode
+		{
+			BASE_MASK	= 0b11111,
+			I_INVITE	= 0b10000,
+			T_TOPIC		= 0b01000,
+			K_PASSWORD	= 0b00100,
+			O_OPERATOR	= 0b00010,
+			L_LIMIT		= 0b00001
+		};
+
+		// static const
 
 		Channel						&operator=(const Channel &copy);
 
@@ -40,6 +55,11 @@ class Channel {
 		void						showClients();
 
 		void						sendMessage(Client *sender, std::string message);
+
+
+		bool						hasMode(t_mode mode);
+		void						addMode(t_mode mode);
+		void						delMode(t_mode mode);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

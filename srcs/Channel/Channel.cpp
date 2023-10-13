@@ -5,7 +5,7 @@ Channel::Channel()
 {
 	std::cout << "Create a channel instance" << std::endl;
 	this->setName("");
-
+	this->_mode = 0;
 }
 
 Channel::Channel(const Channel &copy) {
@@ -14,6 +14,23 @@ Channel::Channel(const Channel &copy) {
 
 Channel::~Channel()
 {}
+
+bool	Channel::hasMode(t_mode mode)
+{
+	t_mode mask = ~mode | _mode;
+	return (mask == BASE_MASK);
+}
+
+void	Channel::addMode(t_mode mode)
+{
+	_mode |= mode;
+}
+
+void	Channel::delMode(t_mode mode)
+{
+	if (hasMode(mode))
+		_mode ^= mode;
+}
 
 void	Channel::setName(std::string name) {
 	this->_name = name;
