@@ -65,4 +65,13 @@ void    test_mode()
 	std::cout << "Operator: " << (channel.hasMode(Channel::O_OPERATOR) ? "on" : "off") << std::endl;
 	std::cout << "Limit: " << (channel.hasMode(Channel::L_LIMIT) ? "on" : "off") << std::endl;
 	std::cout << std::endl;
+
+    std::cout << "FAIL Remove mode topic and invite at once:" << std::endl;
+	channel.delMode(Channel::I_INVITE | Channel::T_TOPIC);
+	std::cout << "Invite: " << (channel.hasMode(Channel::I_INVITE) ? "on" : "off") << std::endl;
+	std::cout << "Topic: " << (channel.hasMode(Channel::T_TOPIC) ? "on" : "off") << std::endl;
+	std::cout << "Password: " << (channel.hasMode(Channel::K_PASSWORD) ? "on" : "off") << std::endl;
+	std::cout << "Operator: " << (channel.hasMode(Channel::O_OPERATOR) ? "on" : "off") << std::endl;
+	std::cout << "Limit: " << (channel.hasMode(Channel::L_LIMIT) ? "on" : "off") << std::endl;
+	std::cout << std::endl;
 }
