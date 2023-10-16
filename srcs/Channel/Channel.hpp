@@ -18,18 +18,18 @@
 # include "../Client/Client.hpp"
 # include "../Utils/Message/Message.hpp"
 # include <bitset>
+#include "../Server/Instance/ServerInstance.hpp"
 
 typedef std::bitset<5> t_mode;
 
 class Server;
+class Client;
 
 class Channel {
 	private:
 		std::string					_name;
 		std::vector<int>			_clients;
 		std::vector<Message *>		_messages;
-		t_mode						_mode;
-		Server						*_server;
 
 	public:
 		Channel();
@@ -54,15 +54,17 @@ class Channel {
 		void						setName(std::string name);
 
 		void						addClient(int fd);
-		// void						removeClient(int fd);
+		void						removeClient(int fd);
 		std::vector<int>			getClients();
 		bool						hasClient(int fd);
 		void						showClients();
 		bool						removeClient(int fd);
 		void						kickClient(int fd);
 
-		// static void					removeClient(Channel *channel, int fd);
+		void						sendMessage(Client *sender, std::string message);
 
+		static void					removeClient(Channel *channel, int fd);
+		static void					remove(Channel *channel);
 		void						sendMessage(Client *sender, std::string message);
 
 
@@ -70,7 +72,6 @@ class Channel {
 		void						addMode(t_mode mode);
 		void						delMode(t_mode mode);
 
-		static void					removeClient(std::map<std::string, Channel *> *channels, int fd);
 		static Channel				*create(std::string name);
 };
 

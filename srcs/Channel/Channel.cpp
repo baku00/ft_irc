@@ -1,9 +1,9 @@
 #include "Channel.hpp"
-#include "../Server/Instance/ServerInstance.hpp"
 
 Channel::Channel()
 {
 	std::cout << "Create a channel instance" << std::endl;
+	this->_server = ServerInstance::getInstance();
 	this->setName("");
 	this->_mode = 0;
 	this->_server = ServerInstance::getInstance();
@@ -26,10 +26,7 @@ std::vector<int>	Channel::getClients()				{	return				this->_clients;		}
 
 void	Channel::addClient(int fd) {
 	if (!this->hasClient(fd))
-	{
 		this->_clients.push_back(fd);
-		ServerInstance::getInstance()->getClient(fd)->addChannel(this->getName());
-	}
 	for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
 		Client::sendMessage(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
 }
@@ -80,6 +77,31 @@ void	Channel::showClients()
 	std::cout << std::endl;
 }
 
+void	Channel::removeClient(int fd)
+{
+	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		if (*it == fd)
+		{
+			this->_clients.erase(it);
+			break;
+		}
+	}
+}
+
+void	Channel::removeClient(Channel *channel, int fd)
+{
+	channel->removeClient(fd);
+	if (!channel->getClients().size())
+		Channel::remove(channel);
+}
+
+void	Channel::remove(Channel *channel)
+{
+	delete channel;
+	channel = NULL;
+}
+
 void	Channel::sendMessage(Client *sender, std::string message)
 {
 	if (message.find("\r\n") == std::string::npos)
@@ -108,7 +130,7 @@ Channel *Channel::create(std::string name)
 Channel &Channel::operator=(const Channel &copy) {
 	if (this != &copy) {
 		this->_name			= copy._name;
-		this->_clients			= copy._clients;
+		this->_clients		= copy._clients;
 	}
 	return *this;
 }

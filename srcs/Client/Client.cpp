@@ -1,6 +1,5 @@
 #include "Client.hpp"
 #include "../Server/Instance/ServerInstance.hpp"
-// # include "../Channel/Channel.hpp"
 
 Client::Client()
 {
@@ -104,21 +103,12 @@ std::string	Client::getInfo() {
 	return info;
 }
 
-std::vector<std::string>	Client::getChannels() {
-	return this->_channels_name;
-}
-
-void	Client::addChannel(std::string channel)
-{
-	this->_channels_name.push_back(channel);
-}
-
 std::string Client::getFullname()
 {
 	return ":" + this->getNickname() + "!" + this->getUsername() + "@" + this->getHostname();
 }
 
-int	Client::getFd() {
+int		Client::getFd() {
 	return this->_fd;
 }
 
@@ -151,19 +141,6 @@ void	Client::sendMessage(int socket, std::string message)
 	}
 }
 
-void	Client::disconnect()
-{
-	std::cout << "Déconnexion du client " << this->getNickname() << std::endl;
-	// for (std::vector<std::string> it = this->_channels_name.begin(); it != this->_channels_name.end(); it++)
-	// {
-	// 	Channel *channel = ServerInstance::getInstance()->getChannel(*it);
-	// 	if (channel)
-	// 		channel->removeClient(this->getFd());
-	// 	else
-	// 		this->_channels_name.erase(it);
-	// }
-}
-
 void	Client::sendMessage(Client *sender, std::string message)
 {
 	if (message.find("\r\n") == std::string::npos)
@@ -178,7 +155,7 @@ void	Client::sendMessage(Client *sender, std::string message)
 	);
 }
 
-Client &Client::operator=(const Client &copy) {
+Client		&Client::operator=(const Client &copy) {
 	if (this != &copy) {
 		this->_nickname			= copy._nickname;
 		this->_username			= copy._username;
@@ -191,7 +168,7 @@ Client &Client::operator=(const Client &copy) {
 	return *this;
 }
 
-std::iostream &operator<<(std::iostream &stream, Client &client) {
+std::iostream	&operator<<(std::iostream &stream, Client &client) {
 	stream << client.getInfo();
 	return stream;
 }
