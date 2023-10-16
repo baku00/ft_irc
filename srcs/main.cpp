@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv) {
 
-	if (argv[1] == std::string("--test"))
+	if (argc == 2 && argv[1] == std::string("--test"))
 	{
 		test_mode();
 		return 0;

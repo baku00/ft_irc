@@ -18,6 +18,7 @@
 # include "../Client/Client.hpp"
 # include "../Utils/Message/Message.hpp"
 
+#include <bitset>
 typedef std::bitset<5> t_mode;
 
 class Channel {
