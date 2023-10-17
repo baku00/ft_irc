@@ -29,6 +29,8 @@ class Channel {
 	private:
 		std::string					_name;
 		std::vector<int>			_clients;
+		std::vector<int>			_invited;
+		std::vector<int>			_operators;
 		std::vector<Message *>		_messages;
 		t_mode						_mode;
 		Server						*_server;
@@ -74,6 +76,11 @@ class Channel {
 		void						delMode(t_mode mode);
 
 		static Channel				*create(std::string name);
+
+		bool						hasOperator(Client client);
+
+		void						invite(Client client);
+		bool						hasInvited(Client client);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

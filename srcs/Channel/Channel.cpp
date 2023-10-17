@@ -99,6 +99,36 @@ Channel *Channel::create(std::string name)
 	return channel;
 }
 
+bool	Channel::hasOperator(Client client)
+{
+	std::vector<std::string>::iterator it = _operators.begin();
+	for (; it != _operators.end(); ++it)
+	{
+		if (*it == client.getFd())
+			return true;
+	}
+	return false;
+}
+
+bool	Channel::hasInvited(Client client)
+{
+	std::vector<std::string>::iterator it = _invited.begin();
+	for (; it != _invited.end(); ++it)
+	{
+		if (*it == client.getFd())
+			return true;
+	}
+	return false;
+}
+
+void	Channel::invite(Client client)
+{
+	std::cout << "Invite client to channel #" << this->getName() << std::endl;
+	int fd = client.getFd();
+	if (!this->hasInvited(client))
+		this->_invited.push_back(fd);
+}
+
 Channel &Channel::operator=(const Channel &copy) {
 	if (this != &copy) {
 		this->_name			= copy._name;
