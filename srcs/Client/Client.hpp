@@ -57,6 +57,7 @@ class Client {
 		bool						isAuthenticated();
 		bool						isValidate();
 		void						sendMessage(Client *sender, std::string message);
+		void						reply(std::string code, std::string message);
 
 		static void					sendMessage(int socket, std::string message);
 };

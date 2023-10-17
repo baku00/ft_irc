@@ -155,6 +155,14 @@ void	Client::sendMessage(Client *sender, std::string message)
 	);
 }
 
+void Client::reply(std::string code, std::string message)
+{
+	sendMessage(
+		this->getFd(),
+		":" + this->getServername() + " " + code + " " + this->getNickname() + " " + message + "\r\n"
+	);
+}
+
 Client &Client::operator=(const Client &copy) {
 	if (this != &copy) {
 		this->_nickname			= copy._nickname;
