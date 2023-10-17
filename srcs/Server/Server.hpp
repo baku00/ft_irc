@@ -25,43 +25,40 @@ class Server
 
 		Server();
 
-		void		createSocket();
-		sockaddr_in	fixSettings();
-		void		linkSocketToPort(sockaddr_in serverAddr);
-		void		startListening();
-		void		initialiseConnection();
-		void		loop(sockaddr_in clientAddr, socklen_t clientAddrLen);
-		void		managePoll();
-		void		managePollError(int clientSocket);
-		void		managePollInput(int clientSocket);
-		void		managePollOutput(int clientSocket);
-		void		managePollOutputError(int clientSocket);
-		void		waitForIncomingConnection();
-		void		acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen);
-		void		parseInput(int fd, std::string input);
-		void		readClientInput(std::vector<pollfd>::iterator it, pollfd client);
-		void		disconnectClient(std::vector<pollfd>::iterator it);
+		void								createSocket();
+		void								linkSocketToPort(sockaddr_in serverAddr);
+		void								startListening();
+		void								initialiseConnection();
+		void								loop(sockaddr_in clientAddr, socklen_t clientAddrLen);
+		void								waitForIncomingConnection();
+		void								acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen);
+		void								parseInput(int fd, std::string input);
+		void								readClientInput(std::vector<pollfd>::iterator it, pollfd client);
+		void								disconnectClient(std::vector<pollfd>::iterator it);
+
+		sockaddr_in							fixSettings();
 
 	public:
 		Server(int port, std::string password);
 		~Server();
 		Server(const Server &copy);
-		Server		&operator=(const Server &copy);
+		Server								&operator=(const Server &copy);
 
-		std::string	getPassword();
+		std::string							getPassword();
 
-		Client		*getClient(int fd);
-		Client		*getClientByNickname(std::string nickname);
-		Client		*getClientByServername(std::string servername);
-		Client		*getClientByHostname(std::string hostname);
+		Client								*getClient(int fd);
+		Client								*getClientByNickname(std::string nickname);
+		Client								*getClientByServername(std::string servername);
+		Client								*getClientByHostname(std::string hostname);
 
-		void		addChannel(Channel *channel);
-		Channel		*getChannel(std::string name);
+		void								addChannel(Channel *channel);
+		Channel								*getChannel(std::string name);
+		std::map<std::string, Channel *>	getChannels();
 
-		void		disconnectClientFromFD(int fd);
+		void								disconnectClientFromFD(int fd);
 
-		void		start();
-		void		stop(std::string message, int exitCode);
+		void								start();
+		void								stop(std::string message, int exitCode);
 
 		class ChannelNotFoundException : public std::exception
 		{

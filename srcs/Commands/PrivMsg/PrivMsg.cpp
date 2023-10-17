@@ -35,9 +35,6 @@ void	PrivMsg::sendMessageClient(Client sender, std::string username, std::string
 }
 
 void	PrivMsg::sendMessageChannel(Client sender, std::string name, std::string message) const {
-	(void) sender;
-	(void) name;
-	(void) message;
 	Channel *channel = ServerInstance::getInstance()->getChannel(name);
 	if (channel)
 	{
@@ -50,7 +47,7 @@ void	PrivMsg::sendMessageChannel(Client sender, std::string name, std::string me
 
 bool	PrivMsg::isToChannel(std::string channel_name) const
 {
-	return (channel_name[0] == '#');
+	return (channel_name[0] == '#' || channel_name[0] == '&');
 }
 
 void	PrivMsg::execute(Client sender, std::vector<std::string> args) const {
@@ -59,9 +56,6 @@ void	PrivMsg::execute(Client sender, std::vector<std::string> args) const {
 
 	std::string username = this->getUsername(args);
 	std::string message = this->getMessage(args);
-
-	std::cout << "Client:" << std::endl;
-	std::cout << &sender << std::endl;
 
 	if (username == sender.getUsername())
 		return Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :You can't send a message to yourself");

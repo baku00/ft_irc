@@ -7,7 +7,9 @@
 
 class Kick : public ACommand {
 	private:
-		std::string		getName(std::vector<std::string> args) const;
+		std::string		getChannel(std::vector<std::string> args) const;
+		std::string		getNickname(std::vector<std::string> args) const;
+		std::string		getReason(std::vector<std::string> args) const;
 
 	public:
 		Kick();

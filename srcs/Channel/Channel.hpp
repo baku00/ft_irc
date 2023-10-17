@@ -17,9 +17,11 @@
 # include <exception>
 # include "../Client/Client.hpp"
 # include "../Utils/Message/Message.hpp"
+# include <bitset>
 
-#include <bitset>
 typedef std::bitset<5> t_mode;
+
+class Server;
 
 class Channel {
 	private:
@@ -27,6 +29,7 @@ class Channel {
 		std::vector<int>			_clients;
 		std::vector<Message *>		_messages;
 		t_mode						_mode;
+		Server						*_server;
 
 	public:
 		Channel();
@@ -54,6 +57,8 @@ class Channel {
 		std::vector<int>			getClients();
 		bool						hasClient(int fd);
 		void						showClients();
+		bool						removeClient(int fd);
+		void						kickClient(int fd);
 
 		void						sendMessage(Client *sender, std::string message);
 
@@ -61,6 +66,8 @@ class Channel {
 		bool						hasMode(t_mode mode);
 		void						addMode(t_mode mode);
 		void						delMode(t_mode mode);
+
+		static void					removeClient(std::map<std::string, Channel *> *channels, int fd);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

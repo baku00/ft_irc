@@ -6,14 +6,11 @@ Channel::Channel()
 	std::cout << "Create a channel instance" << std::endl;
 	this->setName("");
 	this->_mode = 0;
+	this->_server = ServerInstance::getInstance();
 }
 
-Channel::Channel(const Channel &copy) {
-	*this = copy;
-}
-
-Channel::~Channel()
-{}
+Channel::Channel(const Channel &copy)	{ *this = copy; }
+Channel::~Channel()						{}
 
 bool	Channel::hasMode(t_mode mode)
 {
@@ -21,52 +18,59 @@ bool	Channel::hasMode(t_mode mode)
 	return (mask == BASE_MASK);
 }
 
-void	Channel::addMode(t_mode mode)
-{
-	_mode |= mode;
-}
-
-void	Channel::delMode(t_mode mode)
-{
-	if (hasMode(mode))
-		_mode ^= mode;
-}
-
-void	Channel::setName(std::string name) {
-	this->_name = name;
-}
-
-std::string	Channel::getName() {
-	return this->_name;
-}
+void				Channel::addMode(t_mode mode)		{						_mode |= mode;		}
+void				Channel::delMode(t_mode mode)		{	if (hasMode(mode))	_mode ^= mode;		}
+void				Channel::setName(std::string name)	{						this->_name = name;	}
+std::string			Channel::getName()					{	return				this->_name;		}
+std::vector<int>	Channel::getClients()				{	return				this->_clients;		}
 
 void	Channel::addClient(int fd) {
-	std::cout << "Add new Client to channel" << std::endl;
 	if (!this->hasClient(fd))
 		this->_clients.push_back(fd);
-	for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
-		Client::sendMessage(fd, ServerInstance::getInstance()->getClient((*it)->getSender())->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
-	
-}
 
-std::vector<int>	Channel::getClients() {
-	return this->_clients;
+	for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
+		Client::sendMessage(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
 }
 
 bool	Channel::hasClient(int fd) {
-	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
-	{
+	std::vector<int>::iterator it;
+
+	for (it = this->_clients.begin(); it != this->_clients.end(); it++)
 		if (*it == fd)
 			return true;
-	}
+
 	return false;
+}
+
+bool	Channel::removeClient(int fd)
+{
+	std::vector<int>::iterator it;
+	
+	for (it = this->_clients.begin(); it != this->_clients.end(); it++)
+		if (*it == fd)
+			break ;
+
+	bool isInChannel = it != this->_clients.end();
+
+	if (isInChannel)
+		this->_clients.erase(it);
+
+	return isInChannel;
+}
+
+void	Channel::removeClient(std::map<std::string, Channel *> *channels, int fd)
+{
+	std::map<std::string, Channel *>::iterator it;
+
+	for (it = channels->begin(); it != channels->end(); it++)
+		it->second->removeClient(fd);
 }
 
 void	Channel::showClients()
 {
 	std::cout << "Clients in channel " << this->getName() << ":" << std::endl;
 	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
-		std::cout << "\t" << ServerInstance::getInstance()->getClient(*it)->getNickname() << std::endl;
+		std::cout << "\t" << this->_server->getClient(*it)->getNickname() << std::endl;
 	std::cout << std::endl;
 }
 
@@ -78,7 +82,7 @@ void	Channel::sendMessage(Client *sender, std::string message)
 	if (sender == NULL)
 		return ;
 
-	this->_messages.push_back(new Message(sender->getFd(), message));
+	this->_messages.push_back(new Message(sender->getFd(), sender->getFullname(), message));
 
 	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
 	{

@@ -12,7 +12,65 @@
 --> lag pong
 << NICK nick1
 << JOIN #test
-<< PRIVMSG #test :hello world
->> :nick2!user@user PRIVMSG #test :good bye
->> :nick3!user@user PRIVMSG #test :nice
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick1
+<< JOIN #test
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick1
+<< JOIN #test
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< NICK nick1
+<< JOIN #test
+>> :nick2!user@user PRIVMSG #test :hello world
+<< PRIVMSG #test :nice for you
+<< KICK #test nick3 :
+>> Client not found
+<< KICK #test nick2 :
+>> :nick2!user@user PRIVMSG #test :kjl
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
 << QUIT :leaving
