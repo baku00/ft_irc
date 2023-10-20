@@ -19,7 +19,6 @@ void	Join::execute(Client client, std::vector<std::string> args) const {
 	std::string channel_name = this->getName(args);
 
 	Channel *channel = ServerInstance::getInstance()->getChannel(channel_name);
-	Channel *channel = ServerInstance::getInstance()->getChannel(channel_name);
 	if (!channel)
 		channel = Channel::create(channel_name);
 	channel->addClient(client.getFd());
