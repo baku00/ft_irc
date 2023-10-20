@@ -68,6 +68,7 @@ class Channel {
 		void						delMode(t_mode mode);
 
 		static void					removeClient(std::map<std::string, Channel *> *channels, int fd);
+		static Channel				*create(std::string name);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

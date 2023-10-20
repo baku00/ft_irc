@@ -91,6 +91,14 @@ void	Channel::sendMessage(Client *sender, std::string message)
 	}
 }
 
+Channel *Channel::create(std::string name)
+{
+	Channel *channel = new Channel();
+	channel->setName(name);
+	ServerInstance::getInstance()->addChannel(channel);
+	return channel;
+}
+
 Channel &Channel::operator=(const Channel &copy) {
 	if (this != &copy) {
 		this->_name			= copy._name;
