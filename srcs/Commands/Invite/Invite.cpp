@@ -35,9 +35,7 @@ void	Invite::execute(Client client, std::vector<std::string> args) const {
 
 	if (!channel)
 	{
-		channel = new Channel();
-		channel->setName(channel_name);
-		ServerInstance::getInstance()->addChannel(channel);
+		channel = Channel::create(channel_name);
 		channel->addClient(client.getFd());
 		return;
 	}
