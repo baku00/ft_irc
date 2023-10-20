@@ -29,7 +29,7 @@ void	Invite::execute(Client client, std::vector<std::string> args) const {
 
 	if (!invited)
 	{
-		client.reply(ERR_NOSUCHNICK);
+		client.reply(ERR_NOSUCHNICK, nickname.c_str());
 		return;
 	}
 
@@ -38,6 +38,33 @@ void	Invite::execute(Client client, std::vector<std::string> args) const {
 		channel = new Channel();
 		channel->setName(channel_name);
 		ServerInstance::getInstance()->addChannel(channel);
-		channel->invite(*invited);
+		channel->addClient(client.getFd());
+		return;
 	}
+
+	if (!channel->hasClient(client))
+	{
+		client.reply(ERR_NOTONCHANNEL, channel_name.c_str());
+		return;
+	}
+
+	if (channel->hasMode(Channel::I_INVITE) && !channel->hasOperator(client))
+	{
+		client.reply(ERR_CHANOPRIVSNEEDED, channel_name.c_str());
+		return;
+	}
+
+	if (channel->hasClient(*invited))
+	{
+		client.reply(ERR_USERONCHANNEL, nickname.c_str(), channel_name.c_str());
+		return;
+	}
+
+	channel->invite(*invited);
+
+	Client::sendMessage(
+		invited->getFd(),
+		client.getFullname() + " INVITE " + nickname + " " + channel_name
+	);
+	client.reply(RPL_INVITING, channel_name.c_str(), nickname.c_str());
 }

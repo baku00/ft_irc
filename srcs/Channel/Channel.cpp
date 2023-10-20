@@ -42,6 +42,10 @@ bool	Channel::hasClient(int fd) {
 	return false;
 }
 
+bool	Channel::hasClient(Client client) {
+	return this->hasClient(client.getFd());
+}
+
 bool	Channel::removeClient(int fd)
 {
 	std::vector<int>::iterator it;

@@ -5,6 +5,7 @@
 # include <Commands/ACommand.hpp>
 # include <Client/Client.hpp>
 # include <rpl_errors.h>
+# include <rpl_numeric.h>
 
 class Invite : public ACommand {
 	private:

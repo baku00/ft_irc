@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "../Server/Instance/ServerInstance.hpp"
+#include <string>
 
 Client::Client()
 {
@@ -155,12 +156,34 @@ void	Client::sendMessage(Client *sender, std::string message)
 	);
 }
 
-void Client::reply(std::string code, std::string message)
+void Client::reply(std::string code, std::string message...)
 {
-	sendMessage(
-		this->getFd(),
-		":" + this->getServername() + " " + code + " " + this->getNickname() + " " + message + "\r\n"
-	);
+	va_list	args;
+	va_start(args, message);
+	
+	std::size_t	arg_pos	= message.find("<");
+	std::size_t	end_pos = message.find(">");
+	int			length	= end_pos - arg_pos + 1;
+
+	while (arg_pos != std::string::npos && end_pos != std::string::npos)
+	{
+		if (length < 0)
+			throw std::runtime_error(SSTR("Unexpected token '>' at column " << end_pos));
+
+		char *	replace = va_arg(args, char *);
+		std::cout << "REPLY: replace: " << replace << std::endl;
+		message.replace(arg_pos, length, replace);
+		
+		arg_pos = message.find("<");
+		end_pos = message.find(">");
+		length	= end_pos - arg_pos + 1;
+	}
+
+	va_end(args);
+
+	std::string	reply = ":" + this->getServername() + " " + code + " " + this->getNickname() + " " + message;
+	std::cout << reply << std::endl;
+	sendMessage(this->getFd(), reply);
 }
 
 Client &Client::operator=(const Client &copy) {
