@@ -37,7 +37,9 @@ void	Invite::execute(Client client, std::vector<std::string> args) const {
 	{
 		channel = Channel::create(channel_name);
 		channel->addClient(client.getFd());
-		return;
+
+		// TODO: replace * by real topic
+		// client.reply(RPL_TOPIC, channel_name.c_str(), "*");
 	}
 
 	if (!channel->hasClient(client))

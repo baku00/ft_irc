@@ -28,6 +28,11 @@ void	Channel::addClient(int fd) {
 	if (!this->hasClient(fd))
 		this->_clients.push_back(fd);
 
+	// Client *client = ServerInstance::getInstance()->getClient(fd);
+
+	// if (this->_messages.size() == 0)
+	// 	Client::sendMessage(fd, client->getFullname() + " PRIVMSG " + this->getName() + " :Welcome to the " + this->getName() + " channel !");
+
 	for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
 		Client::sendMessage(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
 }
