@@ -1,4 +1,4 @@
-# include <main.hpp>
+#include <main.hpp>
 #include "Server/Server.hpp"
 #include <tests.hpp>
 

@@ -19,7 +19,7 @@ void	Nick::execute(Client client, std::vector<std::string> args) const {
 	std::string nickname = this->getNickname(args);
 
 	if (ServerInstance::getInstance()->getClientByNickname(nickname) != NULL)
-		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :Nickname already taken");
+		return Client::sendMessage(client.getFd(), "433 " + nickname + " :Nickname already taken");
 
 	ServerInstance::getInstance()->getClient(client.getFd())->setNickname(nickname);
 }

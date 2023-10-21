@@ -16,8 +16,6 @@
 # include <map>
 # include <exception>
 
-class Channel;
-
 class Client {
 	private:
 		std::string					_nickname;

@@ -108,7 +108,7 @@ std::string Client::getFullname()
 	return ":" + this->getNickname() + "!" + this->getUsername() + "@" + this->getHostname();
 }
 
-int		Client::getFd() {
+int	Client::getFd() {
 	return this->_fd;
 }
 
@@ -155,7 +155,7 @@ void	Client::sendMessage(Client *sender, std::string message)
 	);
 }
 
-Client		&Client::operator=(const Client &copy) {
+Client &Client::operator=(const Client &copy) {
 	if (this != &copy) {
 		this->_nickname			= copy._nickname;
 		this->_username			= copy._username;
@@ -168,7 +168,7 @@ Client		&Client::operator=(const Client &copy) {
 	return *this;
 }
 
-std::iostream	&operator<<(std::iostream &stream, Client &client) {
+std::iostream &operator<<(std::iostream &stream, Client &client) {
 	stream << client.getInfo();
 	return stream;
 }
