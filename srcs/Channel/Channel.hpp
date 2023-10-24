@@ -49,12 +49,11 @@ class Channel {
 		bool						hasClient(int fd);
 		bool						hasClient(Client client);
 		void						showClients();
-		bool						removeClient(int fd);
 		void						kickClient(int fd);
 
-		void						sendMessage(Client *sender, std::string message);
-
+		bool						removeClient(int fd);
 		static void					removeClient(Channel *channel, int fd);
+
 		static void					remove(Channel *channel);
 		void						sendMessage(Client *sender, std::string message);
 

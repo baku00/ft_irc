@@ -67,12 +67,16 @@ bool	Channel::removeClient(int fd)
 	return isInChannel;
 }
 
-void	Channel::removeClient(std::map<std::string, Channel *> *channels, int fd)
+void Channel::removeClient(Channel *channel, int fd)
 {
-	std::map<std::string, Channel *>::iterator it;
+	channel->removeClient(fd);
+	if (channel->getClients().size() == 0)
+		Channel::remove(channel);
+}
 
-	for (it = channels->begin(); it != channels->end(); it++)
-		it->second->removeClient(fd);
+void Channel::remove(Channel *channel)
+{
+	delete channel;
 }
 
 void	Channel::showClients()
@@ -83,7 +87,7 @@ void	Channel::showClients()
 	std::cout << std::endl;
 }
 
-void	Channel::sendMessage(Client *sender, std::string message)
+void Channel::sendMessage(Client *sender, std::string message)
 {
 	if (message.find("\r\n") == std::string::npos)
 		message += "\r\n";
