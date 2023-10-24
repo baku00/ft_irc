@@ -31,16 +31,20 @@ void	PrivMsg::sendMessageClient(Client sender, std::string username, std::string
 	if (receiver)
 		receiver->sendMessage(&sender, message);
 	else
-		Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :User not found");
+		Client::sendMessage(sender.getFd(), ":" + sender.getServername() + " 401 " + sender.getNickname() + " " + username + " :User not found");
 }
 
 void	PrivMsg::sendMessageChannel(Client sender, std::string name, std::string message) const {
 	Channel *channel = ServerInstance::getInstance()->getChannel(name);
-	if (channel)
+	bool hasClient = channel->hasClient(sender.getFd());
+
+	if (channel && hasClient)
 	{
 		channel->showClients();
 		channel->sendMessage(&sender, message);
 	}
+	else if (!hasClient)
+		Client::sendMessage(sender.getFd(), "You are not in this channel");
 	else
 		Client::sendMessage(sender.getFd(), "Channel not found");
 }
@@ -59,7 +63,7 @@ void	PrivMsg::execute(Client sender, std::vector<std::string> args) const {
 
 	if (username == sender.getUsername())
 		return Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :You can't send a message to yourself");
-	
+
 	if (this->isToChannel(username))
 		this->sendMessageChannel(sender, username, message);
 	else

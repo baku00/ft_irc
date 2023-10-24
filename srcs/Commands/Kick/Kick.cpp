@@ -22,6 +22,16 @@ std::string	Kick::getReason(std::vector<std::string> args) const {
 	return "";
 }
 
+std::string	Kick::getClient(std::vector<std::string> args) const {
+	return args[2];
+}
+
+std::string	Kick::getReason(std::vector<std::string> args) const {
+	if (args.size() == 4)
+		return args[3];
+	return "";
+}
+
 void	Kick::execute(Client client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
@@ -41,5 +51,5 @@ void	Kick::execute(Client client, std::vector<std::string> args) const {
 
 	bool hasBeenEjected = channel->removeClient(client_to_kick->getFd());
 	if (hasBeenEjected)
-		Client::sendMessage(client_to_kick->getFd(), this->getCommandName() + " " + channel_name + " " + nickname + " " + reason + "\r\n");
+		Client::sendMessage(client_to_kick->getFd(), this->getCommandName() + " " + channel_name + " " + nickname + " " + reason);
 }

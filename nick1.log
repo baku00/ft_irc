@@ -74,3 +74,82 @@
 >> PONG
 --> lag pong
 << QUIT :leaving
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 433 NICK :Nickname already taken
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< QUIT :leaving
+<< PASS password
+<< NICK user
+<< USER user user localhost :user
+>> :server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>
+<< MODE <nick> +i
+<< WHOIS user
+>> 230 PASS :Password correct
+>> 421 'MODE' :Unknown command
+>> 421 'WHOIS' :Unknown command
+<< NICK nick1
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> FAILED whois
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< JOIN #test
+>> :nick2!user@user PRIVMSG #test :dsa
+>> KICK #test nick1 
+<< PRIVMSG #test :dsasa
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< PING server
+>> PONG
+--> lag pong
+<< QUIT :leaving
