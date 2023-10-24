@@ -27,19 +27,18 @@ void	Invite::execute(Client client, std::vector<std::string> args) const {
 	Channel	* channel	= server->getChannel(channel_name);
 	Client	* invited	= server->getClientByNickname(nickname);
 
+	if (!channel)
+	{
+		// This is not in the RFC but some servers implement it
+		// this way and it seems to be the simplest solution.
+		client.reply(ERR_NOSUCHCHANNEL, channel_name.c_str());
+		return;
+	}
+
 	if (!invited)
 	{
 		client.reply(ERR_NOSUCHNICK, nickname.c_str());
 		return;
-	}
-
-	if (!channel)
-	{
-		channel = Channel::create(channel_name);
-		channel->addClient(client.getFd());
-
-		// TODO: replace * by real topic
-		// client.reply(RPL_TOPIC, channel_name.c_str(), "*");
 	}
 
 	if (!channel->hasClient(client))
@@ -61,10 +60,6 @@ void	Invite::execute(Client client, std::vector<std::string> args) const {
 	}
 
 	channel->invite(*invited);
-
-	Client::sendMessage(
-		invited->getFd(),
-		client.getFullname() + " INVITE " + nickname + " " + channel_name
-	);
+	invited->sendMessage(&client, "INVITE " + nickname + " " + channel_name);
 	client.reply(RPL_INVITING, channel_name.c_str(), nickname.c_str());
 }

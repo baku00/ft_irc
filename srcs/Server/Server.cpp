@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <rpl_numeric.h>
 
 Server::Server()
 {
@@ -118,9 +119,19 @@ void	Server::acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen
 		newClient.fd = _clientSocket;
 		newClient.events = POLLIN;
 		_pollfds.push_back(newClient);
-		_clients.insert(std::pair<int, Client>(newClient.fd, Client(newClient.fd, true)));
+
+		// I'm not sure if it is a good idea to put an instance directly here
+		Client client = Client(newClient.fd);
+		_clients.insert(std::pair<int, Client>(newClient.fd, client));
 		std::cout << "Nouveau client ajouté" << std::endl;
-		Client::sendMessage(_clientSocket, ":server 001 <nick> :Welcome to the <network> Network, <nick>!<user>@<host>\r\n");
+
+		// TODO: also send other replies needed at the first connexion
+		client.reply(
+			RPL_WELCOME,
+			client.getNickname().c_str(),
+			client.getUsername().c_str(),
+			client.getHostname().c_str()
+		);
 	}
 }
 
@@ -183,7 +194,7 @@ void	Server::parseInput(int fd, std::string input)
 		std::vector<std::string> args	= this->_parser->getParameters(line);
 
 		// if (!Auth::isAuthorized(client, command))
-		// 	Client::sendMessage(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
+		// 	Client::sendPrivMsg(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
 		// else
 		this->_parser->execute(client, command, args);
 	}

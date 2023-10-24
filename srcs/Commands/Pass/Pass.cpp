@@ -1,4 +1,5 @@
 #include "Pass.hpp"
+#include <rpl_errors.h>
 
 Pass::Pass() {
 	this->_minArgsRequired = 1;
@@ -13,7 +14,10 @@ void	Pass::execute(Client client, std::vector<std::string> args) const {
 		return this->errorNumberArguments(client);
 
 	if (!Auth::authenticate(ServerInstance::getInstance()->getClient(client.getFd()), args[1]))
-		return Client::sendMessage(client.getFd(), "462 " + this->_commandName + " :Password incorrect");
+		return client.reply(ERR_PASSWDMISMATCH);
 	
-	Client::sendMessage(client.getFd(), "230 " + this->_commandName + " :Password correct");
+	// There is nothing to send directly here but the Welcome message should only
+	// be sent if the password success, so maybe not send it directly in the server
+	// connection but only on successfull PASS command.
+	// Client::sendPrivMsg(client.getFd(), "230 " + this->_commandName + " :Password correct");
 }

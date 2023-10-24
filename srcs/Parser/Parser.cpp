@@ -91,6 +91,6 @@ void	Parser::execute(Client client, std::string command, std::vector<std::string
 	else
 	{
 		std::cerr << "Command not found: " << command << std::endl;
-		Client::sendMessage(client.getFd(), "421 '" + command + "' :Unknown command");
+		client.reply(ERR_UNKNOWNCOMMAND, command.c_str());
 	}
 }

@@ -31,10 +31,10 @@ void	Channel::addClient(int fd) {
 	// Client *client = ServerInstance::getInstance()->getClient(fd);
 
 	// if (this->_messages.size() == 0)
-	// 	Client::sendMessage(fd, client->getFullname() + " PRIVMSG " + this->getName() + " :Welcome to the " + this->getName() + " channel !");
+	// 	Client::sendPrivMsg(fd, client->getFullname() + " PRIVMSG " + this->getName() + " :Welcome to the " + this->getName() + " channel !");
 
-	for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
-		Client::sendMessage(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
+	// for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
+	// 	Client::sendPrivMsg(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
 }
 
 bool	Channel::hasClient(int fd) {
@@ -87,20 +87,21 @@ void	Channel::showClients()
 	std::cout << std::endl;
 }
 
-void Channel::sendMessage(Client *sender, std::string message)
+void Channel::broadcastPrivMsg(Client *sender, std::string message)
 {
 	if (message.find("\r\n") == std::string::npos)
 		message += "\r\n";
 
 	if (sender == NULL)
-		return ;
+		throw std::runtime_error("Sender can't be NULL");
 
 	this->_messages.push_back(new Message(sender->getFd(), sender->getFullname(), message));
 
 	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
 	{
+		Client * client = this->_server->getClient(*it);
 		if (*it != sender->getFd())
-			Client::sendMessage(*it, sender->getFullname() + " PRIVMSG " + this->getName() + " :" + message);
+			client->sendPrivMsg(sender, message);
 	}
 }
 
@@ -136,7 +137,7 @@ bool	Channel::hasInvited(Client client)
 
 void	Channel::invite(Client client)
 {
-	std::cout << "Invite client to channel #" << this->getName() << std::endl;
+	std::cout << "Invite client to channel " << this->getName() << std::endl;
 	int fd = client.getFd();
 	if (!this->hasInvited(client))
 		this->_invited.push_back(fd);

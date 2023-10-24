@@ -1,4 +1,5 @@
 #include "PrivMsg.hpp"
+#include <rpl_errors.h>
 
 PrivMsg::PrivMsg() {
 	this->_minArgsRequired = 2;
@@ -31,7 +32,7 @@ void	PrivMsg::sendMessageClient(Client sender, std::string username, std::string
 	if (receiver)
 		receiver->sendMessage(&sender, message);
 	else
-		Client::sendMessage(sender.getFd(), ":" + sender.getServername() + " 401 " + sender.getNickname() + " " + username + " :User not found");
+		sender.reply(ERR_NOSUCHNICK, username.c_str());
 }
 
 void	PrivMsg::sendMessageChannel(Client sender, std::string name, std::string message) const {
@@ -41,12 +42,12 @@ void	PrivMsg::sendMessageChannel(Client sender, std::string name, std::string me
 	if (channel && hasClient)
 	{
 		channel->showClients();
-		channel->sendMessage(&sender, message);
+		channel->broadcastPrivMsg(&sender, message);
 	}
 	else if (!hasClient)
-		Client::sendMessage(sender.getFd(), "You are not in this channel");
+		sender.reply(ERR_NOTONCHANNEL, name.c_str());
 	else
-		Client::sendMessage(sender.getFd(), "Channel not found");
+		sender.reply(ERR_NOSUCHCHANNEL, name.c_str());	
 }
 
 bool	PrivMsg::isToChannel(std::string channel_name) const
@@ -62,7 +63,8 @@ void	PrivMsg::execute(Client sender, std::vector<std::string> args) const {
 	std::string message = this->getMessage(args);
 
 	if (username == sender.getUsername())
-		return Client::sendMessage(sender.getFd(), "462 " + this->_commandName + " :You can't send a message to yourself");
+		// I don't think that this is the correct reply
+		return sender.reply("462 ", this->_commandName + " :You can't send a message to yourself");
 
 	if (this->isToChannel(username))
 		this->sendMessageChannel(sender, username, message);
