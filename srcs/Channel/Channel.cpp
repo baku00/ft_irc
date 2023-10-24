@@ -67,7 +67,8 @@ bool	Channel::removeClient(int fd)
 	return isInChannel;
 }
 
-void Channel::removeClient(Channel *channel, int fd)
+void	Channel::removeClient(Channel *channel, int fd)
+
 {
 	channel->removeClient(fd);
 	if (channel->getClients().size() == 0)
