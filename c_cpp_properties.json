@@ -1,0 +1,40 @@
+{
+    "version": 4,
+    "env": {
+        "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}/srcs", "${workspaceFolder}/tests"]
+    },
+    "configurations": [
+        {
+            "name": "IRC",
+            "includePath": [
+                "srcs/",
+                "tests/",
+                "${default}"
+            ],
+            "defines": [
+                "${default}"
+            ],
+            "macFrameworkPath": [
+                "${default}",
+                "additional/paths"
+            ],
+            "forcedInclude": [
+                "${default}",
+                "additional/paths"
+            ],
+            "compileCommands": "${default}",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${default}",
+                "path": [
+                    "${default}",
+                    "additional/paths"
+                ]
+            },
+            "intelliSenseMode": "${default}",
+            "cStandard": "${default}",
+            "cppStandard": "${default}",
+            "compilerPath": "${default}"
+        }
+    ]
+}
