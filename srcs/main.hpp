@@ -15,6 +15,7 @@
 # include <stdio.h>
 # include <map>
 # include <exception>
+# include <bitset>
 
 # include "Server/Instance/ServerInstance.hpp"
 

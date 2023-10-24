@@ -28,6 +28,11 @@ void	Channel::addClient(int fd) {
 	if (!this->hasClient(fd))
 		this->_clients.push_back(fd);
 
+	// Client *client = ServerInstance::getInstance()->getClient(fd);
+
+	// if (this->_messages.size() == 0)
+	// 	Client::sendMessage(fd, client->getFullname() + " PRIVMSG " + this->getName() + " :Welcome to the " + this->getName() + " channel !");
+
 	for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
 		Client::sendMessage(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
 }
@@ -40,6 +45,10 @@ bool	Channel::hasClient(int fd) {
 			return true;
 
 	return false;
+}
+
+bool	Channel::hasClient(Client client) {
+	return this->hasClient(client.getFd());
 }
 
 bool	Channel::removeClient(int fd)
@@ -58,12 +67,17 @@ bool	Channel::removeClient(int fd)
 	return isInChannel;
 }
 
-void	Channel::removeClient(std::map<std::string, Channel *> *channels, int fd)
-{
-	std::map<std::string, Channel *>::iterator it;
+void	Channel::removeClient(Channel *channel, int fd)
 
-	for (it = channels->begin(); it != channels->end(); it++)
-		it->second->removeClient(fd);
+{
+	channel->removeClient(fd);
+	if (channel->getClients().size() == 0)
+		Channel::remove(channel);
+}
+
+void Channel::remove(Channel *channel)
+{
+	delete channel;
 }
 
 void	Channel::showClients()
@@ -74,7 +88,7 @@ void	Channel::showClients()
 	std::cout << std::endl;
 }
 
-void	Channel::sendMessage(Client *sender, std::string message)
+void Channel::sendMessage(Client *sender, std::string message)
 {
 	if (message.find("\r\n") == std::string::npos)
 		message += "\r\n";
@@ -97,6 +111,36 @@ Channel *Channel::create(std::string name)
 	channel->setName(name);
 	ServerInstance::getInstance()->addChannel(channel);
 	return channel;
+}
+
+bool	Channel::hasOperator(Client client)
+{
+	std::vector<int>::iterator it = _operators.begin();
+	for (; it != _operators.end(); ++it)
+	{
+		if (*it == client.getFd())
+			return true;
+	}
+	return false;
+}
+
+bool	Channel::hasInvited(Client client)
+{
+	std::vector<int>::iterator it = _invited.begin();
+	for (; it != _invited.end(); ++it)
+	{
+		if (*it == client.getFd())
+			return true;
+	}
+	return false;
+}
+
+void	Channel::invite(Client client)
+{
+	std::cout << "Invite client to channel #" << this->getName() << std::endl;
+	int fd = client.getFd();
+	if (!this->hasInvited(client))
+		this->_invited.push_back(fd);
 }
 
 Channel &Channel::operator=(const Channel &copy) {

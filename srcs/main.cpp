@@ -20,8 +20,8 @@ int main(int argc, char **argv) {
 	const int PORT				= DEV_MODE ? 6668 : std::atoi(argv[1]);
 	const std::string PASSWORD	= DEV_MODE ? "password" : argv[2];
 
-	Server	*server;
-
+		Server	*server;
+	
 	try
 	{
 		server = ServerInstance::createInstance(PORT, PASSWORD);

@@ -1,20 +1,14 @@
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
-# include <iostream>
-# include <vector>
-# include <cstring>
-# include <cstdio>
-# include <cstdlib>
-# include <unistd.h>
-# include <arpa/inet.h>
-# include <sys/socket.h>
-# include <sys/types.h>
-# include <netinet/in.h>
-# include <poll.h>
-# include <stdio.h>
-# include <map>
-# include <exception>
+# include <main.hpp>
+# include <cstdarg>
+# include <string>
+# include <sstream>
+
+#define SSTR( x ) static_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
+
 
 class Client {
 	private:
@@ -57,6 +51,7 @@ class Client {
 		bool						isAuthenticated();
 		bool						isValidate();
 		void						sendMessage(Client *sender, std::string message);
+		void						reply(std::string code, std::string message...);
 
 		static void					sendMessage(int socket, std::string message);
 };

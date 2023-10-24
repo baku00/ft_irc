@@ -15,6 +15,7 @@ QUIT = srcs/Commands/Quit/Quit.cpp
 JOIN = srcs/Commands/Join/Join.cpp
 PING = srcs/Commands/Ping/Ping.cpp
 KICK = srcs/Commands/Kick/Kick.cpp
+INVITE = srcs/Commands/Invite/Invite.cpp
 CHANNEL = srcs/Channel/Channel.cpp
 MESSAGE = srcs/Utils/Message/Message.cpp
 TESTS = tests/test_mode.cpp
@@ -25,7 +26,7 @@ FILES = srcs/main.cpp $(TESTS) \
 		$(PASS) $(PRIV_MSG) $(NICK) \
 		$(USER) $(ME) $(QUIT) \
 		$(JOIN) $(CHANNEL) $(KICK) \
-		$(MESSAGE) $(PING)
+		$(MESSAGE) $(PING) $(INVITE)
 
 OBJS = $(FILES:.cpp=.o)
 

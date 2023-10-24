@@ -1,20 +1,7 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
-# include <iostream>
-# include <vector>
-# include <cstring>
-# include <cstdio>
-# include <cstdlib>
-# include <unistd.h>
-# include <arpa/inet.h>
-# include <sys/socket.h>
-# include <sys/types.h>
-# include <netinet/in.h>
-# include <poll.h>
-# include <stdio.h>
-# include <map>
-# include <exception>
+# include <main.hpp>
 # include "../Client/Client.hpp"
 # include "../Utils/Message/Message.hpp"
 # include <bitset>
@@ -29,6 +16,8 @@ class Channel {
 	private:
 		std::string					_name;
 		std::vector<int>			_clients;
+		std::vector<int>			_invited;
+		std::vector<int>			_operators;
 		std::vector<Message *>		_messages;
 		t_mode						_mode;
 		Server						*_server;
@@ -58,13 +47,13 @@ class Channel {
 		void						addClient(int fd);
 		std::vector<int>			getClients();
 		bool						hasClient(int fd);
+		bool						hasClient(Client client);
 		void						showClients();
-		bool						removeClient(int fd);
 		void						kickClient(int fd);
 
-		void						sendMessage(Client *sender, std::string message);
-
+		bool						removeClient(int fd);
 		static void					removeClient(Channel *channel, int fd);
+
 		static void					remove(Channel *channel);
 		void						sendMessage(Client *sender, std::string message);
 
@@ -74,6 +63,11 @@ class Channel {
 		void						delMode(t_mode mode);
 
 		static Channel				*create(std::string name);
+
+		bool						hasOperator(Client client);
+
+		void						invite(Client client);
+		bool						hasInvited(Client client);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);
