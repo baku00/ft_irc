@@ -16,6 +16,8 @@
 # include <map>
 # include <exception>
 # include <bitset>
+# include "rpl_errors.h"
+# include "rpl_numeric.h"
 
 # include "Server/Instance/ServerInstance.hpp"
 

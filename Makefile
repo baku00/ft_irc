@@ -16,11 +16,12 @@ JOIN = srcs/Commands/Join/Join.cpp
 PING = srcs/Commands/Ping/Ping.cpp
 KICK = srcs/Commands/Kick/Kick.cpp
 INVITE = srcs/Commands/Invite/Invite.cpp
+TOPIC = srcs/Commands/Topic/Topic.cpp
 CHANNEL = srcs/Channel/Channel.cpp
 MESSAGE = srcs/Utils/Message/Message.cpp
 TESTS = tests/test_mode.cpp
 
-FILES = srcs/main.cpp $(TESTS) \
+FILES = srcs/main.cpp $(TESTS) $(TOPIC) \
 		$(SERVER) $(CLIENT) $(PARSER) \
 		$(AUTH)	$(A_COMMAND) $(INSTANCE) \
 		$(PASS) $(PRIV_MSG) $(NICK) \
