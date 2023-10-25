@@ -5,6 +5,7 @@ Channel::Channel()
 {
 	std::cout << "Create a channel instance" << std::endl;
 	this->setName("");
+	this->setTopic("");
 	this->_mode = 0;
 	this->_server = ServerInstance::getInstance();
 }
@@ -27,14 +28,6 @@ std::vector<int>	Channel::getClients()				{	return				this->_clients;		}
 void	Channel::addClient(int fd) {
 	if (!this->hasClient(fd))
 		this->_clients.push_back(fd);
-
-	// Client *client = ServerInstance::getInstance()->getClient(fd);
-
-	// if (this->_messages.size() == 0)
-	// 	Client::sendPrivMsg(fd, client->getFullname() + " PRIVMSG " + this->getName() + " :Welcome to the " + this->getName() + " channel !");
-
-	// for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
-	// 	Client::sendPrivMsg(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
 }
 
 bool	Channel::hasClient(int fd) {
@@ -142,6 +135,16 @@ void	Channel::invite(Client client)
 	int fd = client.getFd();
 	if (!this->hasInvited(client))
 		this->_invited.push_back(fd);
+}
+
+void	Channel::setTopic(std::string topic)
+{
+	this->_topic = topic;
+}
+
+std::string	Channel::getTopic()
+{
+	return this->_topic;
 }
 
 Channel &Channel::operator=(const Channel &copy) {

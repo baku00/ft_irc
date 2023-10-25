@@ -9,6 +9,7 @@
 #include "../Commands/Ping/Ping.hpp"
 #include "../Commands/Kick/Kick.hpp"
 #include "../Commands/Invite/Invite.hpp"
+#include "../Commands/Topic/Topic.hpp"
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
@@ -22,6 +23,7 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PING", new Ping()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("KICK", new Kick()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("INVITE", new Invite()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("TOPIC", new Topic()));
 }
 
 Parser::~Parser() {}

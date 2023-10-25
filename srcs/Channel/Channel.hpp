@@ -21,6 +21,7 @@ class Channel {
 		std::vector<Message *>		_messages;
 		t_mode						_mode;
 		Server						*_server;
+		std::string					_topic;
 
 	public:
 		Channel();
@@ -68,6 +69,9 @@ class Channel {
 
 		void						invite(Client client);
 		bool						hasInvited(Client client);
+
+		void						setTopic(std::string topic);
+		std::string					getTopic();
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);
