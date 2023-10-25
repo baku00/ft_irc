@@ -27,14 +27,6 @@ std::vector<int>	Channel::getClients()				{	return				this->_clients;		}
 void	Channel::addClient(int fd) {
 	if (!this->hasClient(fd))
 		this->_clients.push_back(fd);
-
-	// Client *client = ServerInstance::getInstance()->getClient(fd);
-
-	// if (this->_messages.size() == 0)
-	// 	Client::sendPrivMsg(fd, client->getFullname() + " PRIVMSG " + this->getName() + " :Welcome to the " + this->getName() + " channel !");
-
-	// for (std::vector<Message *>::iterator it = this->_messages.begin(); it != this->_messages.end(); it++)
-	// 	Client::sendPrivMsg(fd, (*it)->getFullname() + " PRIVMSG " + this->getName() + " :" + (*it)->getContent());
 }
 
 bool	Channel::hasClient(int fd) {
@@ -67,19 +59,6 @@ bool	Channel::removeClient(int fd)
 	return isInChannel;
 }
 
-void	Channel::removeClient(Channel *channel, int fd)
-
-{
-	channel->removeClient(fd);
-	if (channel->getClients().size() == 0)
-		Channel::remove(channel);
-}
-
-void Channel::remove(Channel *channel)
-{
-	delete channel;
-}
-
 void	Channel::showClients()
 {
 	std::cout << "Clients in channel " << this->getName() << ":" << std::endl;
@@ -88,23 +67,46 @@ void	Channel::showClients()
 	std::cout << std::endl;
 }
 
-void Channel::broadcastPrivMsg(Client *sender, std::string message)
+void Channel::broadcastPrivMsg(Client *sender, const std::string& message)
 {
-	if (message.find("\r\n") == std::string::npos)
-		message += "\r\n";
-
-	if (sender == NULL)
-		throw std::runtime_error("Sender can't be NULL");
-
-	this->_messages.push_back(new Message(sender->getFd(), sender->getFullname(), message));
-
-	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
-	{
-		Client * client = this->_server->getClient(*it);
-		if (*it != sender->getFd())
-			client->sendPrivMsg(sender, message);
-	}
+    std::vector<int>::iterator  member;
+    std::vector<int>            members = this->getClients();
+    for (member = members.begin(); member != members.end(); member++)
+    {
+        Client * member_client = this->_server->getClient(*member);
+        member_client->sendPrivMsg(sender, message);
+    }
 }
+
+
+void Channel::broadcastMessage(Client *sender, const std::string& message)
+{
+    std::vector<int>::iterator  member;
+    std::vector<int>            members = this->getClients();
+    for (member = members.begin(); member != members.end(); member++)
+    {
+        Client * member_client = this->_server->getClient(*member);
+        member_client->sendMessage(sender, message);
+    }
+}
+
+std::string Channel::getNicknames()
+{
+    std::ostringstream oss;
+
+    std::vector<int>::iterator  member;
+    std::vector<int>            members = this->getClients();
+    for (member = members.begin(); member != members.end(); member++)
+    {
+        Client * member_client = this->_server->getClient(*member);
+        if (member != members.begin())
+            oss << " ";
+        oss << member_client->getNickname();
+    }
+
+    return oss.str();
+}
+
 
 Channel *Channel::create(std::string name)
 {

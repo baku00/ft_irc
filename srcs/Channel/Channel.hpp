@@ -37,8 +37,6 @@ class Channel {
 			L_LIMIT		= 0b00001
 		};
 
-		// static const
-
 		Channel						&operator=(const Channel &copy);
 
 		std::string					getName();
@@ -49,14 +47,10 @@ class Channel {
 		bool						hasClient(int fd);
 		bool						hasClient(Client client);
 		void						showClients();
-		void						kickClient(int fd);
-
 		bool						removeClient(int fd);
-		static void					removeClient(Channel *channel, int fd);
 
-		static void					remove(Channel *channel);
-		void						broadcastPrivMsg(Client *sender, std::string message);
-
+		void						broadcastPrivMsg(Client *sender, const std::string& message);
+        void                        broadcastMessage(Client *sender, const std::string& message);
 
 		bool						hasMode(t_mode mode);
 		void						addMode(t_mode mode);
@@ -68,6 +62,8 @@ class Channel {
 
 		void						invite(Client client);
 		bool						hasInvited(Client client);
+
+        std::string                 getNicknames();
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);
