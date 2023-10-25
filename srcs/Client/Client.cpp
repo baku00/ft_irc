@@ -4,17 +4,17 @@
 
 Client::Client()
 {
-	this->_isAuthenticated = false;
-	this->_isValidate = false;
-
+	throw std::runtime_error("Cannot create a client without a fd");
 }
 
-Client::Client(int fd, bool by_fd) {
-	(void) by_fd;
+Client::Client(int fd)
+{
 	this->_fd = fd;
 	this->_isAuthenticated = false;
 	this->_isValidate = false;
 
+	// Here we should also set some other default values
+	this->_nickname = "*";
 }
 
 Client::Client(const Client &copy) {
@@ -133,6 +133,8 @@ void	Client::sendMessage(int socket, std::string message)
 	if (message.find("\r\n") == std::string::npos)
 		message += "\r\n";
 
+	std::cout << ">> " << message << std::endl;
+
 	ssize_t bytesSent = send(socket, message.c_str(), message.length(), 0);
 
 	if (bytesSent == -1) {
@@ -142,18 +144,18 @@ void	Client::sendMessage(int socket, std::string message)
 	}
 }
 
-void	Client::sendMessage(Client *sender, std::string message)
+void Client::sendMessage(Client *sender, std::string message)
 {
-	if (message.find("\r\n") == std::string::npos)
-		message += "\r\n";
-
 	if (sender == NULL)
-		return ;
+		throw std::runtime_error("Sender can't be NULL");
 
-	Client::sendMessage(
-		this->getFd(),
-		sender->getFullname() + " PRIVMSG " + this->getNickname() + " :" + message
-	);
+	Client::sendMessage(this->getFd(), sender->getFullname() + " " + message);
+}
+
+void Client::sendPrivMsg(Client *sender, std::string message)
+{
+	std::string privMsgPrefix = "PRIVMSG " + this->getNickname() + " :";
+	this->sendMessage(sender, privMsgPrefix + message);
 }
 
 void Client::reply(std::string code, std::string message...)

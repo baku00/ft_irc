@@ -55,7 +55,7 @@ class Channel {
 		static void					removeClient(Channel *channel, int fd);
 
 		static void					remove(Channel *channel);
-		void						sendMessage(Client *sender, std::string message);
+		void						broadcastPrivMsg(Client *sender, std::string message);
 
 
 		bool						hasMode(t_mode mode);

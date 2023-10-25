@@ -1,4 +1,5 @@
 #include "ACommand.hpp"
+#include <rpl_errors.h>
 
 ACommand::ACommand() {
 }
@@ -26,5 +27,5 @@ std::string	ACommand::getCommandName() const {
 }
 
 void	ACommand::errorNumberArguments(Client client) const {
-	Client::sendMessage(client.getFd(), "461 " + this->_commandName + " :Invalid number of parameters");
+	client.reply(ERR_NEEDMOREPARAMS, this->_commandName.c_str());
 }

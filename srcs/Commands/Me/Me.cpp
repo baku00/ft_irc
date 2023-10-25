@@ -12,5 +12,6 @@ void	Me::execute(Client client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 
-	Client::sendMessage(client.getFd(), client.getInfo());
+	// What is this command ? Not specified in RFC...
+	client.sendPrivMsg(&client, client.getInfo());
 }

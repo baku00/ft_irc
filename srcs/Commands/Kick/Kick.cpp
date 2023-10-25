@@ -33,13 +33,15 @@ void	Kick::execute(Client client, std::vector<std::string> args) const {
 	Client *client_to_kick = ServerInstance::getInstance()->getClientByNickname(nickname);
 
 	if(!client_to_kick)
-		return Client::sendMessage(client.getFd(), "Client not found");
+		// Here we should send the appropriate reply
+		return client.sendPrivMsg(client_to_kick, "Client not found");
 
 	Channel *channel = ServerInstance::getInstance()->getChannel(channel_name);
 	if (!channel)
-		return Client::sendMessage(client.getFd(), "Channel not found");
+		// Here we should send the appropriate reply
+		return client.sendPrivMsg(client_to_kick, "Channel not found");
 
 	bool hasBeenEjected = channel->removeClient(client_to_kick->getFd());
 	if (hasBeenEjected)
-		Client::sendMessage(client_to_kick->getFd(), this->getCommandName() + " " + channel_name + " " + nickname + " " + reason);
+		client_to_kick->sendMessage(&client, this->getCommandName() + " " + channel_name + " " + nickname + " " + reason);
 }

@@ -24,10 +24,10 @@ class Client {
 		void						validate();
 
 	public:
-		Client(int fd, bool by_fd);
 		Client();
-		~Client();
-		Client(const Client &copy);
+        Client(int fd);
+        ~Client();
+        Client(const Client &copy);
 
 		Client						&operator=(const Client &copy);
 
@@ -50,9 +50,12 @@ class Client {
 		void						setRealname(std::string realname);
 		bool						isAuthenticated();
 		bool						isValidate();
+
 		void						sendMessage(Client *sender, std::string message);
+		void						sendPrivMsg(Client *sender, std::string message);
 		void						reply(std::string code, std::string message...);
 
+		// This method is not meant to be called directly, prefer one of the non-static methods
 		static void					sendMessage(int socket, std::string message);
 };
 
