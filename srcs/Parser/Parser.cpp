@@ -10,6 +10,7 @@
 #include "../Commands/Kick/Kick.hpp"
 #include "../Commands/Invite/Invite.hpp"
 #include "../Commands/Topic/Topic.hpp"
+#include "../String/String.hpp"
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
@@ -28,29 +29,18 @@ Parser::Parser() {
 
 Parser::~Parser() {}
 
-std::string					Parser::trim(std::string input)
-{
-	size_t first = input.find_first_not_of(" \t\n\r");
-	size_t last = input.find_last_not_of(" \t\n\r");
-
-	if (first == std::string::npos || last == std::string::npos)
-		return "";
-
-	return input.substr(first, (last - first + 1));
-}
-
 std::string					Parser::getCommand(std::string input) {
 	size_t space_pos = input.find(" ");
 	if (space_pos == std::string::npos)
-		return Parser::trim(input);
-	return Parser::trim(input.substr(0, space_pos));
+		return String::trim(input, " \t\n\r");
+	return String::trim(input.substr(0, space_pos), " \t\n\r");
 }
 
 std::string					Parser::getChannel(std::string input) {
 	size_t space_pos = input.find(" ");
 	if (space_pos == std::string::npos)
-		return Parser::trim(input);
-	return Parser::trim(input.substr(0, space_pos));
+		return String::trim(input, " \t\n\r");
+	return String::trim(input.substr(0, space_pos), " \t\n\r");
 }
 
 std::vector<std::string>	Parser::getParameters(std::string input) {
@@ -70,14 +60,14 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 	{
 		if ((space_pos = input.find(" ")) == std::string::npos)
 		{
-			args.push_back(Parser::trim(input));
+			args.push_back(String::trim(input, " \t\n\r"));
 			break ;
 		}
 		else
 		{
 			std::string arg = input.substr(0, space_pos);
 			if (arg.length())
-				args.push_back(Parser::trim(arg));
+				args.push_back(String::trim(arg, " \t\n\r"));
 		}
 		input = input.substr(space_pos + 1, input.length() - space_pos - 1);
 	}

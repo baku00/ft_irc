@@ -72,6 +72,7 @@ class Channel {
 
 		void						setTopic(std::string topic);
 		std::string					getTopic();
+		void						sendTopic();
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

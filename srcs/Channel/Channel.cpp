@@ -147,6 +147,15 @@ std::string	Channel::getTopic()
 	return this->_topic;
 }
 
+void	Channel::sendTopic()
+{
+	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		Client *client = this->_server->getClient(*it);
+		client->reply(RPL_TOPIC, this->getName().c_str(), this->getTopic().c_str());
+	}
+}
+
 Channel &Channel::operator=(const Channel &copy) {
 	if (this != &copy) {
 		this->_name			= copy._name;

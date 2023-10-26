@@ -1,4 +1,5 @@
 #include "Topic.hpp"
+#include "../../String/String.hpp"
 
 Topic::Topic() {
 	this->_minArgsRequired = 1;
@@ -30,10 +31,8 @@ void	Topic::execute(Client client, std::vector<std::string> args) const {
 		return client.reply(ERR_NOTONCHANNEL, channel_name.c_str());
 	if (channel->hasMode(Channel::I_INVITE) && !channel->hasOperator(client))
 		return client.reply(ERR_CHANOPRIVSNEEDED, channel_name.c_str());
-	std::cout << "Topic: (" << topic << ")" << std::endl;
 	if (args.size() == 1)
 		return client.reply(RPL_TOPIC, channel_name.c_str(), channel->getTopic().c_str());
-	channel->setTopic(topic);
-	// Mettre le bon message
-	client.reply(RPL_TOPIC, channel_name.c_str(), channel->getTopic().c_str());
+	channel->setTopic(String::trim(topic, " \t\n\r\""));
+	channel->sendTopic();
 }
