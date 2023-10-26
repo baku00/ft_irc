@@ -14,7 +14,7 @@ std::string	Join::getName(std::vector<std::string> args) const {
 	return args[1];
 }
 
-void	Join::execute(Client client, std::vector<std::string> args) const {
+void	Join::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 
@@ -44,6 +44,7 @@ void	Join::execute(Client client, std::vector<std::string> args) const {
 
     // 3. RPL_TOPIC, RPL_NAMREPLY and RPL_ENDOFNAMES
     // TODO: here replace by topic
-    client.reply(RPL_TOPIC, channel_name.c_str(), "");
+    client.reply(RPL_TOPIC, channel_name.c_str(), "*");
     client.reply(RPL_NAMREPLY, channel_name.c_str(), channel->getNicknames().c_str());
+    client.reply(RPL_ENDOFNAMES, channel_name.c_str());
 }

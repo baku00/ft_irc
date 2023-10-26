@@ -8,7 +8,7 @@ Ping::Ping() {
 
 Ping::~Ping() {}
 
-void	Ping::execute(Client client, std::vector<std::string> args) const {
+void	Ping::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 

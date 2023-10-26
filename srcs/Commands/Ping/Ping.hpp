@@ -9,7 +9,7 @@ class Ping : public ACommand {
 	public:
 		Ping();
 		virtual ~Ping();
-		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual void		execute(Client &client, std::vector<std::string> args) const;
 };
 
 #endif

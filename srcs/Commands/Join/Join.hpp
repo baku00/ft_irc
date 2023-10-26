@@ -12,7 +12,7 @@ class Join : public ACommand {
 	public:
 		Join();
 		virtual ~Join();
-		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual void		execute(Client &client, std::vector<std::string> args) const;
 };
 
 #endif

@@ -9,7 +9,7 @@ class Pass : public ACommand {
 	public:
 		Pass();
 		virtual ~Pass();
-		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual void		execute(Client &client, std::vector<std::string> args) const;
 };
 
 #endif

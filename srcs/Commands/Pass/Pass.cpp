@@ -9,13 +9,13 @@ Pass::Pass() {
 
 Pass::~Pass() {}
 
-void	Pass::execute(Client client, std::vector<std::string> args) const {
+void	Pass::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 
-	if (!Auth::authenticate(ServerInstance::getInstance()->getClient(client.getFd()), args[1]))
+	if (!Auth::authenticate(&client, args[1]))
 		return client.reply(ERR_PASSWDMISMATCH);
-	
+
 	// There is nothing to send directly here but the Welcome message should only
 	// be sent if the password success, so maybe not send it directly in the server
 	// connection but only on successfull PASS command.
