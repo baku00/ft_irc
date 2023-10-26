@@ -5,7 +5,7 @@ Channel::Channel()
 {
 	std::cout << "Create a channel instance" << std::endl;
 	this->setName("");
-	this->setTopic("");
+	this->setTopic("*");
 	this->_mode = 0;
 	this->_server = ServerInstance::getInstance();
 }
