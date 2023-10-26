@@ -10,60 +10,72 @@
 typedef std::bitset<5> t_mode;
 
 class Server;
+
 class Client;
 
 class Channel {
-	private:
-		std::string					_name;
-		std::vector<int>			_clients;
-		std::vector<int>			_invited;
-		std::vector<int>			_operators;
-		std::vector<Message *>		_messages;
-		t_mode						_mode;
-		Server						*_server;
+private:
+    std::string _name;
+    std::vector<int> _clients;
+    std::vector<int> _invited;
+    std::vector<int> _operators;
+    std::vector<Message *> _messages;
+    t_mode _mode;
+    Server *_server;
 
-	public:
-		Channel();
-		~Channel();
-		Channel(const Channel &copy);
+public:
+    Channel();
 
-		enum Mode
-		{
-			BASE_MASK	= 0b11111,
-			I_INVITE	= 0b10000,
-			T_TOPIC		= 0b01000,
-			K_PASSWORD	= 0b00100,
-			O_OPERATOR	= 0b00010,
-			L_LIMIT		= 0b00001
-		};
+    ~Channel();
 
-		Channel						&operator=(const Channel &copy);
+    Channel(const Channel &copy);
 
-		std::string					getName();
-		void						setName(std::string name);
+    enum Mode {
+        BASE_MASK = 0b11111,
+        I_INVITE = 0b10000,
+        T_TOPIC = 0b01000,
+        K_PASSWORD = 0b00100,
+        O_OPERATOR = 0b00010,
+        L_LIMIT = 0b00001
+    };
 
-		void						addClient(int fd);
-		std::vector<int>			getClients();
-		bool						hasClient(int fd);
-		bool						hasClient(Client client);
-		void						showClients();
-		bool						removeClient(int fd);
+    Channel &operator=(const Channel &copy);
 
-		void						broadcastPrivMsg(Client *sender, const std::string& message);
-        void                        broadcastMessage(Client *sender, const std::string& message);
+    std::string getName();
 
-		bool						hasMode(t_mode mode);
-		void						addMode(t_mode mode);
-		void						delMode(t_mode mode);
+    void setName(std::string name);
 
-		static Channel				*create(std::string name);
+    void addClient(int fd);
 
-		bool						hasOperator(Client client);
+    std::vector<int> getClients();
 
-		void						invite(Client client);
-		bool						hasInvited(Client client);
+    bool hasClient(int fd);
 
-        std::string                 getNicknames();
+    bool hasClient(Client client);
+
+    void showClients();
+
+    bool removeClient(int fd);
+
+    void broadcastPrivMsg(Client *sender, const std::string &message);
+
+    void broadcastMessage(Client *sender, const std::string &message);
+
+    bool hasMode(t_mode mode);
+
+    void addMode(t_mode mode);
+
+    void delMode(t_mode mode);
+
+    static Channel *create(std::string name);
+
+    bool hasOperator(Client client);
+
+    void invite(Client client);
+
+    bool hasInvited(Client client);
+
+    std::string getNicknames();
 
     void broadcastChanMsg(Client *sender, const std::string &message);
 };

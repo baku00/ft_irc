@@ -8,11 +8,12 @@ class Client;
 
 class Auth {
 	private:
-		static std::vector<std::string>	getAuthorizedCommands();
+		static std::vector<std::string> getAuthorizedCommands();
 
 	public:
 		static bool isAuthorized(const std::string &command, bool is_registered);
-		static bool						authenticate(Client *client, std::string password);
+
+		static bool authenticate(Client *client, std::string password);
 };
 
 #endif

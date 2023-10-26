@@ -9,7 +9,7 @@ Pass::Pass() {
 
 Pass::~Pass() {}
 
-void	Pass::execute(Client &client, std::vector<std::string> args) const {
+void Pass::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 

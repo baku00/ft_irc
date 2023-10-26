@@ -2,13 +2,11 @@
 #include "../Server/Instance/ServerInstance.hpp"
 #include <string>
 
-Client::Client()
-{
+Client::Client() {
 	throw std::runtime_error("Cannot create a client without a fd");
 }
 
-Client::Client(int fd)
-{
+Client::Client(int fd) {
 	this->_fd = fd;
 	this->_isAuthenticated = false;
 	this->_isValidate = false;
@@ -21,13 +19,13 @@ Client::Client(const Client &copy) {
 	*this = copy;
 }
 
-void	Client::setNickname(std::string nickname) {
+void Client::setNickname(std::string nickname) {
 	this->_nickname = nickname;
 
 	this->validate();
 }
 
-void	Client::setUserInfo(std::string username, std::string hostname, std::string servername, std::string realname) {
+void Client::setUserInfo(std::string username, std::string hostname, std::string servername, std::string realname) {
 	this->setUsername(username);
 	this->setHostname(hostname);
 	this->setServername(servername);
@@ -36,53 +34,53 @@ void	Client::setUserInfo(std::string username, std::string hostname, std::string
 	this->validate();
 }
 
-void	Client::setUsername(std::string username) {
+void Client::setUsername(std::string username) {
 	this->_username = username;
 
 	if (!this->getNickname().length())
 		this->setNickname(username);
 }
 
-void	Client::setHostname(std::string hostname) {
+void Client::setHostname(std::string hostname) {
 	this->_hostname = hostname;
 }
 
-void	Client::setServername(std::string serverName) {
+void Client::setServername(std::string serverName) {
 	this->_serverName = serverName;
 }
 
-void	Client::setRealname(std::string realName) {
+void Client::setRealname(std::string realName) {
 	std::cout << "Real name: " << realName << std::endl;
 	this->_realName = realName;
 }
 
-void	Client::login(bool is_logged_in) {
+void Client::login(bool is_logged_in) {
 	if (!this->isAuthenticated())
 		this->_isAuthenticated = is_logged_in;
 }
 
-std::string	Client::getNickname() {
+std::string Client::getNickname() {
 	return this->_nickname;
 }
 
-std::string	Client::getUsername() {
+std::string Client::getUsername() {
 	return this->_username;
 }
 
-std::string	Client::getHostname() {
+std::string Client::getHostname() {
 	return this->_hostname;
 }
 
-std::string	Client::getServername() {
+std::string Client::getServername() {
 	return this->_serverName;
 }
 
-std::string	Client::getRealname() {
+std::string Client::getRealname() {
 	std::cout << "_realName: " << this->_realName << std::endl;
 	return this->_realName;
 }
 
-std::string	Client::getInfo() {
+std::string Client::getInfo() {
 	std::string info = "";
 
 	info += "Nickname: " + this->getNickname() + "\r\n";
@@ -104,36 +102,34 @@ std::string	Client::getInfo() {
 	return info;
 }
 
-std::string Client::getFullname()
-{
+std::string Client::getFullname() {
 	return ":" + this->getNickname() + "!" + this->getUsername() + "@" + this->getHostname();
 }
 
-int	Client::getFd() {
+int Client::getFd() {
 	return this->_fd;
 }
 
-bool	Client::isAuthenticated() {
+bool Client::isAuthenticated() {
 	return this->_isAuthenticated;
 }
 
-bool	Client::isValidate() {
+bool Client::isValidate() {
 	this->validate();
 	return this->_isValidate;
 }
 
-void	Client::validate() {
+void Client::validate() {
 	this->_isValidate = this->getNickname().length() && \
-						this->getNickname() != "*" && \
-						this->getUsername().length() && \
-						this->getHostname().length() && \
-						_isAuthenticated;
+                        this->getNickname() != "*" && \
+                        this->getUsername().length() && \
+                        this->getHostname().length() && \
+                        _isAuthenticated;
 }
 
 Client::~Client() {}
 
-void	Client::sendMessage(int socket, std::string message)
-{
+void Client::sendMessage(int socket, std::string message) {
 	if (message.find("\r\n") == std::string::npos)
 		message += "\r\n";
 
@@ -148,65 +144,60 @@ void	Client::sendMessage(int socket, std::string message)
 	}
 }
 
-void Client::sendMessage(Client *sender, std::string message)
-{
+void Client::sendMessage(Client *sender, std::string message) {
 	if (sender == NULL)
 		throw std::runtime_error("Sender can't be NULL");
 
 	Client::sendMessage(this->getFd(), sender->getFullname() + " " + message);
 }
 
-void Client::sendPrivMsg(Client *sender, std::string message)
-{
+void Client::sendPrivMsg(Client *sender, std::string message) {
 	std::string privMsgPrefix = "PRIVMSG " + this->getNickname() + " :";
 	this->sendMessage(sender, privMsgPrefix + message);
 }
 
-void Client::sendChanMsg(Client *sender, std::string channel, std::string message)
-{
+void Client::sendChanMsg(Client *sender, std::string channel, std::string message) {
 	std::string chanMsgPrefix = "PRIVMSG " + channel + " :";
 	this->sendMessage(sender, chanMsgPrefix + message);
 }
 
-void Client::reply(std::string code, std::string message...)
-{
-	va_list	args;
+void Client::reply(std::string code, std::string message...) {
+	va_list args;
 	va_start(args, message);
-	
-	std::size_t	arg_pos	= message.find("<");
-	std::size_t	end_pos = message.find(">");
-	int			length	= end_pos - arg_pos + 1;
 
-	while (arg_pos != std::string::npos && end_pos != std::string::npos)
-	{
+	std::size_t arg_pos = message.find("<");
+	std::size_t end_pos = message.find(">");
+	int length = end_pos - arg_pos + 1;
+
+	while (arg_pos != std::string::npos && end_pos != std::string::npos) {
 		if (length < 0)
 			throw std::runtime_error(SSTR("Unexpected token '>' at column " << end_pos));
 
-		char *	replace = va_arg(args, char *);
+		char *replace = va_arg(args, char *);
 		//std::cout << "REPLY: replace: " << replace << std::endl;
 		message.replace(arg_pos, length, replace);
-		
+
 		arg_pos = message.find("<");
 		end_pos = message.find(">");
-		length	= end_pos - arg_pos + 1;
+		length = end_pos - arg_pos + 1;
 	}
 
 	va_end(args);
 
-	std::string	reply = ":" + this->getServername() + " " + code + " " + this->getNickname() + " " + message;
+	std::string reply = ":" + this->getServername() + " " + code + " " + this->getNickname() + " " + message;
 	//std::cout << reply << std::endl;
 	sendMessage(this->getFd(), reply);
 }
 
 Client &Client::operator=(const Client &copy) {
 	if (this != &copy) {
-		this->_nickname			= copy._nickname;
-		this->_username			= copy._username;
-		this->_hostname			= copy._hostname;
-		this->_serverName		= copy._serverName;
-		this->_isAuthenticated	= copy._isAuthenticated;
-		this->_fd				= copy._fd;
-		this->_isValidate		= copy._isValidate;
+		this->_nickname = copy._nickname;
+		this->_username = copy._username;
+		this->_hostname = copy._hostname;
+		this->_serverName = copy._serverName;
+		this->_isAuthenticated = copy._isAuthenticated;
+		this->_fd = copy._fd;
+		this->_isValidate = copy._isValidate;
 	}
 	return *this;
 }
