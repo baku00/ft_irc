@@ -118,12 +118,16 @@ bool	Client::isAuthenticated() {
 }
 
 bool	Client::isValidate() {
+	this->validate();
 	return this->_isValidate;
 }
 
 void	Client::validate() {
-	this->_isValidate = this->getNickname().length() && this->getUsername().length() && this->getRealname().length();
-	this->_isValidate = true;
+	this->_isValidate = this->getNickname().length() && \
+						this->getNickname() != "*" && \
+						this->getUsername().length() && \
+						this->getHostname().length() && \
+						_isAuthenticated;
 }
 
 Client::~Client() {}
@@ -140,7 +144,7 @@ void	Client::sendMessage(int socket, std::string message)
 	if (bytesSent == -1) {
 		std::cerr << "Erreur lors de l'envoi de la réponse au client." << std::endl;
 	} else {
-		std::cout << "Réponse envoyé au client." << std::endl;
+//		std::cout << "Réponse envoyé au client." << std::endl;
 	}
 }
 
@@ -158,6 +162,12 @@ void Client::sendPrivMsg(Client *sender, std::string message)
 	this->sendMessage(sender, privMsgPrefix + message);
 }
 
+void Client::sendChanMsg(Client *sender, std::string channel, std::string message)
+{
+	std::string chanMsgPrefix = "PRIVMSG " + channel + " :";
+	this->sendMessage(sender, chanMsgPrefix + message);
+}
+
 void Client::reply(std::string code, std::string message...)
 {
 	va_list	args;
@@ -173,7 +183,7 @@ void Client::reply(std::string code, std::string message...)
 			throw std::runtime_error(SSTR("Unexpected token '>' at column " << end_pos));
 
 		char *	replace = va_arg(args, char *);
-		std::cout << "REPLY: replace: " << replace << std::endl;
+		//std::cout << "REPLY: replace: " << replace << std::endl;
 		message.replace(arg_pos, length, replace);
 		
 		arg_pos = message.find("<");
@@ -184,7 +194,7 @@ void Client::reply(std::string code, std::string message...)
 	va_end(args);
 
 	std::string	reply = ":" + this->getServername() + " " + code + " " + this->getNickname() + " " + message;
-	std::cout << reply << std::endl;
+	//std::cout << reply << std::endl;
 	sendMessage(this->getFd(), reply);
 }
 

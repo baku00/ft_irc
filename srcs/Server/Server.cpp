@@ -1,5 +1,6 @@
 #include "Server.hpp"
 #include <rpl_numeric.h>
+#include <rpl_errors.h>
 
 Server::Server()
 {
@@ -13,6 +14,8 @@ Server::Server(int port, std::string password)
 	this->_password = password;
 	this->_pollfds = std::vector<struct pollfd>(1);
 	this->_server_name = "42IRC";
+	this->_version = "1.0";
+	this->_created_at = "2023";
 	this->_parser = new Parser();
 }
 
@@ -120,18 +123,9 @@ void	Server::acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen
 		newClient.events = POLLIN;
 		_pollfds.push_back(newClient);
 
-		// I'm not sure if it is a good idea to put an instance directly here
-		Client client = Client(newClient.fd);
-		_clients.insert(std::pair<int, Client>(newClient.fd, client));
-		std::cout << "Nouveau client ajouté" << std::endl;
-
-		// TODO: also send other replies needed at the first connexion
-		client.reply(
-			RPL_WELCOME,
-			client.getNickname().c_str(),
-			client.getUsername().c_str(),
-			client.getHostname().c_str()
-		);
+		Client * client = new Client(newClient.fd);
+		_connections.insert(std::pair<int, Client *>(newClient.fd, client));
+		std::cout << "Nouvelle connection" << std::endl;
 	}
 }
 
@@ -140,8 +134,6 @@ void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 	char buffer[1024] = {0};
 	ssize_t bytesRead = read(client.fd, buffer, sizeof(buffer));
 	buffer[bytesRead] = '\0';
-	std::cout << "Buffer:" << std::endl;
-	std::cout << "(" << buffer << ")" << std::endl;
 	if (bytesRead <= 0) {
 		this->disconnectClient(it);
 	} else {
@@ -176,7 +168,17 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 
 void	Server::parseInput(int fd, std::string input)
 {
-	Client &client = this->_clients[fd];
+    Client * client;
+    bool is_registered = false;
+    try {
+        client = this->getClient(fd);
+        is_registered = true;
+    }
+    catch (ClientNotFoundException & exception)
+    {
+        std::cerr << exception.what() << std::endl;
+        client = this->getConnection(fd);
+    }
 
 	// TODO: buffer
 	// if input doesnt end with \r\n: 
@@ -186,18 +188,38 @@ void	Server::parseInput(int fd, std::string input)
 	while ((new_line = input.find("\r\n")) != std::string::npos)
 	{
 		std::string line = input.substr(0, new_line);
-		std::cout << line << std::endl;
+		std::cout << "<< " << line << std::endl;
 		input = input.substr(new_line + 2);
 
 		// std::string channel				= this->_parser->getChannel(line);
-		std::string command				= this->_parser->getCommand(line);
-		std::vector<std::string> args	= this->_parser->getParameters(line);
+		std::string command				= Parser::getCommand(line);
+        std::vector<std::string> args	= Parser::getParameters(line);
 
-		// if (!Auth::isAuthorized(client, command))
-		// 	Client::sendPrivMsg(fd, "Vous devez être connecté au serveur et avoir un compte valide\r\n");
-		// else
-		this->_parser->execute(client, command, args);
+        if (Auth::isAuthorized(command, is_registered))
+		    this->_parser->execute(*client, command, args);
+        else
+            client->reply(ERR_RESTRICTED);
 	}
+
+    if (!is_registered && client->isValidate())
+    {
+        _clients.insert(std::pair<int, Client *>(fd, client));
+        _connections.erase(fd);
+
+        client->reply(RPL_WELCOME,
+                      client->getNickname().c_str(),
+                      client->getUsername().c_str(),
+                      client->getHostname().c_str());
+        client->reply(RPL_YOURHOST,
+                      this->_server_name.c_str(),
+                      this->_version.c_str());
+        client->reply(RPL_CREATED,
+                      this->_created_at.c_str());
+        client->reply(RPL_MYINFO,
+                      this->_server_name.c_str(),
+                      this->_version.c_str(),
+                      "0", "itkol");
+    }
 }
 
 std::string Server::getPassword()
@@ -205,41 +227,66 @@ std::string Server::getPassword()
 	return this->_password;
 }
 
+Client  *Server::getByFd(int fd, std::map<int, Client *> & clients) {
+    std::map<int, Client *>::iterator client_iter = clients.find(fd);
+    if (client_iter == clients.end())
+        throw ClientNotFoundException();
+    Client * client = client_iter->second;
+    return client;
+}
+
 Client	*Server::getClient(int fd)
 {
-	return &this->_clients[fd];
+    // WARNING: if the client does not exist,
+    //          a new one will be added.
+	// return &this->_clients[fd];
+
+    // Better do this:
+    return getByFd(fd, this->_clients);
+
+    // Which is something like this:
+//    std::map<int, Client *>::iterator client_iter = this->_clients.find(fd);
+//    if (client_iter == this->_clients.end())
+//        throw ClientNotFoundException();
+//    Client * client = client_iter->second;
+//    return client;
+}
+
+Client	*Server::getConnection(int fd)
+{
+    return getByFd(fd, this->_connections);
 }
 
 Client	*Server::getClientByNickname(std::string nickname)
 {
-	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	for (std::map<int, Client *>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
 	{
-		if (it->second.getNickname() == nickname)
-			return &it->second;
+		if (it->second->getNickname() == nickname)
+			return it->second;
 	}
-	std::cout << "Nothing client found" << std::endl;
+//	std::cout << "Nothing client found" << std::endl;
 	return NULL;
 }
 
-Client	*Server::getClientByServername(std::string servername)
-{
-	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
-	{
-		if (it->second.getServername() == servername)
-			return &it->second;
-	}
-	return NULL;
-}
-
-Client	*Server::getClientByHostname(std::string hostname)
-{
-	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
-	{
-		if (it->second.getHostname() == hostname)
-			return &it->second;
-	}
-	return NULL;
-}
+//Client	*Server::getClientByServername(std::string servername)
+//{
+//	for (std::map<int, Client *>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+//	{
+//		if (it->second->getServername() == servername)
+//			return it->second;
+//	}
+//	return NULL;
+//}
+//
+//Client	*Server::getClientByHostname(std::string hostname)
+//{
+//	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+//	{
+//		if (it->second.getHostname() == hostname)
+//			return &it->second;
+//	}
+//	return NULL;
+//}
 
 void	Server::addChannel(Channel *channel)
 {
@@ -293,4 +340,8 @@ const char			*Server::ChannelNotFoundException::what() const throw()
 const char			*Server::ChannelAlreadyExist::what() const throw()
 {
 	return ("Channel already exist");
+}
+
+const char *Server::ClientNotFoundException::what() const throw() {
+    return ("Client does not exist");
 }

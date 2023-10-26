@@ -11,5 +11,6 @@
 # define ERR_PASSWDMISMATCH "464", ":Password incorrect"
 # define ERR_INVITEONLYCHAN "473", "<channel> :Cannot join channel (+i)"
 # define ERR_CHANOPRIVSNEEDED "482", "<channel> :You're not channel operator"
+# define ERR_RESTRICTED "484", ":Your connection is restricted!"
 
 #endif

@@ -57,6 +57,8 @@ class Client {
 
 		// This method is not meant to be called directly, prefer one of the non-static methods
 		static void					sendMessage(int socket, std::string message);
+
+    void sendChanMsg(Client *sender, std::string channel, std::string message);
 };
 
 std::iostream &operator<<(std::iostream &stream, Client &client);

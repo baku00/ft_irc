@@ -30,7 +30,7 @@ std::string	PrivMsg::getMessage(std::vector<std::string> args) const {
 void	PrivMsg::sendMessageClient(Client sender, std::string username, std::string message) const {
 	Client *receiver = ServerInstance::getInstance()->getClientByNickname(username);
 	if (receiver)
-		receiver->sendMessage(&sender, message);
+		receiver->sendPrivMsg(&sender, message);
 	else
 		sender.reply(ERR_NOSUCHNICK, username.c_str());
 }
@@ -41,8 +41,8 @@ void	PrivMsg::sendMessageChannel(Client sender, std::string name, std::string me
 
 	if (channel && hasClient)
 	{
-		channel->showClients();
-		channel->broadcastPrivMsg(&sender, message);
+//		channel->showClients();
+		channel->broadcastChanMsg(&sender, message);
 	}
 	else if (!hasClient)
 		sender.reply(ERR_NOTONCHANNEL, name.c_str());
@@ -55,12 +55,14 @@ bool	PrivMsg::isToChannel(std::string channel_name) const
 	return (channel_name[0] == '#' || channel_name[0] == '&');
 }
 
-void	PrivMsg::execute(Client sender, std::vector<std::string> args) const {
+void	PrivMsg::execute(Client &sender, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(sender);
 
 	std::string username = this->getUsername(args);
 	std::string message = this->getMessage(args);
+
+    std::cout << "Execute privmsg" << std::endl;
 
 	if (username == sender.getUsername())
 		// I don't think that this is the correct reply

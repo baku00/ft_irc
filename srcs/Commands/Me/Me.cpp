@@ -8,7 +8,7 @@ Me::Me() {
 
 Me::~Me() {}
 
-void	Me::execute(Client client, std::vector<std::string> args) const {
+void	Me::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 

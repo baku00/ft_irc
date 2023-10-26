@@ -64,6 +64,8 @@ class Channel {
 		bool						hasInvited(Client client);
 
         std::string                 getNicknames();
+
+    void broadcastChanMsg(Client *sender, const std::string &message);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);
