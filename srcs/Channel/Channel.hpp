@@ -50,8 +50,9 @@ class Channel {
 		void						showClients();
 		bool						removeClient(int fd);
 
-		void						broadcastPrivMsg(Client *sender, const std::string& message);
         void                        broadcastMessage(Client *sender, const std::string& message);
+		void						broadcastChanMsg(Client *sender, const std::string &message);
+
 
 		bool						hasMode(t_mode mode);
 		void						addMode(t_mode mode);
@@ -68,8 +69,6 @@ class Channel {
 		std::string					getTopic();
 		void						sendTopic();
         std::string                 getNicknames();
-
-    void broadcastChanMsg(Client *sender, const std::string &message);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

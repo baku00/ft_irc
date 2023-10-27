@@ -68,17 +68,6 @@ void	Channel::showClients()
 	std::cout << std::endl;
 }
 
-void Channel::broadcastPrivMsg(Client *sender, const std::string& message)
-{
-    std::vector<int>::iterator  member;
-    std::vector<int>            members = this->getClients();
-    for (member = members.begin(); member != members.end(); member++)
-    {
-        Client * member_client = this->_server->getClient(*member);
-        member_client->sendPrivMsg(sender, message);
-    }
-}
-
 void Channel::broadcastChanMsg(Client *sender, const std::string& message)
 {
     std::vector<int>::iterator  member;
