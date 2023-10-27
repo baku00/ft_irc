@@ -29,7 +29,7 @@ void	Topic::execute(Client client, std::vector<std::string> args) const {
 		return client.reply(ERR_NOSUCHCHANNEL, channel_name.c_str());
 	if (!channel->hasClient(client.getFd()))
 		return client.reply(ERR_NOTONCHANNEL, channel_name.c_str());
-	if (channel->hasMode(Channel::I_INVITE) && !channel->hasOperator(client))
+	if (channel->hasMode(Channel::T_TOPIC) && !channel->hasOperator(client))
 		return client.reply(ERR_CHANOPRIVSNEEDED, channel_name.c_str());
 	if (args.size() == 1)
 		return client.reply(RPL_TOPIC, channel_name.c_str(), channel->getTopic().c_str());
