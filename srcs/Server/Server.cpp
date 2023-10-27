@@ -311,6 +311,13 @@ Server	&Server::operator=(const Server &copy)
 	return (*this);
 }
 
+void Server::broadcastMessage(Client *sender, const std::string &message)
+{
+	std::map<int, Client *>::iterator  client;
+	for (client = _clients.begin(); client != _clients.end(); client++)
+		client->second->sendMessage(sender, message);
+}
+
 const char			*Server::ChannelNotFoundException::what() const throw()
 {
 	return ("Channel not found");

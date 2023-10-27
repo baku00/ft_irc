@@ -22,15 +22,15 @@ void	Nick::execute(Client &client, std::vector<std::string> args) const {
     Server * server = ServerInstance::getInstance();
 
 	if (server->getClientByNickname(nickname) != NULL)
-    {
         return client.reply(ERR_NICKNAMEINUSE, nickname.c_str());
-//        if (current_nickname == "*")
-//            client.setNickname(nickname);
-    }
 
-    client.setNickname(nickname);
-//    if (current_nickname == "*")
-//        server
+	// The message is broadcasted before the actual change
+	// for the prefix to match what is expected in the RFC
+	// https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.2
+	if (current_nickname != "*") {
+		server->broadcastMessage(&client, "NICK " + nickname);
+	}
+	client.setNickname(nickname);
 }
 
 bool	Nick::isValidNickname(std::string nickname) {

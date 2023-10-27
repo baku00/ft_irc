@@ -56,13 +56,12 @@ class Server
         Client                              *getConnection(int fd);
 
 		Client								*getClientByNickname(std::string nickname);
-//		Client								*getClientByServername(std::string servername);
-//		Client								*getClientByHostname(std::string hostname);
 
 		void								addChannel(Channel *channel);
 		Channel								*getChannel(std::string name);
 		std::map<std::string, Channel *>	getChannels();
-//		void		                        removeChannel(std::string name);
+
+		void								broadcastMessage(Client *sender, const std::string& message);
 
 		void								disconnectClientFromFD(int fd);
 
