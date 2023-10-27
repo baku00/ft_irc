@@ -29,3 +29,10 @@ std::string	ACommand::getCommandName() const {
 void	ACommand::errorNumberArguments(Client client) const {
 	client.reply(ERR_NEEDMOREPARAMS, this->_commandName.c_str());
 }
+
+void	ACommand::executeMaster(Client client, std::vector<std::string> args) {
+	if (this->isValidArgsNumber(args.size() - 1))
+		this->execute(client, args);
+	else
+		this->errorNumberArguments(client);
+}

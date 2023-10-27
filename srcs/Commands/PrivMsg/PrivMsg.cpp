@@ -56,9 +56,6 @@ bool	PrivMsg::isToChannel(std::string channel_name) const
 }
 
 void	PrivMsg::execute(Client sender, std::vector<std::string> args) const {
-	if (!this->isValidArgsNumber(args.size() - 1))
-		return this->errorNumberArguments(sender);
-
 	std::string username = this->getUsername(args);
 	std::string message = this->getMessage(args);
 

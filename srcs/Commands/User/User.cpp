@@ -25,9 +25,6 @@ std::string	User::getRealname(std::vector<std::string> args) const {
 }
 
 void	User::execute(Client client, std::vector<std::string> args) const {
-	if (!this->isValidArgsNumber(args.size() - 1))
-		return this->errorNumberArguments(client);
-
 	std::string username = this->getUsername(args);
 	std::string hostname = this->getHostname(args);
 	std::string servername = this->getServername(args);

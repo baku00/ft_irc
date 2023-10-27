@@ -23,9 +23,6 @@ std::string	Kick::getReason(std::vector<std::string> args) const {
 }
 
 void	Kick::execute(Client client, std::vector<std::string> args) const {
-	if (!this->isValidArgsNumber(args.size() - 1))
-		return this->errorNumberArguments(client);
-
 	std::string channel_name = this->getChannel(args);
 	std::string nickname = this->getNickname(args);
 	std::string reason = this->getReason(args);

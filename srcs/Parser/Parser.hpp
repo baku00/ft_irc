@@ -10,9 +10,10 @@ class Client;
 
 class Parser {
 	private:
+		std::map<std::string, ACommand *>	_commands;
+
 		static std::string					removeEndOfLine(std::string input);
 		static std::string					trim(std::string input);
-		std::map<std::string, ACommand *>	_commands;
 
 	public:
 		Parser();

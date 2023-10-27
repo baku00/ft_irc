@@ -14,9 +14,6 @@ std::string	Nick::getNickname(std::vector<std::string> args) const {
 }
 
 void	Nick::execute(Client client, std::vector<std::string> args) const {
-	if (!this->isValidArgsNumber(args.size() - 1))
-		return this->errorNumberArguments(client);
-
 	std::string nickname = this->getNickname(args);
 
 	if (ServerInstance::getInstance()->getClientByNickname(nickname) != NULL)

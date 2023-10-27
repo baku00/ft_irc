@@ -10,9 +10,6 @@ Pass::Pass() {
 Pass::~Pass() {}
 
 void	Pass::execute(Client client, std::vector<std::string> args) const {
-	if (!this->isValidArgsNumber(args.size() - 1))
-		return this->errorNumberArguments(client);
-
 	if (!Auth::authenticate(ServerInstance::getInstance()->getClient(client.getFd()), args[1]))
 		return client.reply(ERR_PASSWDMISMATCH);
 	

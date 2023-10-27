@@ -3,8 +3,8 @@
 
 Join::Join() {
 	this->_minArgsRequired = 1;
-	this->_maxArgsRequired = 1;
-	this->_commandName = "USER";
+	this->_maxArgsRequired = 2;
+	this->_commandName = "JOIN";
 }
 
 Join::~Join() {}
@@ -14,9 +14,6 @@ std::string	Join::getName(std::vector<std::string> args) const {
 }
 
 void	Join::execute(Client client, std::vector<std::string> args) const {
-	if (!this->isValidArgsNumber(args.size() - 1))
-		return this->errorNumberArguments(client);
-
 	std::string channel_name = this->getName(args);
 
 	Channel *channel = ServerInstance::getInstance()->getChannel(channel_name);

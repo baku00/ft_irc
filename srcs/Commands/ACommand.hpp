@@ -13,11 +13,15 @@ class ACommand {
 		int			_minArgsRequired;
 		int			_maxArgsRequired;
 		std::string	_commandName;
+		std::string	_usage;
+
+		virtual void	execute(Client client, std::vector<std::string> args) const = 0;
+		void			usage(Client client) const;
 
 	public:
 		ACommand();
-		virtual ~ACommand();
-		virtual void	execute(Client client, std::vector<std::string> args) const = 0;
+		virtual			~ACommand();
+		void			executeMaster(Client client, std::vector<std::string> args);
 		bool			isValidArgsNumber(int nbArgs) const;
 		std::string		getCommandName() const;
 		void			errorNumberArguments(Client client) const;
