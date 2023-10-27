@@ -43,8 +43,7 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 	channel->broadcastMessage(&client, "JOIN " + channel_name);
 
 	// 3. RPL_TOPIC, RPL_NAMREPLY and RPL_ENDOFNAMES
-	// TODO: here replace by topic
-	client.reply(RPL_TOPIC, channel_name.c_str(), "*");
+	client.reply(RPL_TOPIC, channel_name.c_str(), channel->getTopic().c_str());
 	client.reply(RPL_NAMREPLY, channel_name.c_str(), channel->getNicknames().c_str());
 	client.reply(RPL_ENDOFNAMES, channel_name.c_str());
 }
