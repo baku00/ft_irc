@@ -48,3 +48,8 @@ Server	*ServerInstance::createInstance(int port, std::string password)
 		ServerInstance::_server = new Server(port, password);
 	return (ServerInstance::_server);
 }
+
+std::iostream &operator<<(std::iostream &stream, ServerInstance &server) {
+	(void) server;
+	return stream;
+}

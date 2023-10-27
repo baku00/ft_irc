@@ -30,7 +30,7 @@ FILES = srcs/main.cpp $(TESTS) \
 
 OBJS = $(FILES:.cpp=.o)
 
-FLAGS = -Wall -Wextra -Werror -std=c++98 -I./srcs -I./tests
+FLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address -I./srcs -I./tests
 
 CC = c++
 

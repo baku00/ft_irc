@@ -22,4 +22,6 @@ class ServerInstance
 		static Server	*createInstance(int port, std::string password);
 };
 
+std::iostream &operator<<(std::iostream &stream, ServerInstance &server);
+
 #endif
