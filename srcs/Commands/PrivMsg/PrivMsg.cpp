@@ -37,17 +37,14 @@ void	PrivMsg::sendMessageClient(Client sender, std::string username, std::string
 
 void	PrivMsg::sendMessageChannel(Client sender, std::string name, std::string message) const {
 	Channel *channel = ServerInstance::getInstance()->getChannel(name);
-	bool hasClient = channel->hasClient(sender.getFd());
+	if (!channel)
+		return sender.reply(ERR_NOSUCHCHANNEL, name.c_str());
 
-	if (channel && hasClient)
-	{
-//		channel->showClients();
-		channel->broadcastChanMsg(&sender, message);
-	}
-	else if (!hasClient)
-		sender.reply(ERR_NOTONCHANNEL, name.c_str());
-	else
-		sender.reply(ERR_NOSUCHCHANNEL, name.c_str());	
+	bool hasClient = channel->hasClient(sender.getFd());
+	if (!hasClient)
+		return sender.reply(ERR_NOTONCHANNEL, name.c_str());
+
+	channel->broadcastChanMsg(&sender, message);
 }
 
 bool	PrivMsg::isToChannel(std::string channel_name) const
@@ -61,8 +58,6 @@ void	PrivMsg::execute(Client &sender, std::vector<std::string> args) const {
 
 	std::string username = this->getUsername(args);
 	std::string message = this->getMessage(args);
-
-    std::cout << "Execute privmsg" << std::endl;
 
 	if (username == sender.getUsername())
 		// I don't think that this is the correct reply

@@ -50,7 +50,7 @@ class Channel {
 		void						showClients();
 		bool						removeClient(int fd);
 
-        void                        broadcastMessage(Client *sender, const std::string& message);
+		void						broadcastMessage(Client *sender, const std::string& message);
 		void						broadcastChanMsg(Client *sender, const std::string &message);
 
 

@@ -1,5 +1,4 @@
 #include "Client.hpp"
-#include "../Server/Instance/ServerInstance.hpp"
 #include <string>
 
 Client::Client()
@@ -173,8 +172,8 @@ void Client::reply(std::string code, std::string message...)
 	va_list	args;
 	va_start(args, message);
 	
-	std::size_t	arg_pos	= message.find("<");
-	std::size_t	end_pos = message.find(">");
+	std::size_t	arg_pos	= message.find('<');
+	std::size_t	end_pos = message.find('>');
 	int			length	= end_pos - arg_pos + 1;
 
 	while (arg_pos != std::string::npos && end_pos != std::string::npos)
@@ -183,7 +182,6 @@ void Client::reply(std::string code, std::string message...)
 			throw std::runtime_error(SSTR("Unexpected token '>' at column " << end_pos));
 
 		char *	replace = va_arg(args, char *);
-		//std::cout << "REPLY: replace: " << replace << std::endl;
 		message.replace(arg_pos, length, replace);
 		
 		arg_pos = message.find("<");
@@ -194,7 +192,6 @@ void Client::reply(std::string code, std::string message...)
 	va_end(args);
 
 	std::string	reply = ":" + this->getServername() + " " + code + " " + this->getNickname() + " " + message;
-	//std::cout << reply << std::endl;
 	sendMessage(this->getFd(), reply);
 }
 

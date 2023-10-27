@@ -193,33 +193,33 @@ void	Server::parseInput(int fd, std::string input)
 
 		// std::string channel				= this->_parser->getChannel(line);
 		std::string command				= Parser::getCommand(line);
-        std::vector<std::string> args	= Parser::getParameters(line);
+		std::vector<std::string> args	= Parser::getParameters(line);
 
-        if (Auth::isAuthorized(command, is_registered))
-		    this->_parser->execute(*client, command, args);
-        else
-            client->reply(ERR_RESTRICTED);
+		if (Auth::isAuthorized(command, is_registered))
+			this->_parser->execute(*client, command, args);
+		else
+			client->reply(ERR_RESTRICTED);
 	}
 
-    if (!is_registered && client->isValidate())
-    {
-        _clients.insert(std::pair<int, Client *>(fd, client));
-        _connections.erase(fd);
+	if (!is_registered && client->isValidate())
+	{
+		_clients.insert(std::pair<int, Client *>(fd, client));
+		_connections.erase(fd);
 
-        client->reply(RPL_WELCOME,
-                      client->getNickname().c_str(),
-                      client->getUsername().c_str(),
-                      client->getHostname().c_str());
-        client->reply(RPL_YOURHOST,
-                      this->_server_name.c_str(),
-                      this->_version.c_str());
-        client->reply(RPL_CREATED,
-                      this->_created_at.c_str());
-        client->reply(RPL_MYINFO,
-                      this->_server_name.c_str(),
-                      this->_version.c_str(),
-                      "0", "itkol");
-    }
+		client->reply(RPL_WELCOME,
+					  client->getNickname().c_str(),
+					  client->getUsername().c_str(),
+					  client->getHostname().c_str());
+		client->reply(RPL_YOURHOST,
+					  this->_server_name.c_str(),
+					  this->_version.c_str());
+		client->reply(RPL_CREATED,
+					  this->_created_at.c_str());
+		client->reply(RPL_MYINFO,
+					  this->_server_name.c_str(),
+					  this->_version.c_str(),
+					  "0", "itkol");
+	}
 }
 
 std::string Server::getPassword()
@@ -264,29 +264,8 @@ Client	*Server::getClientByNickname(std::string nickname)
 		if (it->second->getNickname() == nickname)
 			return it->second;
 	}
-//	std::cout << "Nothing client found" << std::endl;
 	return NULL;
 }
-
-//Client	*Server::getClientByServername(std::string servername)
-//{
-//	for (std::map<int, Client *>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
-//	{
-//		if (it->second->getServername() == servername)
-//			return it->second;
-//	}
-//	return NULL;
-//}
-//
-//Client	*Server::getClientByHostname(std::string hostname)
-//{
-//	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
-//	{
-//		if (it->second.getHostname() == hostname)
-//			return &it->second;
-//	}
-//	return NULL;
-//}
 
 void	Server::addChannel(Channel *channel)
 {
