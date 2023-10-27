@@ -29,3 +29,12 @@ std::string	ACommand::getCommandName() const {
 void	ACommand::errorNumberArguments(Client client) const {
 	client.reply(ERR_NEEDMOREPARAMS, this->_commandName.c_str());
 }
+
+ACommand	&ACommand::operator=(const ACommand &copy) {
+	if (this != &copy) {
+		this->_minArgsRequired = copy._minArgsRequired;
+		this->_maxArgsRequired = copy._maxArgsRequired;
+		this->_commandName = copy._commandName;
+	}
+	return *this;
+}

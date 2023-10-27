@@ -309,7 +309,7 @@ Server	&Server::operator=(const Server &copy)
 		this->_channels = copy._channels;
 		this->_clients = copy._clients;
 		this->_server_name = copy._server_name;
-		this->_parser = new Parser();
+		Parser::clone(&this->_parser, copy._parser);
 	}
 
 	std::cout << "Server assignation operator called" << std::endl;

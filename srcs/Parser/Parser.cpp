@@ -24,7 +24,11 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("INVITE", new Invite()));
 }
 
-Parser::~Parser() {}
+Parser::~Parser() {
+	for (std::map<std::string, ACommand *>::iterator it = this->_commands.begin(); it != this->_commands.end(); it++)
+		delete it->second;
+	this->_commands.clear();
+}
 
 std::string					Parser::trim(std::string input)
 {
@@ -93,4 +97,25 @@ void	Parser::execute(Client client, std::string command, std::vector<std::string
 		std::cerr << "Command not found: " << command << std::endl;
 		client.reply(ERR_UNKNOWNCOMMAND, command.c_str());
 	}
+}
+
+Parser	*Parser::clone()
+{
+	Parser *parser = new Parser();
+	for (std::map<std::string, ACommand *>::iterator it = this->_commands.begin(); it != this->_commands.end(); it++)
+		parser->_commands.insert(std::pair<std::string, ACommand *>(it->first, it->second->clone()));
+	return parser;
+}
+
+Parser	&Parser::operator=(const Parser &copy)
+{
+	if (this != &copy)
+	{
+		for (std::map<std::string, ACommand *>::iterator it = this->_commands.begin(); it != this->_commands.end(); it++)
+			delete it->second;
+		this->_commands.clear();
+		for (std::map<std::string, ACommand *>::const_iterator it = copy._commands.begin(); it != copy._commands.end(); it++)
+			this->_commands.insert(std::pair<std::string, ACommand *>(it->first, it->second->clone()));
+	}
+	return *this;
 }

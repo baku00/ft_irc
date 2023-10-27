@@ -63,3 +63,7 @@ void	Invite::execute(Client client, std::vector<std::string> args) const {
 	invited->sendMessage(&client, "INVITE " + nickname + " " + channel_name);
 	client.reply(RPL_INVITING, channel_name.c_str(), nickname.c_str());
 }
+
+Invite	*Invite::clone() const {
+	return new Invite(*this);
+}

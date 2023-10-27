@@ -16,6 +16,7 @@ class User : public ACommand {
 		User();
 		virtual ~User();
 		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual User		*clone() const;
 
 		static bool			isValidUsername(std::string username);
 		static bool			isValidHostname(std::string hostname);

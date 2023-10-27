@@ -6,6 +6,10 @@ User::User() {
 	this->_commandName = "USER";
 }
 
+User::User(User const &src) {
+	*this = src;
+}
+
 User::~User() {}
 
 std::string	User::getUsername(std::vector<std::string> args) const {
@@ -71,4 +75,8 @@ bool	User::isValidRealname(std::string realname) {
 	if (realname.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos)
 		return false;
 	return true;
+}
+
+User	*User::clone() const {
+	return new User(*this);
 }

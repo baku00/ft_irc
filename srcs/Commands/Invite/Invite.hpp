@@ -16,6 +16,7 @@ class Invite : public ACommand {
 		Invite();
 		virtual ~Invite();
 		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual Invite		*clone() const;
 };
 
 #endif
