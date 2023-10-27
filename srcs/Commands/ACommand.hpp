@@ -16,7 +16,7 @@ class ACommand {
 
 	public:
 		ACommand();
-		virtual				ACommand(const ACommand &copy);
+		ACommand(const ACommand &copy);
 		virtual				~ACommand();
 		virtual void		execute(Client client, std::vector<std::string> args) const = 0;
 		bool				isValidArgsNumber(int nbArgs) const;

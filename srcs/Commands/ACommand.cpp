@@ -4,6 +4,10 @@
 ACommand::ACommand() {
 }
 
+ACommand::ACommand(const ACommand &copy) {
+	*this = copy;
+}
+
 ACommand::~ACommand() {
 }
 
