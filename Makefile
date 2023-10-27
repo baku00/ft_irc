@@ -4,6 +4,7 @@ SERVER = srcs/Server/Server.cpp
 INSTANCE = srcs/Server/Instance/ServerInstance.cpp
 CLIENT = srcs/Client/Client.cpp
 PARSER = srcs/Parser/Parser.cpp
+STRING = srcs/String/String.cpp
 AUTH = srcs/Auth/Auth.cpp
 A_COMMAND = srcs/Commands/ACommand.cpp
 PASS = srcs/Commands/Pass/Pass.cpp
@@ -16,17 +17,19 @@ JOIN = srcs/Commands/Join/Join.cpp
 PING = srcs/Commands/Ping/Ping.cpp
 KICK = srcs/Commands/Kick/Kick.cpp
 INVITE = srcs/Commands/Invite/Invite.cpp
+TOPIC = srcs/Commands/Topic/Topic.cpp
 CHANNEL = srcs/Channel/Channel.cpp
 MESSAGE = srcs/Utils/Message/Message.cpp
 TESTS = tests/test_mode.cpp
 
-FILES = srcs/main.cpp $(TESTS) \
+FILES = srcs/main.cpp $(TESTS) $(TOPIC) \
 		$(SERVER) $(CLIENT) $(PARSER) \
 		$(AUTH)	$(A_COMMAND) $(INSTANCE) \
 		$(PASS) $(PRIV_MSG) $(NICK) \
 		$(USER) $(ME) $(QUIT) \
 		$(JOIN) $(CHANNEL) $(KICK) \
-		$(MESSAGE) $(PING) $(INVITE)
+		$(MESSAGE) $(PING) $(INVITE) \
+		$(STRING)
 
 OBJS = $(FILES:.cpp=.o)
 
