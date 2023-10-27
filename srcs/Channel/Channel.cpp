@@ -28,7 +28,10 @@ std::vector<int>	Channel::getClients()				{	return				this->_clients;		}
 
 void	Channel::addClient(int fd) {
 	if (!this->hasClient(fd))
+	{
 		this->_clients.push_back(fd);
+		this->sendTopicToClient(fd);
+	}
 }
 
 bool	Channel::hasClient(int fd) {
@@ -253,6 +256,12 @@ bool		Channel::canJoin(Client &client)
 		can_join = true;
 
 	return can_join;
+}
+
+void	Channel::sendTopicToClient(int fd)
+{
+	Client *client = this->_server->getClient(fd);
+	client->reply(RPL_TOPIC, this->getName().c_str(), this->getTopic().c_str());
 }
 
 Channel &Channel::operator=(const Channel &copy) {
