@@ -17,7 +17,7 @@ std::string	Topic::getTopic(std::vector<std::string> args) const {
 	return args[2];
 }
 
-void	Topic::execute(Client client, std::vector<std::string> args) const {
+void	Topic::execute(Client & client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 

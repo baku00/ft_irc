@@ -17,7 +17,7 @@ class ACommand {
 	public:
 		ACommand();
 		virtual ~ACommand();
-		virtual void	execute(Client client, std::vector<std::string> args) const = 0;
+		virtual void	execute(Client &client, std::vector<std::string> args) const = 0;
 		bool			isValidArgsNumber(int nbArgs) const;
 		std::string		getCommandName() const;
 		void			errorNumberArguments(Client client) const;

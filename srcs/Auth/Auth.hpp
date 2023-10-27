@@ -11,7 +11,7 @@ class Auth {
 		static std::vector<std::string>	getAuthorizedCommands();
 
 	public:
-		static bool						isAuthorized(Client client, std::string command);
+		static bool isAuthorized(const std::string &command, bool is_registered);
 		static bool						authenticate(Client *client, std::string password);
 };
 

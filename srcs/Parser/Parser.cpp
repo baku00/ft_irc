@@ -30,14 +30,14 @@ Parser::Parser() {
 Parser::~Parser() {}
 
 std::string					Parser::getCommand(std::string input) {
-	size_t space_pos = input.find(" ");
+	size_t space_pos = input.find(' ');
 	if (space_pos == std::string::npos)
 		return String::trim(input, " \t\n\r");
 	return String::trim(input.substr(0, space_pos), " \t\n\r");
 }
 
 std::string					Parser::getChannel(std::string input) {
-	size_t space_pos = input.find(" ");
+	size_t space_pos = input.find(' ');
 	if (space_pos == std::string::npos)
 		return String::trim(input, " \t\n\r");
 	return String::trim(input.substr(0, space_pos), " \t\n\r");
@@ -49,7 +49,7 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 	size_t						double_dot;
 	std::string					last_argument;
 
-	double_dot = input.find(":");
+	double_dot = input.find(':');
 	if (double_dot != std::string::npos)
 	{
 		last_argument = input.substr(double_dot + 1, input.length() - double_dot - 1);
@@ -76,7 +76,7 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 	return args;
 }
 
-void	Parser::execute(Client client, std::string command, std::vector<std::string> args) {
+void	Parser::execute(Client &client, std::string command, std::vector<std::string> args) {
 	std::map<std::string, ACommand *>::iterator it = this->_commands.find(command);
 	if (it != this->_commands.end())
 		it->second->execute(client, args);

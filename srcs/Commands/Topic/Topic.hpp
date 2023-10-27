@@ -13,7 +13,7 @@ class Topic : public ACommand {
 	public:
 		Topic();
 		virtual ~Topic();
-		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual void		execute(Client & client, std::vector<std::string> args) const;
 };
 
 #endif

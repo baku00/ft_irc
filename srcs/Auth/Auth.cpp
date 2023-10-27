@@ -1,29 +1,33 @@
 #include "Auth.hpp"
+#include <algorithm>
 
 std::vector<std::string>	Auth::getAuthorizedCommands()
 {
 	std::vector<std::string> commands;
 
-	commands.push_back("USER");
-	commands.push_back("NICK");
+    commands.push_back("PASS");
+    commands.push_back("NICK");
+    commands.push_back("USER");
 	commands.push_back("QUIT");
 
 	return commands;
 }
 
-bool	Auth::isAuthorized(Client client, std::string command) {
-	if (command == "PASS")
+bool Auth::isAuthorized(const std::string &command, bool is_registered)
+{
+    if (is_registered)
+        return true;
+
+    std::vector<std::string> allowed_commands = getAuthorizedCommands();
+    std::vector<std::string>::iterator is_allowed = std::find(
+            allowed_commands.begin(),
+            allowed_commands.end(),
+            command
+    );
+	if (is_allowed != allowed_commands.end())
 		return true;
-	if (!client.isValidate() && client.isAuthenticated())
-	{
-		std::vector<std::string> authorizedCommands = Auth::getAuthorizedCommands();
-		for (std::vector<std::string>::iterator it = authorizedCommands.begin(); it != authorizedCommands.end(); it++)
-			if (command == *it)
-				return true;
-	}
-	if (client.isValidate())
-		return true;
-	return false;
+
+    return false;
 }
 
 bool	Auth::authenticate(Client *client, std::string password) {

@@ -15,7 +15,7 @@ class Invite : public ACommand {
 	public:
 		Invite();
 		virtual ~Invite();
-		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual void		execute(Client &client, std::vector<std::string> args) const;
 };
 
 #endif

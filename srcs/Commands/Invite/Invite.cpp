@@ -16,7 +16,7 @@ std::string	Invite::getChannel(std::vector<std::string> args) const {
 	return args[2];
 }
 
-void	Invite::execute(Client client, std::vector<std::string> args) const {
+void	Invite::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);	
 

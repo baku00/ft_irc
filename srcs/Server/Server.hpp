@@ -19,8 +19,11 @@ class Server
 		int									_clientSocket;
 		std::vector<struct pollfd>			_pollfds;
 		std::map<std::string, Channel *>	_channels;
-		std::map<int, Client>				_clients;
+		std::map<int, Client *>				_clients;
+		std::map<int, Client *>				_connections;
 		std::string							_server_name;
+        std::string                         _version;
+        std::string                         _created_at;
 		Parser								*_parser;
 
 		Server();
@@ -36,6 +39,9 @@ class Server
 		void								readClientInput(std::vector<pollfd>::iterator it, pollfd client);
 		void								disconnectClient(std::vector<pollfd>::iterator it);
 
+        static Client                       *getByFd(int fd, std::map<int, Client *> & clients);
+
+
 		sockaddr_in							fixSettings();
 
 	public:
@@ -47,14 +53,15 @@ class Server
 		std::string							getPassword();
 
 		Client								*getClient(int fd);
+        Client                              *getConnection(int fd);
+
 		Client								*getClientByNickname(std::string nickname);
-		Client								*getClientByServername(std::string servername);
-		Client								*getClientByHostname(std::string hostname);
 
 		void								addChannel(Channel *channel);
 		Channel								*getChannel(std::string name);
 		std::map<std::string, Channel *>	getChannels();
-		void		                        removeChannel(std::string name);
+
+		void								broadcastMessage(Client *sender, const std::string& message);
 
 		void								disconnectClientFromFD(int fd);
 
@@ -70,6 +77,12 @@ class Server
 		{
 			virtual const char *what() const throw();
 		};
+
+        class ClientNotFoundException : public std::exception
+        {
+            public:
+            virtual const char *what() const throw();
+        };
 };
 
 #endif

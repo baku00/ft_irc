@@ -9,7 +9,7 @@ class Quit : public ACommand {
 	public:
 		Quit();
 		virtual ~Quit();
-		virtual void		execute(Client client, std::vector<std::string> args) const;
+		virtual void		execute(Client &client, std::vector<std::string> args) const;
 };
 
 #endif
