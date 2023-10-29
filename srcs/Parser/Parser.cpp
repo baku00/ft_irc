@@ -10,6 +10,7 @@
 #include "../Commands/Kick/Kick.hpp"
 #include "../Commands/Invite/Invite.hpp"
 #include "../Commands/Topic/Topic.hpp"
+#include "../Commands/Mode/Mode.hpp"
 #include "../String/String.hpp"
 
 Parser::Parser() {
@@ -25,6 +26,7 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("KICK", new Kick()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("INVITE", new Invite()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("TOPIC", new Topic()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("MODE", new Mode()));
 }
 
 Parser::~Parser() {}

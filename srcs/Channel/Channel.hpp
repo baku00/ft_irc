@@ -22,6 +22,7 @@ class Channel {
 		t_mode						_mode;
 		Server						*_server;
 		std::string					_topic;
+		std::string					_password;
 
 	public:
 		Channel();
@@ -68,7 +69,11 @@ class Channel {
 		void						setTopic(std::string topic);
 		std::string					getTopic();
 		void						sendTopic();
-        std::string                 getNicknames();
+		std::string					getNicknames();
+
+		void						setPassword(std::string password);
+		std::string					getPassword();
+		bool						isPassword(std::string password);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

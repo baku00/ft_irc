@@ -14,5 +14,7 @@
 # define ERR_RESTRICTED "484", ":Your connection is restricted!"
 # define RPL_NOTOPIC "331", "<channel> :No topic is set"
 # define RPL_TOPIC "332", "<channel> :<topic>"
+# define ERR_UMODEUNKNOWNFLAG "501", ":Unknown MODE flag"
+# define ERR_INVALIDKEY "475", "<channel> :Cannot join channel (+k)"
 
 #endif
