@@ -70,43 +70,43 @@ void	Channel::showClients()
 
 void Channel::broadcastChanMsg(Client *sender, const std::string& message)
 {
-    std::vector<int>::iterator  member;
-    std::vector<int>            members = this->getClients();
-    for (member = members.begin(); member != members.end(); member++)
-    {
-        if (*member == sender->getFd())
-            continue;
-        Client * member_client = this->_server->getClient(*member);
-        member_client->sendChanMsg(sender, this->getName(), message);
-    }
+	std::vector<int>::iterator  member;
+	std::vector<int>            members = this->getClients();
+	for (member = members.begin(); member != members.end(); member++)
+	{
+		if (*member == sender->getFd())
+			continue;
+		Client * member_client = this->_server->getClient(*member);
+		member_client->sendChanMsg(sender, this->getName(), message);
+	}
 }
 
 void Channel::broadcastMessage(Client *sender, const std::string& message)
 {
-    std::vector<int>::iterator  member;
-    std::vector<int>            members = this->getClients();
-    for (member = members.begin(); member != members.end(); member++)
-    {
-        Client * member_client = this->_server->getClient(*member);
-        member_client->sendMessage(sender, message);
-    }
+	std::vector<int>::iterator	member;
+	std::vector<int>			members = this->getClients();
+	for (member = members.begin(); member != members.end(); member++)
+	{
+		Client * member_client = this->_server->getClient(*member);
+		member_client->sendMessage(sender, message);
+	}
 }
 
 std::string Channel::getNicknames()
 {
-    std::ostringstream oss;
+	std::ostringstream oss;
 
-    std::vector<int>::iterator  member;
-    std::vector<int>            members = this->getClients();
-    for (member = members.begin(); member != members.end(); member++)
-    {
-        Client * member_client = this->_server->getClient(*member);
-        if (member != members.begin())
-            oss << " ";
-        oss << member_client->getNickname();
-    }
+	std::vector<int>::iterator  member;
+	std::vector<int>            members = this->getClients();
+	for (member = members.begin(); member != members.end(); member++)
+	{
+		Client * member_client = this->_server->getClient(*member);
+		if (member != members.begin())
+			oss << " ";
+		oss << member_client->getNickname();
+	}
 
-    return oss.str();
+	return oss.str();
 }
 
 
@@ -127,6 +127,29 @@ bool	Channel::hasOperator(Client client)
 			return true;
 	}
 	return false;
+}
+
+void	Channel::addOperator(Client client)
+{
+	std::cout << "Add operator to channel " << this->getName() << std::endl;
+	int fd = client.getFd();
+	if (!this->hasOperator(client))
+		this->_operators.push_back(fd);
+}
+
+void	Channel::delOperator(Client client)
+{
+	std::cout << "Remove operator from channel " << this->getName() << std::endl;
+	int fd = client.getFd();
+	std::vector<int>::iterator it = _operators.begin();
+	for (; it != _operators.end(); ++it)
+	{
+		if (*it == fd)
+		{
+			_operators.erase(it);
+			break;
+		}
+	}
 }
 
 bool	Channel::hasInvited(Client client)
@@ -158,6 +181,16 @@ std::string	Channel::getTopic()
 	return this->_topic;
 }
 
+void	Channel::setPassword(std::string password)
+{
+	this->_password = password;
+}
+
+bool	Channel::isPassword(std::string password)
+{
+	return this->_password == password;
+}
+
 void	Channel::sendTopic()
 {
 	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
@@ -165,6 +198,21 @@ void	Channel::sendTopic()
 		Client *client = this->_server->getClient(*it);
 		client->reply(RPL_TOPIC, this->getName().c_str(), this->getTopic().c_str());
 	}
+}
+
+void	Channel::setLimit(int limit)
+{
+	this->_limit = limit;
+}
+
+int		Channel::getLimit()
+{
+	return this->_limit;
+}
+
+bool	Channel::isFull()
+{
+	return this->_limit != 0 && this->_clients.size() >= this->_limit;
 }
 
 Channel &Channel::operator=(const Channel &copy) {

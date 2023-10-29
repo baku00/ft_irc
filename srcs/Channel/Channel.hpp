@@ -22,6 +22,8 @@ class Channel {
 		t_mode						_mode;
 		Server						*_server;
 		std::string					_topic;
+		std::string					_password;
+		int							_limit;
 
 	public:
 		Channel();
@@ -61,6 +63,8 @@ class Channel {
 		static Channel				*create(std::string name);
 
 		bool						hasOperator(Client client);
+		void						addOperator(Client client);
+		void						delOperator(Client client);
 
 		void						invite(Client client);
 		bool						hasInvited(Client client);
@@ -68,7 +72,14 @@ class Channel {
 		void						setTopic(std::string topic);
 		std::string					getTopic();
 		void						sendTopic();
-        std::string                 getNicknames();
+		std::string					getNicknames();
+
+		void						setPassword(std::string password);
+		bool						isPassword(std::string password);
+
+		void						setLimit(int limit);
+		int							getLimit();
+		bool						isFull();
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);
