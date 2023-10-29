@@ -8,6 +8,8 @@ Channel::Channel()
 	this->setTopic("*");
 	this->_mode = 0;
 	this->_server = ServerInstance::getInstance();
+	this->_limit = 0;
+	this->_password = "";
 }
 
 Channel::Channel(const Channel &copy)	{ *this = copy; }
@@ -200,12 +202,12 @@ void	Channel::sendTopic()
 	}
 }
 
-void	Channel::setLimit(int limit)
+void	Channel::setLimit(size_t limit)
 {
 	this->_limit = limit;
 }
 
-int		Channel::getLimit()
+size_t		Channel::getLimit()
 {
 	return this->_limit;
 }

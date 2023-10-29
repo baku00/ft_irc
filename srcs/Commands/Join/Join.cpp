@@ -14,6 +14,12 @@ std::string	Join::getName(std::vector<std::string> args) const {
 	return args[1];
 }
 
+std::string	Join::getPassword(std::vector<std::string> args) const {
+	if (args.size() < 3)
+		return "";
+	return args[2];
+}
+
 void	Join::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
@@ -31,6 +37,12 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 	if (channel->hasMode(Channel::I_INVITE) && !channel->hasInvited(client))
 	{
 		client.reply(ERR_INVITEONLYCHAN, channel_name.c_str());
+		return;
+	}
+
+	if (channel->hasMode(Channel::K_PASSWORD) && !channel->isPassword(this->getPassword(args)))
+	{
+		client.reply(ERR_BADCHANNELKEY, channel_name.c_str());
 		return;
 	}
 

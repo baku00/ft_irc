@@ -23,7 +23,7 @@ class Channel {
 		Server						*_server;
 		std::string					_topic;
 		std::string					_password;
-		int							_limit;
+		size_t						_limit;
 
 	public:
 		Channel();
@@ -77,8 +77,8 @@ class Channel {
 		void						setPassword(std::string password);
 		bool						isPassword(std::string password);
 
-		void						setLimit(int limit);
-		int							getLimit();
+		void						setLimit(size_t limit);
+		size_t						getLimit();
 		bool						isFull();
 };
 

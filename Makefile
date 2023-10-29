@@ -18,6 +18,7 @@ PING = srcs/Commands/Ping/Ping.cpp
 KICK = srcs/Commands/Kick/Kick.cpp
 INVITE = srcs/Commands/Invite/Invite.cpp
 TOPIC = srcs/Commands/Topic/Topic.cpp
+MODE = srcs/Commands/Mode/Mode.cpp
 CHANNEL = srcs/Channel/Channel.cpp
 MESSAGE = srcs/Utils/Message/Message.cpp
 TESTS = tests/test_mode.cpp
@@ -29,11 +30,11 @@ FILES = srcs/main.cpp $(TESTS) $(TOPIC) \
 		$(USER) $(ME) $(QUIT) \
 		$(JOIN) $(CHANNEL) $(KICK) \
 		$(MESSAGE) $(PING) $(INVITE) \
-		$(STRING)
+		$(STRING) $(MODE)
 
 OBJS = $(FILES:.cpp=.o)
 
-FLAGS = -Wall -Wextra -Werror -std=c++98 -I./srcs -I./tests
+FLAGS = -Wall -Wextra -Werror -fsanitize=address -fpermissive -std=c++98 -I./srcs -I./tests
 
 CC = c++
 

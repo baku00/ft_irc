@@ -8,6 +8,7 @@
 class Join : public ACommand {
 	private:
 		std::string		getName(std::vector<std::string> args) const;
+		std::string		getPassword(std::vector<std::string> args) const;
 
 	public:
 		Join();
