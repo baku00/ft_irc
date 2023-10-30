@@ -47,6 +47,7 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 	// Get needed args
 	std::string channel_name = this->getChannel(args);
 	std::string mode = this->getMode(args);
+	std::string value = this->getValue(args);
 
 	Channel *channel = ServerInstance::getInstance()->getChannel(channel_name);
 	if (!channel)
@@ -62,10 +63,6 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 	}
 
 	bool is_for_set = this->isForSet(mode);
-	std::string value = "";
-
-	if (is_for_set)
-		value = this->getValue(args);
 
 	if (mode[1] == 'k')
 	{
@@ -88,6 +85,10 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 		if (is_for_set)
 			channel->addOperator(client->getFd());
 		else
+		{
+			std::cout << "Client: " << client << std::endl;
+			std::cout << "FD: " << client->getFd() << std::endl;
 			channel->removeOperator(client->getFd());
+		}
 	}
 }
