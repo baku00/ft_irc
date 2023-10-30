@@ -46,7 +46,8 @@ void	Invite::execute(Client &client, std::vector<std::string> args) const {
 		client.reply(ERR_NOTONCHANNEL, channel_name.c_str());
 		return;
 	}
-
+	std::cout << "Invite mode: " << channel->hasMode(Channel::I_INVITE) << std::endl;
+	std::cout << "Client is operator: " << channel->hasOperator(client) << std::endl;
 	if (channel->hasMode(Channel::I_INVITE) && !channel->hasOperator(client))
 	{
 		client.reply(ERR_CHANOPRIVSNEEDED, channel_name.c_str());

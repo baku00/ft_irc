@@ -34,7 +34,7 @@ FILES = srcs/main.cpp $(TESTS) $(TOPIC) \
 
 OBJS = $(FILES:.cpp=.o)
 
-FLAGS = -Wall -Wextra -Werror -std=c++98 -I./srcs -I./tests
+FLAGS = -Wall -Wextra -Werror -fsanitize=address -fpermissive -std=c++98 -I./srcs -I./tests
 
 CC = c++
 

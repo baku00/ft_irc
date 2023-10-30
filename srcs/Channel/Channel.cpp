@@ -78,7 +78,8 @@ void Channel::broadcastChanMsg(Client *sender, const std::string& message)
 		if (*member == sender->getFd())
 			continue;
 		Client * member_client = this->_server->getClient(*member);
-		member_client->sendChanMsg(sender, this->getName(), message);
+		if (member_client)
+			member_client->sendChanMsg(sender, this->getName(), message);
 	}
 }
 
@@ -89,7 +90,8 @@ void Channel::broadcastMessage(Client *sender, const std::string& message)
 	for (member = members.begin(); member != members.end(); member++)
 	{
 		Client * member_client = this->_server->getClient(*member);
-		member_client->sendMessage(sender, message);
+		if (member_client)
+			member_client->sendMessage(sender, message);
 	}
 }
 
@@ -102,6 +104,8 @@ std::string Channel::getNicknames()
 	for (member = members.begin(); member != members.end(); member++)
 	{
 		Client * member_client = this->_server->getClient(*member);
+		if (member_client == NULL)
+			continue;
 		if (member != members.begin())
 			oss << " ";
 		oss << member_client->getNickname();
@@ -130,6 +134,31 @@ bool	Channel::hasOperator(Client client)
 	return false;
 }
 
+void	Channel::addOperator(int fd)
+{
+	Client *client = ServerInstance::getInstance()->getClient(fd);
+	if (!client)
+		return;
+	if (!this->hasOperator(*client))
+	{
+		this->_operators.push_back(fd);
+		client->reply(RPL_ADDOPERATOR, client->getNickname(), this->getName().c_str());
+	}
+}
+
+void	Channel::removeOperator(int fd)
+{
+	std::vector<int>::iterator it = _operators.begin();
+	for (; it != _operators.end(); ++it)
+	{
+		if (*it == fd)
+		{
+			_operators.erase(it);
+			return;
+		}
+	}
+}
+
 bool	Channel::hasInvited(Client client)
 {
 	std::vector<int>::iterator it = _invited.begin();
@@ -149,6 +178,19 @@ void	Channel::invite(Client client)
 		this->_invited.push_back(fd);
 }
 
+void	Channel::removeInvited(Client client)
+{
+	std::vector<int>::iterator it = _invited.begin();
+	for (; it != _invited.end(); ++it)
+	{
+		if (*it == client.getFd())
+		{
+			_invited.erase(it);
+			return;
+		}
+	}
+}
+
 void	Channel::setTopic(std::string topic)
 {
 	this->_topic = topic;
@@ -164,7 +206,8 @@ void	Channel::sendTopic()
 	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
 	{
 		Client *client = this->_server->getClient(*it);
-		client->reply(RPL_TOPIC, this->getName().c_str(), this->getTopic().c_str());
+		if (client)
+			client->reply(RPL_TOPIC, this->getName().c_str(), this->getTopic().c_str());
 	}
 }
 

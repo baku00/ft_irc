@@ -32,7 +32,10 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 	// Create Channel if it doesn't exist
 	Channel *channel = server->getChannel(channel_name);
 	if (!channel)
+	{
 		channel = Channel::create(channel_name);
+		channel->addOperator(client.getFd());
+	}
 
 	// ERR_INVITEONLYCHAN if mode invite (+i) and not invited
 	if (channel->hasMode(Channel::I_INVITE) && !channel->hasInvited(client))
@@ -54,6 +57,7 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 
 	// 1. Add the client to the channel
 	channel->addClient(client.getFd());
+	channel->removeInvited(client);
 
 	// 2. Notify all channel members (including the client itself)
 	channel->broadcastMessage(&client, "JOIN " + channel_name);

@@ -62,8 +62,11 @@ class Channel {
 		static Channel				*create(std::string name);
 
 		bool						hasOperator(Client client);
+		void						addOperator(int fd);
+		void						removeOperator(int fd);
 
 		void						invite(Client client);
+		void						removeInvited(Client client);
 		bool						hasInvited(Client client);
 
 		void						setTopic(std::string topic);
