@@ -23,6 +23,7 @@ class Channel {
 		Server						*_server;
 		std::string					_topic;
 		std::string					_password;
+		std::size_t					_limit;
 
 	public:
 		Channel();
@@ -38,8 +39,6 @@ class Channel {
 			O_OPERATOR	= 0b00010,
 			L_LIMIT		= 0b00001
 		};
-
-		Channel						&operator=(const Channel &copy);
 
 		std::string					getName();
 		void						setName(std::string name);
@@ -77,6 +76,14 @@ class Channel {
 		void						setPassword(std::string password);
 		std::string					getPassword();
 		bool						isPassword(std::string password);
+
+		void						setLimit(std::size_t limit);
+		std::size_t					getLimit();
+		bool						isFull();
+
+		bool						canJoin(Client &client);
+
+		Channel						&operator=(const Channel &copy);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

@@ -226,6 +226,35 @@ bool	Channel::isPassword(std::string password)
 	return this->_password == password;
 }
 
+void	Channel::setLimit(std::size_t limit)
+{
+	this->_limit = limit;
+}
+
+std::size_t	Channel::getLimit()
+{
+	return this->_limit;
+}
+
+bool		Channel::isFull()
+{
+	return this->_limit > 0 && this->_clients.size() >= this->_limit;
+}
+
+bool		Channel::canJoin(Client &client)
+{
+	bool	can_join = false;
+
+	if (this->hasMode(Channel::I_INVITE) && !this->hasInvited(client))
+		client.reply(ERR_INVITEONLYCHAN, this->getName().c_str());
+	else if (this->hasMode(Channel::L_LIMIT) && this->isFull())
+		client.reply(ERR_CHANNELISFULL, this->getName().c_str());
+	else
+		can_join = true;
+
+	return can_join;
+}
+
 Channel &Channel::operator=(const Channel &copy) {
 	if (this != &copy) {
 		this->_name			= copy._name;

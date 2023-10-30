@@ -37,16 +37,9 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 		channel->addOperator(client.getFd());
 	}
 
-	// ERR_INVITEONLYCHAN if mode invite (+i) and not invited
-	if (channel->hasMode(Channel::I_INVITE) && !channel->hasInvited(client))
-	{
-		client.reply(ERR_INVITEONLYCHAN, channel_name.c_str());
+	if (!channel->canJoin(client))
 		return;
-	}
 
-	std::cout << "Has mode (K_PASSWORD): " << channel->hasMode(Channel::K_PASSWORD) << std::endl;
-	std::cout << "Is password: " << channel->isPassword(password) << std::endl;
-	std::cout << "Expected password: (" << channel->getPassword() << ")" << std::endl;
 	if (channel->hasMode(Channel::K_PASSWORD) && !channel->isPassword(password))
 	{
 		client.reply(ERR_INVALIDKEY, channel_name.c_str());

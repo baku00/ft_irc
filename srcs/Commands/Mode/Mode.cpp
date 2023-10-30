@@ -33,7 +33,7 @@ bool	Mode::isForSet(std::string mode) const {
 bool	Mode::isValidMode(std::string mode) const {
 	if (mode[0] != '+' && mode[0] != '-')
 		return false;
-	if (mode[1] != 'i' && mode[1] != 'k' && mode[1] != 'o')
+	if (mode[1] != 'i' && mode[1] != 'k' && mode[1] != 'o' && mode[1] != 'l')
 		return false;
 	if (mode.length() > 2)
 		return false;
@@ -55,6 +55,11 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 		client.reply(ERR_NOSUCHCHANNEL, channel_name.c_str());
 		return;
 	}
+	if (!channel->hasOperator(client))
+	{
+		client.reply(ERR_CHANOPRIVSNEEDED, channel_name.c_str());
+		return;
+	}
 	if (!this->isValidMode(mode))
 	{
 		// TODO: Change ERR_UNKNOWNCOMMAND to unknown mode
@@ -71,6 +76,22 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 		else
 			channel->delMode(Channel::K_PASSWORD);
 		channel->setPassword(is_for_set ? value : "");
+	}
+	else if (mode[1] == 'l')
+	{
+		if (is_for_set)
+			channel->addMode(Channel::L_LIMIT);
+		else
+			channel->delMode(Channel::L_LIMIT);
+		try
+		{
+			channel->setLimit(is_for_set ? std::atoi(value.c_str()) : 0);
+		}
+		catch(const std::exception& e)
+		{
+			client.reply(ERR_NEEDMOREPARAMS, "MODE");
+		}
+		
 	}
 	else if (mode[1] == 'i')
 	{
