@@ -33,7 +33,7 @@ bool	Mode::isForSet(std::string mode) const {
 bool	Mode::isValidMode(std::string mode) const {
 	if (mode[0] != '+' && mode[0] != '-')
 		return false;
-	if (mode[1] != 'i' && mode[1] != 'k' && mode[1] != 'o' && mode[1] != 'l')
+	if (mode[1] != 'i' && mode[1] != 'k' && mode[1] != 'o' && mode[1] != 'l' && mode[1] != 't')
 		return false;
 	if (mode.length() > 2)
 		return false;
@@ -99,6 +99,13 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 			channel->addMode(Channel::I_INVITE);
 		else
 			channel->delMode(Channel::I_INVITE);
+	}
+	else if (mode[1] == 't')
+	{
+		if (is_for_set)
+			channel->addMode(Channel::T_TOPIC);
+		else
+			channel->delMode(Channel::T_TOPIC);
 	}
 	else if (mode[1] == 'o')
 	{
