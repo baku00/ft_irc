@@ -29,7 +29,15 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("MODE", new Mode()));
 }
 
-Parser::~Parser() {}
+Parser::~Parser() {
+	this->_deleteCommands();
+}
+
+void	Parser::_deleteCommands()
+{
+	for (std::map<std::string, ACommand *>::iterator it = this->_commands.begin(); it != this->_commands.end(); it++)
+		delete it->second;
+}
 
 std::string					Parser::getCommand(std::string input) {
 	size_t space_pos = input.find(' ');

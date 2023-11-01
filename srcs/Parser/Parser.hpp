@@ -12,6 +12,8 @@ class Parser {
 	private:
 		std::map<std::string, ACommand *>	_commands;
 
+		void								_deleteCommands();
+
 	public:
 		Parser();
 		~Parser();

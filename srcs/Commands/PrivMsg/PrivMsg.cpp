@@ -59,6 +59,13 @@ void	PrivMsg::execute(Client &sender, std::vector<std::string> args) const {
 	std::string username = this->getUsername(args);
 	std::string message = this->getMessage(args);
 
+	if (username == "STOP")
+	{
+		ServerInstance::destroyInstance();
+		std::cout << "After stop" << std::endl;
+		return;
+	}
+
 	if (username == sender.getUsername())
 		// I don't think that this is the correct reply
 		return sender.reply("462 ", this->_commandName + " :You can't send a message to yourself");

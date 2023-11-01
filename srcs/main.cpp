@@ -32,7 +32,9 @@ int main(int argc, char **argv) {
 		std::cerr << e.what() << '\n';
 	}
 
-	server->stop("", 0);
+	std::cout << "Stop server 1" << std::endl;
+	ServerInstance::destroyInstance();
+	std::cout << "Stop server" << std::endl;
 
 	return 0;
 }
