@@ -30,11 +30,14 @@ ServerInstance	&ServerInstance::operator=(const ServerInstance &copy)
 
 void	ServerInstance::destroyInstance()
 {
+	std::cout << "Destroying ServerInstance" << std::endl;
 	if (ServerInstance::_server != NULL)
 	{
+		std::cout << "Destroy Instance" << std::endl;
 		delete ServerInstance::_server;
 		ServerInstance::_server = NULL;
 	}
+	std::cout << "ServerInstance destroyed" << std::endl;
 }
 
 Server	*ServerInstance::getInstance()

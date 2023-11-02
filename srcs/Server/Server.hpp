@@ -25,24 +25,29 @@ class Server
         std::string                         _version;
         std::string                         _created_at;
 		Parser								*_parser;
+		bool								_is_started;
 
 		Server();
 
-		void								createSocket();
-		void								linkSocketToPort(sockaddr_in serverAddr);
-		void								startListening();
-		void								initialiseConnection();
-		void								loop(sockaddr_in clientAddr, socklen_t clientAddrLen);
-		void								waitForIncomingConnection();
-		void								acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen);
-		void								parseInput(int fd, std::string input);
-		void								readClientInput(std::vector<pollfd>::iterator it, pollfd client);
-		void								disconnectClient(std::vector<pollfd>::iterator it);
+		void								_createSocket();
+		void								_linkSocketToPort(sockaddr_in serverAddr);
+		void								_startListening();
+		void								_initialiseConnection();
+		void								_loop(sockaddr_in clientAddr, socklen_t clientAddrLen);
+		void								_waitForIncomingConnection();
+		void								_acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen);
+		void								_parseInput(int fd, std::string input);
+		void								_readClientInput(std::vector<pollfd>::iterator it, pollfd client);
+		void								_disconnectClient(std::vector<pollfd>::iterator it);
+		void								_deleteChannels();
+		void								_deleteClients();
+		void								_deleteConnections();
+		void								_deleteParser();
 
-        static Client                       *getByFd(int fd, std::map<int, Client *> & clients);
+		static Client						*_getByFd(int fd, std::map<int, Client *> & clients);
 
 
-		sockaddr_in							fixSettings();
+		sockaddr_in							_fixSettings();
 
 	public:
 		Server(int port, std::string password);

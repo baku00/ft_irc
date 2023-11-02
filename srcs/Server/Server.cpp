@@ -17,6 +17,7 @@ Server::Server(int port, std::string password)
 	this->_version = "1.0";
 	this->_created_at = "2023";
 	this->_parser = new Parser();
+	this->_is_started = true;
 }
 
 Server::Server(const Server &copy)
@@ -30,18 +31,18 @@ void	Server::start()
 	struct sockaddr_in serverAddr, clientAddr;
 	socklen_t clientAddrLen = sizeof(clientAddr);
 
-	this->createSocket();
+	this->_createSocket();
 
-	serverAddr = this->fixSettings();
+	serverAddr = this->_fixSettings();
 
-	this->linkSocketToPort(serverAddr);
-	this->startListening();
-	this->initialiseConnection();
-	this->loop(clientAddr, clientAddrLen);
+	this->_linkSocketToPort(serverAddr);
+	this->_startListening();
+	this->_initialiseConnection();
+	this->_loop(clientAddr, clientAddrLen);
 	this->stop("Server stopped", 0);
 }
 
-void	Server::createSocket()
+void	Server::_createSocket()
 {
 	this->_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_serverSocket == -1) {
@@ -49,7 +50,7 @@ void	Server::createSocket()
 	}
 }
 
-sockaddr_in	Server::fixSettings()
+sockaddr_in	Server::_fixSettings()
 {
 	struct sockaddr_in serverAddr;
 
@@ -60,14 +61,14 @@ sockaddr_in	Server::fixSettings()
 	return serverAddr;
 }
 
-void	Server::linkSocketToPort(sockaddr_in serverAddr)
+void	Server::_linkSocketToPort(sockaddr_in serverAddr)
 {
 	if (bind(this->_serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
 		this->stop("Erreur lors de la liaison du socket au port.", EXIT_FAILURE);
 	}
 }
 
-void	Server::startListening()
+void	Server::_startListening()
 {
 	if (listen(this->_serverSocket, 5) == -1) {
 		this->stop("Erreur lors de l'attente de connexions entrantes.", EXIT_FAILURE);
@@ -75,7 +76,7 @@ void	Server::startListening()
 	std::cout << "Serveur IRC en attente de connexions sur le port " << this->_port << std::endl;
 }
 
-void	Server::initialiseConnection()
+void	Server::_initialiseConnection()
 {
 	this->_pollfds[0].fd = this->_serverSocket;
 	this->_pollfds[0].events = POLLIN;
@@ -83,25 +84,36 @@ void	Server::initialiseConnection()
 	std::cout << "Prêts à être connecté" << std::endl;
 }
 
-void	Server::loop(sockaddr_in clientAddr, socklen_t clientAddrLen)
+void	Server::_loop(sockaddr_in clientAddr, socklen_t clientAddrLen)
 {
-	while (true) {
-		this->waitForIncomingConnection();
+	while (this->_is_started) {
+		std::cout << "Wait of connection" << std::endl;
+		this->_waitForIncomingConnection();
 
-		for (size_t i = 0; i < this->_pollfds.size(); i++)
+		for (size_t i = 0; this->_is_started && i < this->_pollfds.size(); i++)
 		{
+			std::cout << "Check fd" << std::endl;
 			if (this->_pollfds[i].revents & POLLIN)
 			{
 				if (i == 0)
-					this->acceptNewConnection(clientAddr, clientAddrLen);
+					this->_acceptNewConnection(clientAddr, clientAddrLen);
 				else
-					this->readClientInput(this->_pollfds.begin() + i, this->_pollfds[i]);
+					this->_readClientInput(this->_pollfds.begin() + i, this->_pollfds[i]);
+				std::cout << "End check fd" << std::endl;
 			}
+			if (!this->_is_started)
+			{
+				std::cout << "Stopping for" << std::endl;
+				break;
+			}
+			std::cout << "Out of check" << std::endl;
 		}
+		std::cout << "Restarting while" << std::endl;
 	}
+	std::cout << "While stopped" << std::endl;
 }
 
-void	Server::waitForIncomingConnection()
+void	Server::_waitForIncomingConnection()
 {
 	std::cout << "Attente de connexions entrantes..." << std::endl;
 
@@ -112,7 +124,7 @@ void	Server::waitForIncomingConnection()
 	}
 }
 
-void	Server::acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen)
+void	Server::_acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen)
 {
 	_clientSocket = accept(this->_serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
 	if (_clientSocket == -1) {
@@ -129,17 +141,17 @@ void	Server::acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen
 	}
 }
 
-void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
+void	Server::_readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 {
 	char buffer[1024] = {0};
 	std::cout << "Client fd: " << client.fd << std::endl;
 	ssize_t bytesRead = read(client.fd, buffer, sizeof(buffer));
 	std::cout << "bytesRead: " << bytesRead << std::endl;
 	if (bytesRead <= 0) {
-		this->disconnectClient(it);
+		this->_disconnectClient(it);
 	} else {
 		buffer[bytesRead] = '\0';
-		this->parseInput(client.fd, buffer);
+		this->_parseInput(client.fd, buffer);
 	}
 }
 
@@ -152,10 +164,10 @@ void	Server::disconnectClientFromFD(int fd)
 			break;
 	}
 	if (it != this->_pollfds.end())
-		this->disconnectClient(it);
+		this->_disconnectClient(it);
 }
 
-void	Server::disconnectClient(std::vector<pollfd>::iterator it)
+void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 {
 	std::cout << "Déconnexion du client" << std::endl;
 	std::cout << "FD: " << it->fd << std::endl;
@@ -170,7 +182,7 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 	std::cout << "Client déconnecté" << std::endl;
 }
 
-void	Server::parseInput(int fd, std::string input)
+void	Server::_parseInput(int fd, std::string input)
 {
 	Client * client;
 	bool is_registered = false;
@@ -232,7 +244,7 @@ std::string Server::getPassword()
 	return this->_password;
 }
 
-Client  *Server::getByFd(int fd, std::map<int, Client *> & clients) {
+Client  *Server::_getByFd(int fd, std::map<int, Client *> & clients) {
 	std::map<int, Client *>::iterator client_iter = clients.find(fd);
 	if (client_iter == clients.end())
 		return NULL;
@@ -247,7 +259,7 @@ Client	*Server::getClient(int fd)
 	// return &this->_clients[fd];
 
 	// Better do this:
-	return getByFd(fd, this->_clients);
+	return _getByFd(fd, this->_clients);
 	
 
 	// Which is something like this:
@@ -262,7 +274,7 @@ Client	*Server::getConnection(int fd)
 {
 	try
 	{
-		return getByFd(fd, this->_connections);
+		return _getByFd(fd, this->_connections);
 	}
 	catch(const std::exception& e)
 	{
@@ -303,19 +315,51 @@ std::map<std::string, Channel *>	Server::getChannels()
 
 void	Server::stop(std::string message, int exitCode)
 {
-	close(this->_serverSocket);
-	ServerInstance::destroyInstance();
+	this->_is_started = false;
+	this->_deleteConnections();
+	this->_deleteChannels();
+	this->_deleteClients();
+	this->_deleteParser();
 	std::cout << "Server stopped" << std::endl;
 	if (exitCode)
-	{
 		std::cerr << message << std::endl;
-		exit(exitCode);
-	}
+	exit(exitCode);
 }
 
 Server::~Server()
 {
 	std::cout << "Server destructor called" << std::endl;
+	this->stop("", 0);
+}
+
+void	Server::_deleteParser()
+{
+	std::cout << "Destruction du parser" << std::endl;
+	delete this->_parser;
+}
+
+void	Server::_deleteConnections()
+{
+	std::cout << "Destruction des connexions" << std::endl;
+	std::map<int, Client *>::iterator it;
+	for (it = this->_connections.begin(); it != this->_connections.end(); it++)
+		delete it->second;
+}
+
+void	Server::_deleteChannels()
+{
+	std::cout << "Destruction des channels" << std::endl;
+	std::map<std::string, Channel *>::iterator it;
+	for (it = this->_channels.begin(); it != this->_channels.end(); it++)
+		delete it->second;
+}
+
+void	Server::_deleteClients()
+{
+	std::cout << "Destruction des clients" << std::endl;
+	std::map<int, Client *>::iterator it;
+	for (it = this->_clients.begin(); it != this->_clients.end(); it++)
+		delete it->second;
 }
 
 Server	&Server::operator=(const Server &copy)
