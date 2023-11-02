@@ -5,7 +5,7 @@
 Mode::Mode() {
 	this->_minArgsRequired = 2;
 	this->_maxArgsRequired = 3;
-	this->_commandName = "USER";
+	this->_commandName = "MODE";
 }
 
 Mode::~Mode() {}
@@ -46,6 +46,11 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 
 	// Get needed args
 	std::string channel_name = this->getChannel(args);
+
+	// Skip mode if not for channel
+	if (channel_name[0] != '#')
+		return;
+
 	std::string mode = this->getMode(args);
 	std::string value = this->getValue(args);
 
@@ -62,8 +67,7 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 	}
 	if (!this->isValidMode(mode))
 	{
-		// TODO: Change ERR_UNKNOWNCOMMAND to unknown mode
-		client.reply(ERR_UNKNOWNCOMMAND, mode.c_str());
+		client.reply(ERR_UNKNOWNMODE, mode.c_str(), channel_name.c_str());
 		return;
 	}
 

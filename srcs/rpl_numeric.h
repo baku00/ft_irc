@@ -9,6 +9,8 @@
 # define RPL_CREATED "003",  "This server was created <date>"
 # define RPL_MYINFO "004",  "<servername> <version> <available user modes> <available channel modes>"
 
+#define RPL_WHOISUSER "311", "<nick> <user> <host> * :<real name>"
+
 # define RPL_NAMREPLY "353", "= <channel> :@<all_nicks>"
 # define RPL_ENDOFNAMES "366", "<channel> :End of NAMES list"
 # define RPL_TOPIC "332", "<channel> :<topic>"

@@ -235,7 +235,7 @@ void	Server::_parseInput(int fd, std::string input)
 		client->reply(RPL_MYINFO,
 					this->_server_name.c_str(),
 					this->_version.c_str(),
-					"0", "itkol");
+					"*", "{[+|-]|i|t|k|o|l}");
 	}
 }
 

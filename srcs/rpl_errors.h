@@ -17,5 +17,6 @@
 # define ERR_UMODEUNKNOWNFLAG "501", ":Unknown MODE flag"
 # define ERR_INVALIDKEY "475", "<channel> :Cannot join channel (+k)"
 # define ERR_CHANNELISFULL "471", "<channel> :Cannot join channel (+l)"
+# define ERR_UNKNOWNMODE "472", "<char> :is unknown mode char to me for <channel>"
 
 #endif
