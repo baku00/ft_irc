@@ -32,12 +32,12 @@ class Channel {
 
 		enum Mode
 		{
-			BASE_MASK	= 31, // 0b11111 in CPP14,
-			I_INVITE	= 16, // 0b10000 in CPP14,
-			T_TOPIC		= 8, // 0b01000 in CPP14,
-			K_PASSWORD	= 4, // 0b00100 in CPP14,
-			O_OPERATOR	= 2, // 0b00010 in CPP14,
-			L_LIMIT		= 1 // 0b00001 in CPP14
+			BASE_MASK	= 0b11111,
+			I_INVITE	= 0b10000,
+			T_TOPIC		= 0b01000,
+			K_PASSWORD	= 0b00100,
+			O_OPERATOR	= 0b00010,
+			L_LIMIT		= 0b00001
 		};
 
 		std::string					getName();
@@ -46,7 +46,7 @@ class Channel {
 		void						addClient(int fd);
 		std::vector<int>			getClients();
 		bool						hasClient(int fd);
-		bool						hasClient(Client & client);
+		bool						hasClient(Client client);
 		void						showClients();
 		bool						removeClient(int fd);
 
