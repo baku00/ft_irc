@@ -66,7 +66,7 @@ void	PrivMsg::execute(Client &sender, std::vector<std::string> args) const {
 		return;
 	}
 
-	if (username == sender.getUsername())
+	if (username == sender.getNickname())
 		// I don't think that this is the correct reply
 		return sender.reply("462 ", this->_commandName + " :You can't send a message to yourself");
 

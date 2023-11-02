@@ -25,6 +25,7 @@ class Server
         std::string                         _version;
         std::string                         _created_at;
 		Parser								*_parser;
+		bool								_is_started;
 
 		Server();
 

@@ -17,6 +17,7 @@ Server::Server(int port, std::string password)
 	this->_version = "1.0";
 	this->_created_at = "2023";
 	this->_parser = new Parser();
+	this->_is_started = true;
 }
 
 Server::Server(const Server &copy)
@@ -85,20 +86,31 @@ void	Server::_initialiseConnection()
 
 void	Server::_loop(sockaddr_in clientAddr, socklen_t clientAddrLen)
 {
-	while (true) {
+	while (this->_is_started) {
+		std::cout << "Wait of connection" << std::endl;
 		this->_waitForIncomingConnection();
 
-		for (size_t i = 0; i < this->_pollfds.size(); i++)
+		for (size_t i = 0; this->_is_started && i < this->_pollfds.size(); i++)
 		{
+			std::cout << "Check fd" << std::endl;
 			if (this->_pollfds[i].revents & POLLIN)
 			{
 				if (i == 0)
 					this->_acceptNewConnection(clientAddr, clientAddrLen);
 				else
 					this->_readClientInput(this->_pollfds.begin() + i, this->_pollfds[i]);
+				std::cout << "End check fd" << std::endl;
 			}
+			if (!this->_is_started)
+			{
+				std::cout << "Stopping for" << std::endl;
+				break;
+			}
+			std::cout << "Out of check" << std::endl;
 		}
+		std::cout << "Restarting while" << std::endl;
 	}
+	std::cout << "While stopped" << std::endl;
 }
 
 void	Server::_waitForIncomingConnection()
@@ -139,7 +151,7 @@ void	Server::_readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 		this->_disconnectClient(it);
 	} else {
 		buffer[bytesRead] = '\0';
-		this->parseInput(client.fd, buffer);
+		this->_parseInput(client.fd, buffer);
 	}
 }
 
@@ -232,7 +244,7 @@ std::string Server::getPassword()
 	return this->_password;
 }
 
-Client  *Server::getByFd(int fd, std::map<int, Client *> & clients) {
+Client  *Server::_getByFd(int fd, std::map<int, Client *> & clients) {
 	std::map<int, Client *>::iterator client_iter = clients.find(fd);
 	if (client_iter == clients.end())
 		return NULL;
@@ -247,7 +259,7 @@ Client	*Server::getClient(int fd)
 	// return &this->_clients[fd];
 
 	// Better do this:
-	return getByFd(fd, this->_clients);
+	return _getByFd(fd, this->_clients);
 	
 
 	// Which is something like this:
@@ -262,7 +274,7 @@ Client	*Server::getConnection(int fd)
 {
 	try
 	{
-		return getByFd(fd, this->_connections);
+		return _getByFd(fd, this->_connections);
 	}
 	catch(const std::exception& e)
 	{
@@ -303,16 +315,15 @@ std::map<std::string, Channel *>	Server::getChannels()
 
 void	Server::stop(std::string message, int exitCode)
 {
+	this->_is_started = false;
 	this->_deleteConnections();
 	this->_deleteChannels();
 	this->_deleteClients();
 	this->_deleteParser();
 	std::cout << "Server stopped" << std::endl;
 	if (exitCode)
-	{
 		std::cerr << message << std::endl;
-		exit(exitCode);
-	}
+	exit(exitCode);
 }
 
 Server::~Server()
