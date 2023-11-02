@@ -81,7 +81,14 @@ std::vector<std::string>	Parser::getParameters(std::string input) {
 void	Parser::execute(Client &client, std::string command, std::vector<std::string> args) {
 	std::map<std::string, ACommand *>::iterator it = this->_commands.find(command);
 	if (it != this->_commands.end())
+	{
+		std::cout << "Execution de la commande: " << command << std::endl;
+		std::cout << args.size() << " Arguments" << std::endl;
+		for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++)
+			std::cout << "\t" << *it << std::endl;
+	
 		it->second->execute(client, args);
+	}
 	else
 	{
 		std::cerr << "Command not found: " << command << std::endl;

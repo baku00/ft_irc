@@ -84,6 +84,7 @@ class Channel {
 		bool						canJoin(Client &client);
 
 		Channel						&operator=(const Channel &copy);
+		void						sendTopicToClient(int fd);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);
