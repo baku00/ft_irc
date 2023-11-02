@@ -189,6 +189,16 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 		_clients.erase(it->fd);
 	else
 		_clients.clear();
+	
+	for (std::map<int, Client *>::iterator connection = _connections.begin(); connection != _connections.end(); connection++)
+	{
+		if (connection->second->getFd() == it->fd)
+			delete connection->second;
+	}
+	if (_connections.size() > 1)
+		_connections.erase(it->fd);
+	else
+		_connections.clear();
 	std::cout << "Client déconnecté" << std::endl;
 }
 
