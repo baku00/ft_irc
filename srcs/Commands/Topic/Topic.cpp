@@ -29,7 +29,7 @@ void		Topic::setTopic(Client client, Channel *channel, std::vector<std::string> 
 	channel->sendTopic();
 }
 
-void	Topic::execute(Client client, std::vector<std::string> args) const {
+void	Topic::execute(Client & client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 
