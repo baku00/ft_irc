@@ -3,7 +3,7 @@
 Me::Me() {
 	this->_minArgsRequired = 0;
 	this->_maxArgsRequired = 0;
-	this->_commandName = "Me";
+	this->_commandName = "ME";
 }
 
 Me::~Me() {}
