@@ -113,14 +113,16 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 	}
 	else if (mode[1] == 'o')
 	{
-		Client *client = ServerInstance::getInstance()->getClientByNickname(value);
+		Client *_client = ServerInstance::getInstance()->getClientByNickname(value);
+		if (!_client)
+			return client.reply(ERR_NOSUCHNICK, value.c_str());
+		if (!channel->hasClient(*_client))
+			return client.reply(ERR_USERNOTINCHANNEL, value.c_str(), channel_name.c_str());
 		if (is_for_set)
-			channel->addOperator(client->getFd());
+			channel->addOperator(_client->getFd());
 		else
 		{
-			std::cout << "Client: " << client << std::endl;
-			std::cout << "FD: " << client->getFd() << std::endl;
-			channel->removeOperator(client->getFd());
+			channel->removeOperator(_client->getFd());
 		}
 	}
 	else

@@ -4,7 +4,7 @@
 Whois::Whois() {
 	this->_minArgsRequired = 1;
 	this->_maxArgsRequired = 1;
-	this->_commandName = "PING";
+	this->_commandName = "WHOIS";
 }
 
 Whois::~Whois() {}

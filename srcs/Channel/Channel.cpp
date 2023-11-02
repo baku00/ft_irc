@@ -26,7 +26,7 @@ void				Channel::setName(std::string name)	{						this->_name = name;	}
 std::string			Channel::getName()					{	return				this->_name;		}
 std::vector<int>	Channel::getClients()				{	return				this->_clients;		}
 
-void	Channel::addClient(int fd) {
+void	Channel::	addClient(int fd) {
 	if (!this->hasClient(fd))
 		this->_clients.push_back(fd);
 }

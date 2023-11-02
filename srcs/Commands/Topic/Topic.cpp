@@ -40,6 +40,8 @@ void	Topic::execute(Client & client, std::vector<std::string> args) const {
 		return client.reply(ERR_NOSUCHCHANNEL, channel_name.c_str());
 	if (!channel->hasClient(client.getFd()))
 		return client.reply(ERR_NOTONCHANNEL, channel_name.c_str());
+	if (!channel->hasOperator(client))
+		return client.reply(ERR_CHANOPRIVSNEEDED, channel_name.c_str());
 
 	if (this->containsTopic(args))
 		this->setTopic(client, channel, args);
