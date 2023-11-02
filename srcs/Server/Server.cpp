@@ -174,11 +174,31 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 	close(it->fd);
 
 	std::map<std::string, Channel *>::iterator	channel;
-	for (channel = this->_channels.begin(); channel != this->_channels.end(); channel++)
-		channel->second->removeClient(it->fd);
+	if (this->_channels.size() > 0)
+		for (channel = this->_channels.begin(); channel != this->_channels.end(); channel++)
+			channel->second->removeClient(it->fd);
 
 	_pollfds.erase(it);
-	_clients.erase(it->fd);
+	std::cout << "Size: " << _clients.size() << std::endl;
+	for (std::map<int, Client *>::iterator client = _clients.begin(); client != _clients.end(); client++)
+	{
+		if (client->second->getFd() == it->fd)
+			delete client->second;
+	}
+	if (_clients.size() > 1)
+		_clients.erase(it->fd);
+	else
+		_clients.clear();
+	
+	for (std::map<int, Client *>::iterator connection = _connections.begin(); connection != _connections.end(); connection++)
+	{
+		if (connection->second->getFd() == it->fd)
+			delete connection->second;
+	}
+	if (_connections.size() > 1)
+		_connections.erase(it->fd);
+	else
+		_connections.clear();
 	std::cout << "Client déconnecté" << std::endl;
 }
 
@@ -201,6 +221,9 @@ void	Server::_parseInput(int fd, std::string input)
 	// if input doesnt end with \r\n: 
 	// 		put command into client buffer
 
+	for (size_t i = 0; i < input.length(); i++)
+		std::cout << i << ": [" << static_cast<int>(input[i]) << std::endl;
+
 	size_t new_line;
 	while ((new_line = input.find("\r\n")) != std::string::npos)
 	{
@@ -216,6 +239,13 @@ void	Server::_parseInput(int fd, std::string input)
 			this->_parser->execute(*client, command, args);
 		else
 			client->reply(ERR_RESTRICTED);
+
+		for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++)
+		{
+			it->clear();
+		}
+		args.clear();
+		command.clear();
 	}
 
 	if (!is_registered && client->isValidate())

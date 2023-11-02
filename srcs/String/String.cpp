@@ -12,5 +12,7 @@ std::string					String::trim(std::string input, std::string chars)
 	if (first == std::string::npos || last == std::string::npos)
 		return "";
 
-	return input.substr(first, (last - first + 1));
+	std::string substr = input.substr(first, (last - first + 1));
+	input.clear();
+	return substr;
 }
