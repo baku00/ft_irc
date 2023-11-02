@@ -226,6 +226,13 @@ void	Server::_parseInput(int fd, std::string input)
 			this->_parser->execute(*client, command, args);
 		else
 			client->reply(ERR_RESTRICTED);
+
+		for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++)
+		{
+			it->clear();
+		}
+		args.clear();
+		command.clear();
 	}
 
 	if (!is_registered && client->isValidate())

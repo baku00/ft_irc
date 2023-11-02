@@ -45,14 +45,21 @@ std::string					Parser::getCommand(std::string input) {
 	size_t space_pos = input.find(' ');
 	if (space_pos == std::string::npos)
 		return String::trim(input, " \t\n\r");
-	return String::trim(input.substr(0, space_pos), " \t\n\r");
+	std::string substr = input.substr(0, space_pos);
+	std::string trimmed = String::trim(substr, "\t\n\r");
+	std::cout << "Substr: " << substr << std::endl;
+	substr.clear();
+	return trimmed;
 }
 
 std::string					Parser::getChannel(std::string input) {
 	size_t space_pos = input.find(' ');
 	if (space_pos == std::string::npos)
 		return String::trim(input, " \t\n\r");
-	return String::trim(input.substr(0, space_pos), " \t\n\r");
+	std::string substr = input.substr(0, space_pos);
+	std::string trimmed = String::trim(substr, "\t\n\r");
+	substr.clear();
+	return trimmed;
 }
 
 std::vector<std::string>	Parser::getParameters(std::string input) {
