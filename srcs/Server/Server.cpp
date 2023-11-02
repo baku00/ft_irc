@@ -225,6 +225,11 @@ void	Server::_parseInput(int fd, std::string input)
 		std::cout << i << ": [" << static_cast<int>(input[i]) << std::endl;
 
 	size_t new_line;
+	if (input.find("\r\n") == std::string::npos)
+	{
+		while (input.find("\n") != std::string::npos)
+			input.replace("\n", "\r\n");
+	}
 	while ((new_line = input.find("\r\n")) != std::string::npos)
 	{
 		std::string line = input.substr(0, new_line);
