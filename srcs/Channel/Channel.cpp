@@ -108,6 +108,8 @@ std::string Channel::getNicknames()
 			continue;
 		if (member != members.begin())
 			oss << " ";
+		if (this->hasOperator(*member))
+			oss << "@";
 		oss << member_client->getNickname();
 	}
 
