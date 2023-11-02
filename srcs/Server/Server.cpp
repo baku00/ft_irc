@@ -180,16 +180,15 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 
 	_pollfds.erase(it);
 	std::cout << "Size: " << _clients.size() << std::endl;
+	for (std::map<int, Client *>::iterator client = _clients.begin(); client != _clients.end(); client++)
+	{
+		if (client->second->getFd() == it->fd)
+			delete client->second;
+	}
 	if (_clients.size() > 1)
-	{
 		_clients.erase(it->fd);
-		std::cout << "Erase" << std::endl;
-	}
 	else
-	{
 		_clients.clear();
-		std::cout << "Clear" << std::endl;
-	}
 	std::cout << "Client déconnecté" << std::endl;
 }
 
