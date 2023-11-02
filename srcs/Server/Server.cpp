@@ -179,6 +179,7 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 			channel->second->removeClient(it->fd);
 
 	_pollfds.erase(it);
+	std::cout << "Client size: " << _clients.size() << std::endl;
 	_clients.erase(it->fd);
 	std::cout << "Client déconnecté" << std::endl;
 }
