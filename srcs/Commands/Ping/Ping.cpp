@@ -12,6 +12,5 @@ void	Ping::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 
-	// Isn't PING supposed to be sent from the server to a client ?
-	client.sendPrivMsg(&client, "PONG");
+	client.sendMessage(&client, "PONG");
 }

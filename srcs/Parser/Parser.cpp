@@ -12,6 +12,7 @@
 #include "../Commands/Topic/Topic.hpp"
 #include "../Commands/Mode/Mode.hpp"
 #include "../String/String.hpp"
+#include "../Commands/Whois/Whois.hpp"
 
 Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("PASS", new Pass()));
@@ -27,6 +28,7 @@ Parser::Parser() {
 	this->_commands.insert(std::pair<std::string, ACommand *>("INVITE", new Invite()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("TOPIC", new Topic()));
 	this->_commands.insert(std::pair<std::string, ACommand *>("MODE", new Mode()));
+	this->_commands.insert(std::pair<std::string, ACommand *>("WHOIS", new Whois()));
 }
 
 Parser::~Parser() {

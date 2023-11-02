@@ -21,6 +21,7 @@ TOPIC = srcs/Commands/Topic/Topic.cpp
 MODE = srcs/Commands/Mode/Mode.cpp
 CHANNEL = srcs/Channel/Channel.cpp
 MESSAGE = srcs/Utils/Message/Message.cpp
+WHOIS = srcs/Commands/Whois/Whois.cpp
 TESTS = tests/test_mode.cpp
 
 FILES = srcs/main.cpp $(TESTS) $(TOPIC) \
@@ -30,11 +31,12 @@ FILES = srcs/main.cpp $(TESTS) $(TOPIC) \
 		$(USER) $(ME) $(QUIT) \
 		$(JOIN) $(CHANNEL) $(KICK) \
 		$(MESSAGE) $(PING) $(INVITE) \
-		$(STRING) $(MODE)
+		$(STRING) $(MODE) $(WHOIS)
 
 OBJS = $(FILES:.cpp=.o)
 
-FLAGS = -Wall -Wextra -Werror -fsanitize=address -fpermissive -std=c++98 -I./srcs -I./tests
+#FLAGS = -Wall -Wextra -Werror -fsanitize=address -fpermissive -std=c++98 -I./srcs -I./tests
+FLAGS = -Wall -Wextra -Werror -pedantic -std=c++98 -I./srcs -I./tests
 
 CC = c++
 

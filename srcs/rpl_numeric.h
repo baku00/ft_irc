@@ -9,10 +9,14 @@
 # define RPL_CREATED "003",  "This server was created <date>"
 # define RPL_MYINFO "004",  "<servername> <version> <available user modes> <available channel modes>"
 
+#define RPL_WHOISUSER "311", "<nick> <user> <host> * :<real name>"
+
+#define RPL_CHANNELMODEIS "324", "<channel> <mode> <mode params>"
+
 # define RPL_NAMREPLY "353", "= <channel> :@<all_nicks>"
 # define RPL_ENDOFNAMES "366", "<channel> :End of NAMES list"
 # define RPL_TOPIC "332", "<channel> :<topic>"
-# define RPL_INVITING "341", "<channel> <nick>"
+# define RPL_INVITING "341", "<nick> <channel>"
 
 # define RPL_ADDOPERATOR "381", "Gives 'chanop' to <nick> on <channel>"
 
