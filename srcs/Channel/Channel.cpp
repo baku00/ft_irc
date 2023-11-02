@@ -28,16 +28,7 @@ std::vector<int>	Channel::getClients()				{	return				this->_clients;		}
 
 void	Channel::	addClient(int fd) {
 	if (!this->hasClient(fd))
-	{
 		this->_clients.push_back(fd);
-		this->sendTopicToClient(fd);
-	}
-}
-
-void	Channel::sendTopicToClient(int fd)
-{
-	Client *client = this->_server->getClient(fd);
-	client->reply(RPL_TOPIC, this->getName().c_str(), this->getTopic().c_str());
 }
 
 bool	Channel::hasClient(int fd) {

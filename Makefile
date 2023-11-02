@@ -31,7 +31,7 @@ FILES = srcs/main.cpp $(TESTS) $(TOPIC) \
 		$(USER) $(ME) $(QUIT) \
 		$(JOIN) $(CHANNEL) $(KICK) \
 		$(MESSAGE) $(PING) $(INVITE) \
-		$(STRING) $(MODE) $(WHOIS)
+		$(STRING) $(MODE) #$(WHOIS)
 
 OBJS = $(FILES:.cpp=.o)
 
