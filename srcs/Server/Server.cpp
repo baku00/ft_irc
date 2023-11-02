@@ -174,7 +174,7 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 	close(it->fd);
 
 	std::map<std::string, Channel *>::iterator	channel;
-	if (this->_channels.size() >= 0)
+	if (this->_channels.size() > 0)
 		for (channel = this->_channels.begin(); channel != this->_channels.end(); channel++)
 			channel->second->removeClient(it->fd);
 
