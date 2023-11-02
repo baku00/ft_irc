@@ -62,5 +62,5 @@ void	Invite::execute(Client &client, std::vector<std::string> args) const {
 
 	channel->invite(*invited);
 	invited->sendMessage(&client, "INVITE " + nickname + " " + channel_name);
-	client.reply(RPL_INVITING, channel_name.c_str(), nickname.c_str());
+	client.reply(RPL_INVITING, nickname.c_str(), channel_name.c_str());
 }

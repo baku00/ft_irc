@@ -5,6 +5,7 @@
 # define ERR_NOSUCHCHANNEL "403", "<channel> :No such channel"
 # define ERR_UNKNOWNCOMMAND "421", "<command> :Unknown command"
 # define ERR_NICKNAMEINUSE "433", "<nick> :Nickname is already in use"
+# define ERR_USERNOTINCHANNEL "441", "<nick> <channel> :They aren't on that channel"
 # define ERR_NOTONCHANNEL "442", "<channel> :You're not on that channel"
 # define ERR_USERONCHANNEL "443", "<user> <channel> :is already on channel"
 # define ERR_NEEDMOREPARAMS "461", "<command> :Not enough parameters"
@@ -18,5 +19,6 @@
 # define ERR_INVALIDKEY "475", "<channel> :Cannot join channel (+k)"
 # define ERR_CHANNELISFULL "471", "<channel> :Cannot join channel (+l)"
 # define ERR_UNKNOWNMODE "472", "<char> :is unknown mode char to me for <channel>"
+# define ERR_CHANOPRIVSNEEDED "482", "<channel> :You're not channel operator"
 
 #endif

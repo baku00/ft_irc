@@ -1,7 +1,7 @@
 #include "Kick.hpp"
 
 Kick::Kick() {
-	this->_minArgsRequired = 1;
+	this->_minArgsRequired = 2;
 	this->_maxArgsRequired = 3;
 	this->_commandName = "KICK";
 }
@@ -30,18 +30,20 @@ void	Kick::execute(Client &client, std::vector<std::string> args) const {
 	std::string nickname = this->getNickname(args);
 	std::string reason = this->getReason(args);
 
-	Client *client_to_kick = ServerInstance::getInstance()->getClientByNickname(nickname);
-
-	if(!client_to_kick)
-		// Here we should send the appropriate reply
-		return client.sendPrivMsg(client_to_kick, "Client not found");
-
 	Channel *channel = ServerInstance::getInstance()->getChannel(channel_name);
 	if (!channel)
-		// Here we should send the appropriate reply
-		return client.sendPrivMsg(client_to_kick, "Channel not found");
+		return client.reply(ERR_NOSUCHCHANNEL, channel_name.c_str());
 
-	bool hasBeenEjected = channel->removeClient(client_to_kick->getFd());
-	if (hasBeenEjected)
-		client_to_kick->sendMessage(&client, this->getCommandName() + " " + channel_name + " " + nickname + " " + reason);
+	if (!channel->hasClient(client))
+		return client.reply(ERR_NOTONCHANNEL, channel_name.c_str());
+
+	if (!channel->hasOperator(client))
+		return client.reply(ERR_CHANOPRIVSNEEDED, channel_name.c_str());
+
+	Client *client_to_kick = ServerInstance::getInstance()->getClientByNickname(nickname);
+	if (client_to_kick == NULL || !channel->hasClient(*client_to_kick))
+		return client.reply(ERR_USERNOTINCHANNEL, nickname.c_str(), channel_name.c_str());
+
+	channel->broadcastMessage(&client, "KICK " + channel_name + " " + nickname + " " + reason);
+	channel->removeClient(client_to_kick->getFd());
 }

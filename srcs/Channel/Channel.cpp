@@ -41,7 +41,7 @@ bool	Channel::hasClient(int fd) {
 	return false;
 }
 
-bool	Channel::hasClient(Client client) {
+bool	Channel::hasClient(Client & client) {
 	return this->hasClient(client.getFd());
 }
 

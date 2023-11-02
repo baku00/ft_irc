@@ -46,7 +46,7 @@ class Channel {
 		void						addClient(int fd);
 		std::vector<int>			getClients();
 		bool						hasClient(int fd);
-		bool						hasClient(Client client);
+		bool						hasClient(Client & client);
 		void						showClients();
 		bool						removeClient(int fd);
 

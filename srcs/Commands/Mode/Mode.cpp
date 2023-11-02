@@ -123,4 +123,10 @@ void	Mode::execute(Client &client, std::vector<std::string> args) const {
 			channel->removeOperator(client->getFd());
 		}
 	}
+	else
+	{
+		return client.reply(ERR_UNKNOWNMODE, &mode[1], channel_name.c_str());
+	}
+
+	channel->broadcastMessage(&client, "MODE " + channel_name + " " + mode + " " + value);
 }
