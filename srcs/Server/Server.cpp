@@ -182,7 +182,7 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 	std::cout << "Client size: " << _clients.size() << std::endl;
 	for (std::map<int, Client *>::iterator client = this->_clients.begin(); client != this->_clients.end(); client++)
 		std::cout << "fd: " << client->first << "; nickname: " << client->second->getNickname() << std::endl;
-	std::cout << "Nickname: " << _clients[it->fd].getNickname() << std::endl;
+	std::cout << "Nickname: " << _clients[it->fd]->getNickname() << std::endl;
 	_clients.erase(it->fd);
 	std::cout << "Client déconnecté" << std::endl;
 }
