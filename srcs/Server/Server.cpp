@@ -132,11 +132,13 @@ void	Server::acceptNewConnection(sockaddr_in clientAddr, socklen_t clientAddrLen
 void	Server::readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 {
 	char buffer[1024] = {0};
+	std::cout << "Client fd: " << client.fd << std::endl;
 	ssize_t bytesRead = read(client.fd, buffer, sizeof(buffer));
-	buffer[bytesRead] = '\0';
+	std::cout << "bytesRead: " << bytesRead << std::endl;
 	if (bytesRead <= 0) {
 		this->disconnectClient(it);
 	} else {
+		buffer[bytesRead] = '\0';
 		this->parseInput(client.fd, buffer);
 	}
 }
@@ -155,6 +157,8 @@ void	Server::disconnectClientFromFD(int fd)
 
 void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 {
+	std::cout << "Déconnexion du client" << std::endl;
+	std::cout << "FD: " << it->fd << std::endl;
 	close(it->fd);
 
 	std::map<std::string, Channel *>::iterator	channel;
@@ -168,18 +172,19 @@ void	Server::disconnectClient(std::vector<pollfd>::iterator it)
 
 void	Server::parseInput(int fd, std::string input)
 {
-    Client * client;
-    bool is_registered = false;
-    try {
-        client = this->getClient(fd);
-        is_registered = true;
-    }
-    catch (ClientNotFoundException & exception)
-    {
-        std::cerr << exception.what() << std::endl;
-        client = this->getConnection(fd);
-    }
+	Client * client;
+	bool is_registered = false;
+	client = this->getClient(fd);
+	if (client)
+		is_registered = true;
+	else
+		client = this->getConnection(fd);
 
+	if (!client)
+	{
+		std::cerr << "Client not found" << std::endl;
+		return ;
+	}
 	// TODO: buffer
 	// if input doesnt end with \r\n: 
 	// 		put command into client buffer
@@ -207,18 +212,18 @@ void	Server::parseInput(int fd, std::string input)
 		_connections.erase(fd);
 
 		client->reply(RPL_WELCOME,
-					  client->getNickname().c_str(),
-					  client->getUsername().c_str(),
-					  client->getHostname().c_str());
+					client->getNickname().c_str(),
+					client->getUsername().c_str(),
+					client->getHostname().c_str());
 		client->reply(RPL_YOURHOST,
-					  this->_server_name.c_str(),
-					  this->_version.c_str());
+					this->_server_name.c_str(),
+					this->_version.c_str());
 		client->reply(RPL_CREATED,
-					  this->_created_at.c_str());
+					this->_created_at.c_str());
 		client->reply(RPL_MYINFO,
-					  this->_server_name.c_str(),
-					  this->_version.c_str(),
-					  "0", "itkol");
+					this->_server_name.c_str(),
+					this->_version.c_str(),
+					"0", "itkol");
 	}
 }
 
@@ -228,23 +233,24 @@ std::string Server::getPassword()
 }
 
 Client  *Server::getByFd(int fd, std::map<int, Client *> & clients) {
-    std::map<int, Client *>::iterator client_iter = clients.find(fd);
-    if (client_iter == clients.end())
-        throw ClientNotFoundException();
-    Client * client = client_iter->second;
-    return client;
+	std::map<int, Client *>::iterator client_iter = clients.find(fd);
+	if (client_iter == clients.end())
+		return NULL;
+	Client * client = client_iter->second;
+	return client;
 }
 
 Client	*Server::getClient(int fd)
 {
-    // WARNING: if the client does not exist,
-    //          a new one will be added.
+	// WARNING: if the client does not exist,
+	//          a new one will be added.
 	// return &this->_clients[fd];
 
-    // Better do this:
-    return getByFd(fd, this->_clients);
+	// Better do this:
+	return getByFd(fd, this->_clients);
+	
 
-    // Which is something like this:
+	// Which is something like this:
 //    std::map<int, Client *>::iterator client_iter = this->_clients.find(fd);
 //    if (client_iter == this->_clients.end())
 //        throw ClientNotFoundException();
@@ -254,7 +260,15 @@ Client	*Server::getClient(int fd)
 
 Client	*Server::getConnection(int fd)
 {
-    return getByFd(fd, this->_connections);
+	try
+	{
+		return getByFd(fd, this->_connections);
+	}
+	catch(const std::exception& e)
+	{
+		return NULL;
+	}
+	
 }
 
 Client	*Server::getClientByNickname(std::string nickname)
@@ -329,5 +343,5 @@ const char			*Server::ChannelAlreadyExist::what() const throw()
 }
 
 const char *Server::ClientNotFoundException::what() const throw() {
-    return ("Client does not exist");
+	return ("Client does not exist");
 }

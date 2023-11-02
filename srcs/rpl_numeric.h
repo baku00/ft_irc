@@ -14,4 +14,6 @@
 # define RPL_TOPIC "332", "<channel> :<topic>"
 # define RPL_INVITING "341", "<channel> <nick>"
 
+# define RPL_ADDOPERATOR "381", "Gives 'chanop' to <nick> on <channel>"
+
 #endif

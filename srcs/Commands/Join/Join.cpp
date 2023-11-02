@@ -4,7 +4,7 @@
 
 Join::Join() {
 	this->_minArgsRequired = 1;
-	this->_maxArgsRequired = 1;
+	this->_maxArgsRequired = 2;
 	this->_commandName = "USER";
 }
 
@@ -14,6 +14,12 @@ std::string	Join::getName(std::vector<std::string> args) const {
 	return args[1];
 }
 
+std::string	Join::getPassword(std::vector<std::string> args) const {
+	if (args.size() < 3)
+		return "";
+	return args[2];
+}
+
 void	Join::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
@@ -21,16 +27,22 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 	// Get needed args
 	Server * server = ServerInstance::getInstance();
 	std::string channel_name = this->getName(args);
+	std::string password = this->getPassword(args);
 
 	// Create Channel if it doesn't exist
 	Channel *channel = server->getChannel(channel_name);
 	if (!channel)
-		channel = Channel::create(channel_name);
-
-	// ERR_INVITEONLYCHAN if mode invite (+i) and not invited
-	if (channel->hasMode(Channel::I_INVITE) && !channel->hasInvited(client))
 	{
-		client.reply(ERR_INVITEONLYCHAN, channel_name.c_str());
+		channel = Channel::create(channel_name);
+		channel->addOperator(client.getFd());
+	}
+
+	if (!channel->canJoin(client))
+		return;
+
+	if (channel->hasMode(Channel::K_PASSWORD) && !channel->isPassword(password))
+	{
+		client.reply(ERR_INVALIDKEY, channel_name.c_str());
 		return;
 	}
 
@@ -38,6 +50,7 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 
 	// 1. Add the client to the channel
 	channel->addClient(client.getFd());
+	channel->removeInvited(client);
 
 	// 2. Notify all channel members (including the client itself)
 	channel->broadcastMessage(&client, "JOIN " + channel_name);

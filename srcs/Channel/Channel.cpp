@@ -6,6 +6,7 @@ Channel::Channel()
 	std::cout << "Create a channel instance" << std::endl;
 	this->setName("");
 	this->setTopic("*");
+	this->setPassword("");
 	this->_mode = 0;
 	this->_server = ServerInstance::getInstance();
 }
@@ -70,43 +71,47 @@ void	Channel::showClients()
 
 void Channel::broadcastChanMsg(Client *sender, const std::string& message)
 {
-    std::vector<int>::iterator  member;
-    std::vector<int>            members = this->getClients();
-    for (member = members.begin(); member != members.end(); member++)
-    {
-        if (*member == sender->getFd())
-            continue;
-        Client * member_client = this->_server->getClient(*member);
-        member_client->sendChanMsg(sender, this->getName(), message);
-    }
+	std::vector<int>::iterator  member;
+	std::vector<int>            members = this->getClients();
+	for (member = members.begin(); member != members.end(); member++)
+	{
+		if (*member == sender->getFd())
+			continue;
+		Client * member_client = this->_server->getClient(*member);
+		if (member_client)
+			member_client->sendChanMsg(sender, this->getName(), message);
+	}
 }
 
 void Channel::broadcastMessage(Client *sender, const std::string& message)
 {
-    std::vector<int>::iterator  member;
-    std::vector<int>            members = this->getClients();
-    for (member = members.begin(); member != members.end(); member++)
-    {
-        Client * member_client = this->_server->getClient(*member);
-        member_client->sendMessage(sender, message);
-    }
+	std::vector<int>::iterator  member;
+	std::vector<int>            members = this->getClients();
+	for (member = members.begin(); member != members.end(); member++)
+	{
+		Client * member_client = this->_server->getClient(*member);
+		if (member_client)
+			member_client->sendMessage(sender, message);
+	}
 }
 
 std::string Channel::getNicknames()
 {
-    std::ostringstream oss;
+	std::ostringstream oss;
 
-    std::vector<int>::iterator  member;
-    std::vector<int>            members = this->getClients();
-    for (member = members.begin(); member != members.end(); member++)
-    {
-        Client * member_client = this->_server->getClient(*member);
-        if (member != members.begin())
-            oss << " ";
-        oss << member_client->getNickname();
-    }
+	std::vector<int>::iterator  member;
+	std::vector<int>            members = this->getClients();
+	for (member = members.begin(); member != members.end(); member++)
+	{
+		Client * member_client = this->_server->getClient(*member);
+		if (member_client == NULL)
+			continue;
+		if (member != members.begin())
+			oss << " ";
+		oss << member_client->getNickname();
+	}
 
-    return oss.str();
+	return oss.str();
 }
 
 
@@ -129,6 +134,31 @@ bool	Channel::hasOperator(Client client)
 	return false;
 }
 
+void	Channel::addOperator(int fd)
+{
+	Client *client = ServerInstance::getInstance()->getClient(fd);
+	if (!client)
+		return;
+	if (!this->hasOperator(*client))
+	{
+		this->_operators.push_back(fd);
+		client->reply(RPL_ADDOPERATOR, client->getNickname(), this->getName().c_str());
+	}
+}
+
+void	Channel::removeOperator(int fd)
+{
+	std::vector<int>::iterator it = _operators.begin();
+	for (; it != _operators.end(); ++it)
+	{
+		if (*it == fd)
+		{
+			_operators.erase(it);
+			return;
+		}
+	}
+}
+
 bool	Channel::hasInvited(Client client)
 {
 	std::vector<int>::iterator it = _invited.begin();
@@ -148,6 +178,19 @@ void	Channel::invite(Client client)
 		this->_invited.push_back(fd);
 }
 
+void	Channel::removeInvited(Client client)
+{
+	std::vector<int>::iterator it = _invited.begin();
+	for (; it != _invited.end(); ++it)
+	{
+		if (*it == client.getFd())
+		{
+			_invited.erase(it);
+			return;
+		}
+	}
+}
+
 void	Channel::setTopic(std::string topic)
 {
 	this->_topic = topic;
@@ -163,8 +206,53 @@ void	Channel::sendTopic()
 	for (std::vector<int>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
 	{
 		Client *client = this->_server->getClient(*it);
-		client->reply(RPL_TOPIC, this->getName().c_str(), this->getTopic().c_str());
+		if (client)
+			client->reply(RPL_TOPIC, this->getName().c_str(), this->getTopic().c_str());
 	}
+}
+
+void	Channel::setPassword(std::string password)
+{
+	this->_password = password;
+}
+
+std::string	Channel::getPassword()
+{
+	return this->_password;
+}
+
+bool	Channel::isPassword(std::string password)
+{
+	return this->_password == password;
+}
+
+void	Channel::setLimit(std::size_t limit)
+{
+	this->_limit = limit;
+}
+
+std::size_t	Channel::getLimit()
+{
+	return this->_limit;
+}
+
+bool		Channel::isFull()
+{
+	return this->_limit > 0 && this->_clients.size() >= this->_limit;
+}
+
+bool		Channel::canJoin(Client &client)
+{
+	bool	can_join = false;
+
+	if (this->hasMode(Channel::I_INVITE) && !this->hasInvited(client))
+		client.reply(ERR_INVITEONLYCHAN, this->getName().c_str());
+	else if (this->hasMode(Channel::L_LIMIT) && this->isFull())
+		client.reply(ERR_CHANNELISFULL, this->getName().c_str());
+	else
+		can_join = true;
+
+	return can_join;
 }
 
 Channel &Channel::operator=(const Channel &copy) {
