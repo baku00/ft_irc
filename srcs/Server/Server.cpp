@@ -221,6 +221,9 @@ void	Server::_parseInput(int fd, std::string input)
 	// if input doesnt end with \r\n: 
 	// 		put command into client buffer
 
+	for (size_t i = 0; i < input.length(); i++)
+		std::cout << i << ": [" << static_cast<int>(input[i]) << std::endl;
+
 	size_t new_line;
 	while ((new_line = input.find("\r\n")) != std::string::npos)
 	{
