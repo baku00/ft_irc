@@ -43,6 +43,10 @@ class Server
 		void								_deleteClients();
 		void								_deleteConnections();
 		void								_deleteParser();
+		void								_forceDisconnect(int fd);
+		void								_disconnectFromConnections(int fd);
+		void								_disconnectFromClients(int fd);
+		void								_disconnectFromChannels(int fd);
 
 		static Client						*_getByFd(int fd, std::map<int, Client *> & clients);
 

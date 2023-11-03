@@ -171,35 +171,51 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 {
 	std::cout << "Déconnexion du client" << std::endl;
 	std::cout << "FD: " << it->fd << std::endl;
-	close(it->fd);
+	this->_forceDisconnect(it->fd);
+	_pollfds.erase(it);
+	std::cout << "Client déconnecté" << std::endl;
+}
 
+void	Server::_disconnectFromChannels(int fd)
+{
 	std::map<std::string, Channel *>::iterator	channel;
 	if (this->_channels.size() > 0)
 		for (channel = this->_channels.begin(); channel != this->_channels.end(); channel++)
-			channel->second->removeClient(it->fd);
+			channel->second->removeClient(fd);
+}
 
-	_pollfds.erase(it);
-	std::cout << "Size: " << _clients.size() << std::endl;
+void	Server::_disconnectFromClients(int fd)
+{
 	for (std::map<int, Client *>::iterator client = _clients.begin(); client != _clients.end(); client++)
 	{
-		if (client->second->getFd() == it->fd)
+		if (client->second->getFd() == fd)
 			delete client->second;
 	}
 	if (_clients.size() > 1)
-		_clients.erase(it->fd);
+		_clients.erase(fd);
 	else
 		_clients.clear();
-	
+}
+
+void	Server::_disconnectFromConnections(int fd)
+{
 	for (std::map<int, Client *>::iterator connection = _connections.begin(); connection != _connections.end(); connection++)
 	{
-		if (connection->second->getFd() == it->fd)
+		if (connection->second->getFd() == fd)
 			delete connection->second;
 	}
 	if (_connections.size() > 1)
-		_connections.erase(it->fd);
+		_connections.erase(fd);
 	else
 		_connections.clear();
-	std::cout << "Client déconnecté" << std::endl;
+}
+
+void	Server::_forceDisconnect(int fd)
+{
+	this->_disconnectFromClients(fd);
+	this->_disconnectFromConnections(fd);
+	this->_disconnectFromChannels(fd);
+	close(fd);
 }
 
 void	Server::_parseInput(int fd, std::string input)
@@ -214,6 +230,7 @@ void	Server::_parseInput(int fd, std::string input)
 
 	if (!client)
 	{
+		this->_forceDisconnect(fd);
 		std::cerr << "Client not found" << std::endl;
 		return ;
 	}
