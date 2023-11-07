@@ -11,13 +11,32 @@ Join::Join() {
 Join::~Join() {}
 
 std::string	Join::getName(std::vector<std::string> args) const {
-	return args[1];
+	std::string name = args[1];
+	name = this->formatName(name);
+	return name;
 }
 
 std::string	Join::getPassword(std::vector<std::string> args) const {
 	if (args.size() < 3)
 		return "";
 	return args[2];
+}
+
+std::string Join::formatName(std::string name) const {
+	std::string new_name = "";
+	std::size_t space = name.find_first_of(" ");
+
+	if (name.length() == 1)
+		return "#default";
+	if (space != std::string::npos)
+	{
+		for (size_t i = 0; i < space; i++)
+			new_name += name[i];
+		name = new_name;
+	}
+	if (name[0] != '#')
+		return "#" + name;
+	return name;
 }
 
 void	Join::execute(Client &client, std::vector<std::string> args) const {
@@ -59,4 +78,6 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 	client.reply(RPL_TOPIC, channel_name.c_str(), channel->getTopic().c_str());
 	client.reply(RPL_NAMREPLY, channel_name.c_str(), channel->getNicknames().c_str());
 	client.reply(RPL_ENDOFNAMES, channel_name.c_str());
+
+	std::cout << "Join command executed successfull" << std::endl;
 }

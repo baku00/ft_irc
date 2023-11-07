@@ -17,6 +17,8 @@ class Client {
 		std::string					_hostname;
 		std::string					_serverName;
 		std::string					_realName;
+		std::string					_input;
+
 		bool						_isAuthenticated;
 		bool						_isValidate;
 		int							_fd;
@@ -41,6 +43,7 @@ class Client {
 		std::string					getFullname();
 		int							getFd();
 		std::string					getInfo();
+		std::string					getInput();
 
 		void						setNickname(std::string nickname);
 		void						setUsername(std::string username);
@@ -48,6 +51,10 @@ class Client {
 		void						setHostname(std::string hostname);
 		void						setServername(std::string servername);
 		void						setRealname(std::string realname);
+		void						setCommand(std::string command);
+		void						addInput(std::string input);
+		void						clearInput();
+
 		bool						isAuthenticated();
 		bool						isValidate();
 

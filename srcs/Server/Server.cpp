@@ -44,9 +44,23 @@ void	Server::start()
 
 void	Server::_createSocket()
 {
+	// Créer le socket (l'endpoint) avec les paramètres 
 	this->_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_serverSocket == -1) {
 		this->stop("Erreur lors de la création du socket.", EXIT_FAILURE);
+	}
+	int reuse = 1;
+	if (setsockopt(this->_serverSocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) < 0) {
+		std::cerr << "Error failed to set SO_REUSEADDR" << std::endl;
+		close(this->_serverSocket);
+		return ;
+	}
+
+	// Set the socket to non-blocking mode
+	if (fcntl(this->_serverSocket, F_SETFL, O_NONBLOCK) < 0) {
+		std::cerr << "Error setting socket to non-blocking mode" << std::endl;
+		close(this->_serverSocket);
+		return;
 	}
 }
 
@@ -87,6 +101,8 @@ void	Server::_initialiseConnection()
 void	Server::_loop(sockaddr_in clientAddr, socklen_t clientAddrLen)
 {
 	while (this->_is_started) {
+		for (size_t i = 0; i < 10; i++)
+			std::cout << std::endl;
 		std::cout << "Wait of connection" << std::endl;
 		this->_waitForIncomingConnection();
 
@@ -150,8 +166,15 @@ void	Server::_readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 	if (bytesRead <= 0) {
 		this->_disconnectClient(it);
 	} else {
+		Client *_client = this->getClient(client.fd);
+		if (!_client)
+			_client = this->getConnection(client.fd);
 		buffer[bytesRead] = '\0';
-		this->_parseInput(client.fd, buffer);
+		std::cout << "Client: " << _client << std::endl;
+		if (!_client)
+			return;
+		_client->addInput(buffer);
+		this->_parseInput(client.fd, _client->getInput());
 	}
 }
 
@@ -171,39 +194,60 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 {
 	std::cout << "Déconnexion du client" << std::endl;
 	std::cout << "FD: " << it->fd << std::endl;
-	close(it->fd);
+	this->_forceDisconnect(it->fd);
+	_pollfds.erase(it);
+	std::cout << "Client déconnecté" << std::endl;
+}
 
+void	Server::_disconnectFromChannels(int fd)
+{
 	std::map<std::string, Channel *>::iterator	channel;
 	if (this->_channels.size() > 0)
 		for (channel = this->_channels.begin(); channel != this->_channels.end(); channel++)
-			channel->second->removeClient(it->fd);
+			channel->second->removeClient(fd);
+}
 
-	_pollfds.erase(it);
-	std::cout << "Size: " << _clients.size() << std::endl;
+void	Server::_disconnectFromClients(int fd)
+{
 	for (std::map<int, Client *>::iterator client = _clients.begin(); client != _clients.end(); client++)
 	{
-		if (client->second->getFd() == it->fd)
+		if (client->second->getFd() == fd)
 			delete client->second;
 	}
 	if (_clients.size() > 1)
-		_clients.erase(it->fd);
+		_clients.erase(fd);
 	else
 		_clients.clear();
-	
+}
+
+void	Server::_disconnectFromConnections(int fd)
+{
 	for (std::map<int, Client *>::iterator connection = _connections.begin(); connection != _connections.end(); connection++)
 	{
-		if (connection->second->getFd() == it->fd)
+		if (connection->second->getFd() == fd)
 			delete connection->second;
 	}
 	if (_connections.size() > 1)
-		_connections.erase(it->fd);
+		_connections.erase(fd);
 	else
 		_connections.clear();
-	std::cout << "Client déconnecté" << std::endl;
+}
+
+void	Server::_forceDisconnect(int fd)
+{
+	this->_disconnectFromClients(fd);
+	this->_disconnectFromConnections(fd);
+	this->_disconnectFromChannels(fd);
+	close(fd);
 }
 
 void	Server::_parseInput(int fd, std::string input)
 {
+	for (size_t i = 0; i < input.length(); i++)
+		std::cout << i << ": [" << static_cast<int>(input[i]) << "]" << std::endl;
+
+	if (input.find("\r\n") == std::string::npos)
+		return;
 	Client * client;
 	bool is_registered = false;
 	client = this->getClient(fd);
@@ -214,15 +258,13 @@ void	Server::_parseInput(int fd, std::string input)
 
 	if (!client)
 	{
+		this->_forceDisconnect(fd);
 		std::cerr << "Client not found" << std::endl;
 		return ;
 	}
 	// TODO: buffer
 	// if input doesnt end with \r\n: 
 	// 		put command into client buffer
-
-	for (size_t i = 0; i < input.length(); i++)
-		std::cout << i << ": [" << static_cast<int>(input[i]) << std::endl;
 
 	size_t new_line;
 	size_t pos = input.find_last_of("\r\n");
@@ -273,6 +315,7 @@ void	Server::_parseInput(int fd, std::string input)
 					this->_version.c_str(),
 					"*", "{[+|-]|i|t|k|o|l}");
 	}
+	client->clearInput();
 }
 
 std::string Server::getPassword()
