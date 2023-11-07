@@ -13,7 +13,7 @@ void	Pass::execute(Client &client, std::vector<std::string> args) const {
 	if (!this->isValidArgsNumber(args.size() - 1))
 		return this->errorNumberArguments(client);
 
-	if (client.isValidate())
+	if (client.isAuthenticated())
 		return client.reply(ERR_ALREADYREGISTRED);
 
 	if (!Auth::authenticate(&client, args[1]))
