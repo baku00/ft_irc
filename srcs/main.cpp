@@ -2,23 +2,29 @@
 #include "Server/Server.hpp"
 #include <tests.hpp>
 
+int get_port(char *port)
+{
+	int	_port = std::atoi(port);
+
+	if (_port >= 0 && _port <= 65535)
+		return _port;
+	return -1;
+}
+
 int main(int argc, char **argv) {
-
-	if (argc == 2 && argv[1] == std::string("--test"))
-	{
-		test_mode();
-		return 0;
-	}
-
-	const bool DEV_MODE = true;
-	if (argc != 3 && !DEV_MODE)
+	if (argc != 3)
 	{
 		std::cout << "Usage: ./irc [port] [password]" << std::endl;
 		return (1);
 	}
 
-	const int PORT				= DEV_MODE ? 6667 : std::atoi(argv[1]);
-	const std::string PASSWORD	= DEV_MODE ? "password" : argv[2];
+	const int PORT				= get_port(argv[1]);
+	if (PORT == -1)
+	{
+		std::cout << "Invalid port" << std::endl;
+		return 1;
+	}
+	const std::string PASSWORD	= argv[2];
 
 		Server	*server;
 	
