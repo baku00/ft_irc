@@ -26,6 +26,21 @@ void	Client::setNickname(std::string nickname) {
 	this->validate();
 }
 
+std::string	Client::getInput()
+{
+	return this->_input;
+}
+
+void	Client::addInput(std::string input)
+{
+	this->_input.append(input);
+}
+
+void	Client::clearInput()
+{
+	this->_input.clear();
+}
+
 void	Client::setUserInfo(std::string username, std::string hostname, std::string servername, std::string realname) {
 	this->setUsername(username);
 	this->setHostname(hostname);

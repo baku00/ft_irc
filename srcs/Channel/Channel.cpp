@@ -9,6 +9,7 @@ Channel::Channel()
 	this->setPassword("");
 	this->_mode = 0;
 	this->_server = ServerInstance::getInstance();
+	std::cout << "Channel instanced created" << std::endl;
 }
 
 Channel::Channel(const Channel &copy)	{ *this = copy; }
@@ -121,7 +122,9 @@ Channel *Channel::create(std::string name)
 {
 	Channel *channel = new Channel();
 	channel->setName(name);
+	std::cout << "Adding channel to the server instance" << std::endl;
 	ServerInstance::getInstance()->addChannel(channel);
+	std::cout << "Channel added" << std::endl;
 	return channel;
 }
 

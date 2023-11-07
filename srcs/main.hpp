@@ -16,6 +16,7 @@
 # include <map>
 # include <exception>
 # include <bitset>
+# include <fcntl.h>
 # include "rpl_errors.h"
 # include "rpl_numeric.h"
 

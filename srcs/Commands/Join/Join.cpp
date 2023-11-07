@@ -59,4 +59,6 @@ void	Join::execute(Client &client, std::vector<std::string> args) const {
 	client.reply(RPL_TOPIC, channel_name.c_str(), channel->getTopic().c_str());
 	client.reply(RPL_NAMREPLY, channel_name.c_str(), channel->getNicknames().c_str());
 	client.reply(RPL_ENDOFNAMES, channel_name.c_str());
+
+	std::cout << "Join command executed successfull" << std::endl;
 }

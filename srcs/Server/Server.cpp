@@ -48,6 +48,19 @@ void	Server::_createSocket()
 	if (this->_serverSocket == -1) {
 		this->stop("Erreur lors de la création du socket.", EXIT_FAILURE);
 	}
+	int reuse = 1;
+	if (setsockopt(this->_serverSocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) < 0) {
+		std::cerr << "Error failed to set SO_REUSEADDR" << std::endl;
+		close(this->_serverSocket);
+		return ;
+	}
+
+	// Set the socket to non-blocking mode
+	if (fcntl(this->_serverSocket, F_SETFL, O_NONBLOCK) < 0) {
+		std::cerr << "Error setting socket to non-blocking mode" << std::endl;
+		close(this->_serverSocket);
+		return;
+	}
 }
 
 sockaddr_in	Server::_fixSettings()
@@ -87,6 +100,8 @@ void	Server::_initialiseConnection()
 void	Server::_loop(sockaddr_in clientAddr, socklen_t clientAddrLen)
 {
 	while (this->_is_started) {
+		for (size_t i = 0; i < 10; i++)
+			std::cout << std::endl;
 		std::cout << "Wait of connection" << std::endl;
 		this->_waitForIncomingConnection();
 
@@ -150,8 +165,15 @@ void	Server::_readClientInput(std::vector<pollfd>::iterator it, pollfd client)
 	if (bytesRead <= 0) {
 		this->_disconnectClient(it);
 	} else {
+		Client *_client = this->getClient(client.fd);
+		if (!_client)
+			_client = this->getConnection(client.fd);
 		buffer[bytesRead] = '\0';
-		this->_parseInput(client.fd, buffer);
+		std::cout << "Client: " << _client << std::endl;
+		if (!_client)
+			return;
+		_client->addInput(buffer);
+		this->_parseInput(client.fd, _client->getInput());
 	}
 }
 
@@ -220,6 +242,11 @@ void	Server::_forceDisconnect(int fd)
 
 void	Server::_parseInput(int fd, std::string input)
 {
+	for (size_t i = 0; i < input.length(); i++)
+		std::cout << i << ": [" << static_cast<int>(input[i]) << "]" << std::endl;
+
+	if (input.find("\r\n") == std::string::npos)
+		return;
 	Client * client;
 	bool is_registered = false;
 	client = this->getClient(fd);
@@ -237,9 +264,6 @@ void	Server::_parseInput(int fd, std::string input)
 	// TODO: buffer
 	// if input doesnt end with \r\n: 
 	// 		put command into client buffer
-
-	for (size_t i = 0; i < input.length(); i++)
-		std::cout << i << ": [" << static_cast<int>(input[i]) << std::endl;
 
 	size_t new_line;
 	size_t pos = input.find_last_of("\r\n");
@@ -290,6 +314,7 @@ void	Server::_parseInput(int fd, std::string input)
 					this->_version.c_str(),
 					"*", "{[+|-]|i|t|k|o|l}");
 	}
+	client->clearInput();
 }
 
 std::string Server::getPassword()
