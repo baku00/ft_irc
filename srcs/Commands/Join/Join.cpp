@@ -27,7 +27,7 @@ std::string Join::formatName(std::string name) const {
 	std::size_t space = name.find_first_of(" ");
 
 	if (name.length() == 1)
-		return "";
+		return "#default";
 	if (space != std::string::npos)
 	{
 		for (size_t i = 0; i < space; i++)
