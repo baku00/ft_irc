@@ -11,13 +11,21 @@ Join::Join() {
 Join::~Join() {}
 
 std::string	Join::getName(std::vector<std::string> args) const {
-	return args[1];
+	std::string name = args[1];
+	name = this->formatName(name);
+	return name;
 }
 
 std::string	Join::getPassword(std::vector<std::string> args) const {
 	if (args.size() < 3)
 		return "";
 	return args[2];
+}
+
+std::string Join::formatName(std::string name) const {
+	if (name[0] != '#')
+		return "#" + name;
+	return name;
 }
 
 void	Join::execute(Client &client, std::vector<std::string> args) const {
