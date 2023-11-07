@@ -44,6 +44,7 @@ void	Server::start()
 
 void	Server::_createSocket()
 {
+	// Créer le socket (l'endpoint) avec les paramètres 
 	this->_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_serverSocket == -1) {
 		this->stop("Erreur lors de la création du socket.", EXIT_FAILURE);

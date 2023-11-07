@@ -250,6 +250,8 @@ bool		Channel::canJoin(Client &client)
 {
 	bool	can_join = false;
 
+	if (this->hasClient(client))
+		return false;
 	if (this->hasMode(Channel::I_INVITE) && !this->hasInvited(client))
 		client.reply(ERR_INVITEONLYCHAN, this->getName().c_str());
 	else if (this->hasMode(Channel::L_LIMIT) && this->isFull())
