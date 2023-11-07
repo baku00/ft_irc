@@ -23,6 +23,17 @@ std::string	Join::getPassword(std::vector<std::string> args) const {
 }
 
 std::string Join::formatName(std::string name) const {
+	std::string new_name = "";
+	std::size_t space = name.find_first_of(" ");
+
+	if (name.length() == 1)
+		return "";
+	if (space != std::string::npos)
+	{
+		for (size_t i = 0; i < space; i++)
+			new_name += name[i];
+		name = new_name;
+	}
 	if (name[0] != '#')
 		return "#" + name;
 	return name;
