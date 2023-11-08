@@ -212,7 +212,10 @@ void	Server::_disconnectFromChannels(int fd)
 
 			if (channel->getClients().empty())
 			{
-				_channels.erase(channel_it);
+				if (_channels.size() == 1)
+					_channels.clear();
+				else
+					_channels.erase(channel_it);
 				delete channel;
 				channel = NULL;
 			}

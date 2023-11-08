@@ -56,8 +56,13 @@ void	Channel::removeClient(int fd)
 
 	bool isInChannel = it != this->_clients.end();
 
-	if (isInChannel)
-		this->_clients.erase(it);
+	if (!isInChannel)
+		return;
+
+	if (_clients.size() == 1)
+		_clients.clear();
+	else
+		_clients.erase(it);
 }
 
 void	Channel::showClients()
@@ -161,7 +166,10 @@ void	Channel::removeOperator(int fd)
 	{
 		if (*it == fd)
 		{
-			_operators.erase(it);
+			if (_operators.size() == 1)
+				_operators.clear();
+			else
+				_operators.erase(it);
 			return;
 		}
 	}
@@ -193,7 +201,10 @@ void	Channel::removeInvited(Client client)
 	{
 		if (*it == client.getFd())
 		{
-			_invited.erase(it);
+			if (_invited.size() == 1)
+				_invited.clear();
+			else
+				_invited.erase(it);
 			return;
 		}
 	}
