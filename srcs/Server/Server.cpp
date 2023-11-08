@@ -206,8 +206,13 @@ void	Server::_disconnectFromChannels(int fd)
 		for (channel_it = this->_channels.begin(); channel_it != this->_channels.end(); channel_it++)
 		{
 			Channel * channel = channel_it->second;
-			channel->removeClient(fd);
+
 			channel->removeInvited(fd);
+
+			if (!channel->hasClient(fd))
+				continue;
+
+			channel->removeClient(fd);
 			channel->removeOperator(fd);
 
 			if (channel->getClients().empty())
@@ -232,12 +237,16 @@ void	Server::_disconnectFromClients(int fd)
 	for (std::map<int, Client *>::iterator client = _clients.begin(); client != _clients.end(); client++)
 	{
 		if (client->second->getFd() == fd)
+		{
+			if (_clients.size() > 1)
+				_clients.erase(fd);
+			else
+				_clients.clear();
 			delete client->second;
+			return;
+		}
 	}
-	if (_clients.size() > 1)
-		_clients.erase(fd);
-	else
-		_clients.clear();
+
 }
 
 void	Server::_disconnectFromConnections(int fd)
@@ -245,12 +254,16 @@ void	Server::_disconnectFromConnections(int fd)
 	for (std::map<int, Client *>::iterator connection = _connections.begin(); connection != _connections.end(); connection++)
 	{
 		if (connection->second->getFd() == fd)
+		{
+			if (_connections.size() > 1)
+				_connections.erase(fd);
+			else
+				_connections.clear();
 			delete connection->second;
+			return;
+		}
 	}
-	if (_connections.size() > 1)
-		_connections.erase(fd);
-	else
-		_connections.clear();
+
 }
 
 void	Server::_forceDisconnect(int fd)
