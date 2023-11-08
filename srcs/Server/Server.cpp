@@ -201,10 +201,27 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 
 void	Server::_disconnectFromChannels(int fd)
 {
-	std::map<std::string, Channel *>::iterator	channel;
+	std::map<std::string, Channel *>::iterator	channel_it;
 	if (this->_channels.size() > 0)
-		for (channel = this->_channels.begin(); channel != this->_channels.end(); channel++)
-			channel->second->removeClient(fd);
+		for (channel_it = this->_channels.begin(); channel_it != this->_channels.end(); channel_it++)
+		{
+			Channel * channel = channel_it->second;
+			channel->removeClient(fd);
+			channel->removeInvited(fd);
+			channel->removeOperator(fd);
+
+			if (channel->getClients().empty())
+			{
+				_channels.erase(channel_it);
+				delete channel;
+				channel = NULL;
+			}
+			else if (channel->getOperators().empty())
+			{
+				int first_client_fd = *(channel->getClients().begin());
+				channel->addOperator(first_client_fd);
+			}
+		}
 }
 
 void	Server::_disconnectFromClients(int fd)

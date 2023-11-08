@@ -48,11 +48,10 @@ class Channel {
 		bool						hasClient(int fd);
 		bool						hasClient(Client & client);
 		void						showClients();
-		bool						removeClient(int fd);
+		void 						removeClient(int fd);
 
 		void						broadcastMessage(Client *sender, const std::string& message);
 		void						broadcastChanMsg(Client *sender, const std::string &message);
-
 
 		bool						hasMode(t_mode mode);
 		void						addMode(t_mode mode);
@@ -60,12 +59,14 @@ class Channel {
 
 		static Channel				*create(std::string name);
 
+		std::vector<int>			getOperators();
 		bool						hasOperator(Client client);
 		void						addOperator(int fd);
 		void						removeOperator(int fd);
 
 		void						invite(Client client);
 		void						removeInvited(Client client);
+		void						removeInvited(int fd);
 		bool						hasInvited(Client client);
 
 		void						setTopic(std::string topic);
@@ -84,7 +85,6 @@ class Channel {
 		bool						canJoin(Client &client);
 
 		Channel						&operator=(const Channel &copy);
-		void						sendTopicToClient(int fd);
 };
 
 std::iostream &operator<<(std::iostream &stream, Channel &client);

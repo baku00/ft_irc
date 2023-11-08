@@ -46,7 +46,7 @@ bool	Channel::hasClient(Client & client) {
 	return this->hasClient(client.getFd());
 }
 
-bool	Channel::removeClient(int fd)
+void	Channel::removeClient(int fd)
 {
 	std::vector<int>::iterator it;
 	
@@ -58,8 +58,6 @@ bool	Channel::removeClient(int fd)
 
 	if (isInChannel)
 		this->_clients.erase(it);
-
-	return isInChannel;
 }
 
 void	Channel::showClients()
@@ -128,6 +126,11 @@ Channel *Channel::create(std::string name)
 	return channel;
 }
 
+
+std::vector<int> Channel::getOperators() {
+	return _operators;
+}
+
 bool	Channel::hasOperator(Client client)
 {
 	std::vector<int>::iterator it = _operators.begin();
@@ -194,6 +197,11 @@ void	Channel::removeInvited(Client client)
 			return;
 		}
 	}
+}
+
+void Channel::removeInvited(int fd) {
+	Client *client = ServerInstance::getInstance()->getClient(fd);
+	this->removeInvited(*client);
 }
 
 void	Channel::setTopic(std::string topic)
