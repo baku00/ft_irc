@@ -201,6 +201,7 @@ void	Server::_disconnectClient(std::vector<pollfd>::iterator it)
 
 void	Server::_disconnectFromChannels(int fd)
 {
+	std::cout << "Disconnecting client from channels" << std::endl;
 	std::map<std::string, Channel *>::iterator	channel_it;
 	if (this->_channels.size() > 0)
 		for (channel_it = this->_channels.begin(); channel_it != this->_channels.end(); channel_it++)
@@ -230,10 +231,12 @@ void	Server::_disconnectFromChannels(int fd)
 				channel->addOperator(first_client_fd);
 			}
 		}
+	std::cout << "Disconnected client from channels" << std::endl;
 }
 
 void	Server::_disconnectFromClients(int fd)
 {
+	std::cout << "Disconnecting client from server" << std::endl;
 	for (std::map<int, Client *>::iterator client = _clients.begin(); client != _clients.end(); client++)
 	{
 		if (client->second->getFd() == fd)
@@ -243,14 +246,16 @@ void	Server::_disconnectFromClients(int fd)
 			else
 				_clients.clear();
 			delete client->second;
+			std::cout << "Disconnected client from server" << std::endl;
 			return;
 		}
 	}
-
+	std::cout << "Disconnecting client from server failed: not registered" << std::endl;
 }
 
 void	Server::_disconnectFromConnections(int fd)
 {
+	std::cout << "Disconnecting client from connections" << std::endl;
 	for (std::map<int, Client *>::iterator connection = _connections.begin(); connection != _connections.end(); connection++)
 	{
 		if (connection->second->getFd() == fd)
@@ -260,10 +265,11 @@ void	Server::_disconnectFromConnections(int fd)
 			else
 				_connections.clear();
 			delete connection->second;
+			std::cout << "Disconnected client from connections" << std::endl;
 			return;
 		}
 	}
-
+	std::cout << "Disconnecting client from connections failed: not connecting" << std::endl;
 }
 
 void	Server::_forceDisconnect(int fd)
@@ -271,13 +277,15 @@ void	Server::_forceDisconnect(int fd)
 	this->_disconnectFromClients(fd);
 	this->_disconnectFromConnections(fd);
 	this->_disconnectFromChannels(fd);
+	std::cout << "DONE DISCONNECTING CLIENT" << std::endl;
 	close(fd);
+	std::cout << "FD CLOSED" << std::endl;
 }
 
 void	Server::_parseInput(int fd, std::string input)
 {
-	for (size_t i = 0; i < input.length(); i++)
-		std::cout << i << ": [" << static_cast<int>(input[i]) << "]" << std::endl;
+/*	for (size_t i = 0; i < input.length(); i++)
+		std::cout << i << ": [" << static_cast<int>(input[i]) << "]" << std::endl;*/
 
 	if (input.find("\r\n") == std::string::npos)
 		return;
