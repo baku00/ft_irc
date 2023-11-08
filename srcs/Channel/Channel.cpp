@@ -212,7 +212,8 @@ void	Channel::removeInvited(Client client)
 
 void Channel::removeInvited(int fd) {
 	Client *client = ServerInstance::getInstance()->getClient(fd);
-	this->removeInvited(*client);
+	std::cout << "Remove \"" << client << "\" from invited" << std::endl;
+	if (client) this->removeInvited(*client);
 }
 
 void	Channel::setTopic(std::string topic)

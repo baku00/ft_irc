@@ -287,8 +287,9 @@ void	Server::_disconnectFromConnections(int fd)
 
 void	Server::_forceDisconnect(int fd)
 {
+	if (this->getClient(fd) == NULL)
+		return this->_disconnectFromConnections(fd);
 	this->_disconnectFromClients(fd);
-	this->_disconnectFromConnections(fd);
 	this->_disconnectFromChannels(fd);
 	std::cout << "DONE DISCONNECTING CLIENT" << std::endl;
 	close(fd);
