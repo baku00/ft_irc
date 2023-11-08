@@ -13,7 +13,7 @@
 
 #define RPL_CHANNELMODEIS "324", "<channel> <mode> <mode params>"
 
-# define RPL_NAMREPLY "353", "= <channel> :@<all_nicks>"
+# define RPL_NAMREPLY "353", "= <channel> :<all_nicks>"
 # define RPL_ENDOFNAMES "366", "<channel> :End of NAMES list"
 # define RPL_TOPIC "332", "<channel> :<topic>"
 # define RPL_INVITING "341", "<nick> <channel>"
