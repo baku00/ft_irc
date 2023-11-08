@@ -203,17 +203,18 @@ void	Server::_disconnectFromChannels(int fd)
 {
 	std::cout << "Disconnecting client from channels" << std::endl;
 	std::map<std::string, Channel *>::iterator	channel_it;
-	if (this->_channels.size() > 0)
-		for (channel_it = this->_channels.begin(); channel_it != this->_channels.end(); channel_it++)
-		{
-			Channel * channel = channel_it->second;
+	std::vector<std::map<std::string, Channel *>::iterator> channels_to_rm;
+	if (!this->_channels.empty()) {
+		for (channel_it = this->_channels.begin(); channel_it != this->_channels.end(); channel_it++) {
+			std::cout << "\nDisconnecting " << fd << std::flush;
+			Channel *channel = channel_it->second;
+			std::cout << " from channel " << channel->getName();
 
 			std::cout << "Removing from invited" << std::endl;
 			channel->removeInvited(fd);
 			std::cout << "Removed from invited" << std::endl;
 
-			if (!channel->hasClient(fd))
-			{
+			if (!channel->hasClient(fd)) {
 				std::cout << "Not on channel: skip" << std::endl;
 				continue;
 			}
@@ -226,24 +227,26 @@ void	Server::_disconnectFromChannels(int fd)
 			channel->removeOperator(fd);
 			std::cout << "Removed from operators" << std::endl;
 
-
 			std::cout << "Clean channel" << std::endl;
-			if (channel->getClients().empty())
-			{
-				if (_channels.size() == 1)
-					_channels.clear();
-				else
-					_channels.erase(channel_it);
-				delete channel;
-				channel = NULL;
-			}
-			else if (channel->getOperators().empty())
-			{
+			if (channel->getClients().empty()) {
+				channels_to_rm.push_back(channel_it);
+			} else if (channel->getOperators().empty()) {
 				int first_client_fd = *(channel->getClients().begin());
 				channel->addOperator(first_client_fd);
 			}
 			std::cout << "Cleaned channel" << std::endl;
 		}
+	}
+	for (std::vector<std::map<std::string, Channel *>::iterator>::iterator it = channels_to_rm.begin(); it != channels_to_rm.end(); ++it)
+	{
+		std::cout << "Removing channel " << (*it)->first << std::endl;
+		if (_channels.size() == 1)
+			_channels.clear();
+		else
+			_channels.erase(*it);
+		delete (*it)->second;
+		std::cout << "Successfully removed" << std::endl;
+	}
 	std::cout << "Disconnected client from channels" << std::endl;
 }
 
