@@ -208,14 +208,26 @@ void	Server::_disconnectFromChannels(int fd)
 		{
 			Channel * channel = channel_it->second;
 
+			std::cout << "Removing from invited" << std::endl;
 			channel->removeInvited(fd);
+			std::cout << "Removed from invited" << std::endl;
 
 			if (!channel->hasClient(fd))
+			{
+				std::cout << "Not on channel: skip" << std::endl;
 				continue;
+			}
 
+			std::cout << "Removing from clients" << std::endl;
 			channel->removeClient(fd);
-			channel->removeOperator(fd);
+			std::cout << "Removed from clients" << std::endl;
 
+			std::cout << "Removing from operators" << std::endl;
+			channel->removeOperator(fd);
+			std::cout << "Removed from operators" << std::endl;
+
+
+			std::cout << "Clean channel" << std::endl;
 			if (channel->getClients().empty())
 			{
 				if (_channels.size() == 1)
@@ -230,6 +242,7 @@ void	Server::_disconnectFromChannels(int fd)
 				int first_client_fd = *(channel->getClients().begin());
 				channel->addOperator(first_client_fd);
 			}
+			std::cout << "Cleaned channel" << std::endl;
 		}
 	std::cout << "Disconnected client from channels" << std::endl;
 }
